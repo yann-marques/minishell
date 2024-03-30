@@ -34,25 +34,33 @@ int	ms_cd(t_token *token)
 	return (0);
 }
 
-int	ms_pwd(int count)
+char	*get_pwd(int count)
 {
 	char	*buffer;
 
 	buffer = malloc(((BUFFER_SIZE * count) + 1) * sizeof(char));
 	if (!buffer)
-		return (-1);
+		return (NULL);
 	if (!getcwd(buffer, BUFFER_SIZE))
 	{
 		if (errno == ERANGE)
 		{
 			free(buffer);
-			if (ms_pwd(count + 1) == -1)
-				return (-1);
+			if (!get_pwd(count + 1))
+				return (NULL);
 			return (0);
 		}
 		printf("Error\n%s", strerror(errno));
-		return (-1);
+		return (NULL);
 	}
+	return (buffer);
+}
+
+int	ms_pwd(void)
+{
+	char	*buffer;
+
+	buffer = get_pwd(1);
 	printf("%s", buffer);
 	free(buffer);
 	return (0);

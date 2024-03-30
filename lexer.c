@@ -445,12 +445,41 @@ int	var_to_value(t_ms *head)
 	return (1);
 }
 
+int	prompt(t_env *env)
+{
+	char	*pwd;
+	char	*absolute;
+	int		i;
+
+	pwd = get_pwd(1);
+	if (!pwd)
+		return (0);
+	absolute = get_var_value(env, "HOME");
+	if (!absolute)
+	{
+		free(pwd);
+		return (0);
+	}
+	i = 0;
+	while (absolute[i])
+		++i;
+	write(1, "~", 1);
+	while (pwd[i])
+	{
+		write(1, &pwd[i], 1);
+		++i;
+	}
+	free(pwd);
+	return (1);
+}
+
 t_ms	*lexer(t_env *env)
 {
 	t_ms	*head;
 	char	*line;
 
-    ms_pwd(1);
+    if (!prompt(env))
+		return (NULL);
 	line = readline("$ ");
 	if (!line)
 		return (NULL);
