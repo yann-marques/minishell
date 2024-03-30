@@ -445,10 +445,27 @@ int	var_to_value(t_ms *head)
 	return (1);
 }
 
+char *get_username(t_env *env)
+{
+    t_env   *tmp;
+
+    tmp = env;
+    while (tmp && tmp->next)
+    {
+        if (ft_strcmp(tmp->var, "USER") == 0)
+            break ;
+        tmp = tmp->next;
+    }
+    if (!tmp->next)
+        return ("anonynous");
+    return (tmp->value);   
+}
+
 int	prompt(t_env *env)
 {
 	char	*pwd;
 	char	*absolute;
+    char    *username;
 	int		i;
 
 	pwd = get_pwd(1);
@@ -463,12 +480,8 @@ int	prompt(t_env *env)
 	i = 0;
 	while (absolute[i])
 		++i;
-	write(1, "~", 1);
-	while (pwd[i])
-	{
-		write(1, &pwd[i], 1);
-		++i;
-	}
+    username = get_username(env);
+	printf("%s@minishell:~%s", username, &pwd[i]);
 	free(pwd);
 	return (1);
 }
