@@ -455,21 +455,22 @@ char *get_username(t_env *env)
     return (username);   
 }
 
-int	prompt(t_env *env)
+char	*prompt(t_env *env)
 {
 	char	*pwd;
 	char	*absolute;
     char    *username;
+	char	*line;
 	int		i;
 
 	pwd = get_pwd(1);
 	if (!pwd)
-		return (0);
+		return (NULL);
 	absolute = get_var_value(env, "HOME");
 	if (!absolute)
 	{
 		free(pwd);
-		return (0);
+		return (NULL);
 	}
 	i = 0;
 	while (absolute[i])
@@ -477,7 +478,10 @@ int	prompt(t_env *env)
     username = get_username(env);
 	printf("\033[1;32m%s\033[1;0m\033[1;0m@\033[1;36mminishell\033[1;0m:\033[1;33m~%s\033[1;0m", username, &pwd[i]);
 	free(pwd);
-	return (1);
+	line = readline("$ ");
+	if (!line)
+		return (NULL);
+	return (line);
 }
 
 t_ms	*lexer(t_env *env)
@@ -485,9 +489,7 @@ t_ms	*lexer(t_env *env)
 	t_ms	*head;
 	char	*line;
 
-    if (!prompt(env))
-		return (NULL);
-	line = readline("$ ");
+	line = prompt(env);
 	if (!line)
 		return (NULL);
 	add_history(line);
