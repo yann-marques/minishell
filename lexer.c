@@ -450,7 +450,8 @@ t_ms	*lexer(t_env *env)
 	t_ms	*head;
 	char	*line;
 
-	line = readline("minishell $>");
+    ms_pwd(1);
+	line = readline("$ ");
 	if (!line)
 		return (NULL);
 	add_history(line);

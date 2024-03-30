@@ -16,16 +16,14 @@ int	main(int ac, char **av, char **envp)
 	while (1)
 	{
 		head = lexer(env);
-		if (!head)
-		{
-			free_env(env);
-			return (-1);
-		}
-		if (ft_strcmp(head->tokens->value[0], "exit") == 0)
-			ms_exit(head);
-		display_tokens(head->tokens);
-		tokens_clear(head->tokens);
-		free(head);
+        if (head)
+        {
+            if (ft_strcmp(head->tokens->value[0], "exit") == 0)
+                ms_exit(head);
+            display_tokens(head->tokens);
+            tokens_clear(head->tokens);
+            free(head);
+        }
 	}
 	free_env(env);
 	return (0);

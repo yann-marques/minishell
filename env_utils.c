@@ -81,6 +81,8 @@ void	put_env_var(t_env **env, t_env *new)
 	t_env	*tmp;
 	int		i;
 
+
+    i = 0;
 	tmp = *env;
 	if (!*env)
 	{
