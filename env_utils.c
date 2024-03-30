@@ -27,14 +27,14 @@ int	ft_strcmp(char *s1, char *s2)
 	int	i;
 
 	i = 0;
-	while (s1[i])
+	while (s1[i] || s2[i])
 	{
-		if (s1[i] > s2[i])
+		if (s1[i] != s2[i])
 			return (s1[i] - s2[i]);
-		else if (s1[i] < s2[i])
-			return (s2[i] - s1[i]);
 		++i;
 	}
+	if (s1[i] != s2[i])
+		return (s1[i] - s2[i]);
 	return (0);
 }
 
@@ -45,8 +45,8 @@ char	*get_var_value(t_env *env, char *var)
 	tmp = env;
 	while (tmp)
 	{
-		if (ft_strcmp(tmp->var, var))
-			return (tmp->var);
+		if (ft_strcmp(tmp->var, var) == 0)
+			return (tmp->value);
 		tmp = tmp->next;
 	}
 	return (NULL);

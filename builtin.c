@@ -3,12 +3,21 @@
 int	ms_echo_n(t_token *token)
 {
 	int	k;
+	int	i;
 
 	k = 1;
+	i = 0;
 	while (token->value[k])
 	{
-		printf("%s", value[k]);
-		if (value[k + 1])
+		while (token->value[k][i])
+		{
+			while (token->value[k][i] == '\''
+				|| token->value[k][i] == '"')
+				++i;
+			if (token->value[k][i])
+				write(1, &token->value[k][i++], 1);
+		}
+		if (token->value[k + 1])
 			printf(" ");
 		++k;
 	}
@@ -64,7 +73,7 @@ int	ms_export(t_env	*env, t_token *token)
 		tmp = env_new(token->value[1]);
 	if (!tmp)
 		return (-1);
-	put_env_var(env, tmp);
+	put_env_var(&env, tmp);
 	return (0);
 }
 

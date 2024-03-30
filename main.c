@@ -21,6 +21,8 @@ int	main(int ac, char **av, char **envp)
 			free_env(env);
 			return (-1);
 		}
+		if (ft_strcmp(head->tokens->value[0], "exit") == 0)
+			ms_exit(head);
 		display_tokens(head->tokens);
 		tokens_clear(head->tokens);
 		free(head);

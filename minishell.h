@@ -76,11 +76,11 @@ t_token	*redirection_type(t_token *token);
 // builtin
 int		ms_echo_n(t_token *token);
 int		ms_cd(t_token *token);
-int		ms_pwd(void);
+int		ms_pwd(int count);
 int		ms_export(t_env	*env, t_token *token);
 int		ms_unset(t_env *env, t_token *token);
-int		ms_env(t_env *env);
-int		ms_exit(t_ms head);
+int		ms_env(t_env *env, char *begin);
+int		ms_exit(t_ms *head);
 // t_token utils
 void	tokens_clear(t_token *tokens);
 int		tokens_addback(t_token **tokens, t_type type, char **value);
