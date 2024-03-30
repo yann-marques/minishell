@@ -447,18 +447,12 @@ int	var_to_value(t_ms *head)
 
 char *get_username(t_env *env)
 {
-    t_env   *tmp;
+    char *username;
 
-    tmp = env;
-    while (tmp && tmp->next)
-    {
-        if (ft_strcmp(tmp->var, "USER") == 0)
-            break ;
-        tmp = tmp->next;
-    }
-    if (!tmp->next)
+    username = get_var_value(env, "USER");
+    if (!username)
         return ("anonynous");
-    return (tmp->value);   
+    return (username);   
 }
 
 int	prompt(t_env *env)
