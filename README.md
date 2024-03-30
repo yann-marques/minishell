@@ -1,2 +1,2 @@
 # minishell
-minishell with yann olive
+minishell with L'0live
