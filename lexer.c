@@ -484,6 +484,56 @@ char	*prompt(t_env *env)
 	return (line);
 }
 
+char	*ft_strdup_noquotes(char *str)
+{
+	char	*dst;
+	int		i;
+	int		j;
+
+	dst = malloc(sizeof(char) * (ft_strlen_to(str, '\0') + 1));
+	if (!dst)
+		return (NULL);
+	i = 0;
+	j = 0;
+	while (str[i + j])
+	{
+		while (str[i + j] == '\'' || str[i + j] == '"')
+			++j;
+		dst[i] = str[i + j];
+		++i;
+	}
+	dst[i] = '\0';
+	return (dst);
+}
+
+int	del_quotes(t_token *tokens)
+{
+	t_token	*t_tmp;
+	char	*s_tmp;
+	int		k;
+
+	t_tmp = tokens;
+	while (t_tmp)
+	{
+		k = 0;
+		while (t_tmp->value[k])
+		{
+			if (ft_strchr(t_tmp->value[k], '\'')
+				|| ft_strchr(t_tmp->value[k], '"'))
+			{
+				s_tmp = ft_strdup_noquotes(t_tmp->value[k]);
+				if (!s_tmp)
+					return (0);
+				free(t_tmp->value[k]);
+				t_tmp->value[k] = s_tmp;
+			}
+			++k;
+		}
+		t_tmp = t_tmp->next;
+	}
+	return (1);
+}
+
 t_ms	*lexer(t_env *env)
 {
 	t_ms	*head;
@@ -508,7 +558,7 @@ t_ms	*lexer(t_env *env)
 		return (NULL);
 	}
 	head->env = env;
-	if (!var_to_value(head))
+	if (!var_to_value(head) || !del_quotes(head->tokens))
 		ms_exit(head);
 	return (head);
 }
