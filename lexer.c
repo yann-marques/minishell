@@ -475,7 +475,7 @@ int	prompt(t_env *env)
 	while (absolute[i])
 		++i;
     username = get_username(env);
-	printf("\u001b[32m%s\u001b[37m@\u001b[34mminishell\u001b[37m:\u001b[33m~%s", username, &pwd[i]);
+	printf("\033[1;32m%s\033[1;0m\033[1;0m@\033[1;36mminishell\033[1;0m:\033[1;33m~%s\033[1;0m", username, &pwd[i]);
 	free(pwd);
 	return (1);
 }
