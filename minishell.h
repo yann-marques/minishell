@@ -73,6 +73,7 @@ int		quotes_jump(char *str);
 t_token	*set_tokens(char *str);
 void	set_type(t_token *tokens);
 t_token	*redirection_type(t_token *token);
+char	*ms_join_three(char *s1, char *s2, char *s3);
 // builtin
 int		ms_echo_n(t_token *token);
 int		ms_cd(t_token *token);
@@ -107,5 +108,7 @@ int		check_quotes(char *str);
 int		check_env_var(t_token *begin_tokens, t_token *token, char *str);
 int		ft_isalpha(char c);
 int		ft_isdigit(char c);
+//exec
+void    command_manager(t_ms *head, char **envp);
 
 #endif

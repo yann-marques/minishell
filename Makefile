@@ -1,7 +1,7 @@
 NAME=minishell
 CC=gcc
 FLAGS=-Wall -Werror -Wextra -g
-SRC=main.c lexer.c env_utils.c builtin.c
+SRC=main.c lexer.c env_utils.c builtin.c exec.c
 OBJ=$(SRC:.c=.o)
 HEADER=minishell.h
 
