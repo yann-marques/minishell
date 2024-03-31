@@ -81,16 +81,24 @@ char *find_path(t_token *token, char **envp)
     if (!envp[i])
         return (NULL);
     paths = ms_split(envp[i], ":");
+    i = 0;
     while (paths[i])
     {
-        path = ms_join_three(paths[i], NULL, "/");
-        path_cmd = ms_join_three(path, NULL, token->value[0]);
-        //free(path);
+        path = ms_join_three(ft_strndup(paths[i], 0), NULL, ft_strndup("/", 0));
+        if (!path)
+            break ;
+        path_cmd = ms_join_three(path, NULL, ft_strndup(token->value[0], 0));
+        if (!path_cmd)
+            break ;
         if (access(path_cmd, F_OK) != -1)
+        {
+            strtab_clear(paths);
             return (path_cmd);
-        //free(path_cmd);
+        }
+        free(path_cmd);
         i++;
     }
+    strtab_clear(paths);
     return (NULL);
 }
 
@@ -99,13 +107,15 @@ int execute(t_token *token, char **envp)
     char *path;
 
     path = find_path(token, envp);
-    /* if (!path)
-        return (-1); */
+    if (!path)
+        return (-1);
     if (execve(path, token->value, envp) == -1)
     {
+        free(path);
         perror("error");
         return (-1);
     }
+    free(path);
     return (0);
 }
 

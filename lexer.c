@@ -352,13 +352,14 @@ char	*malloc_join_three(char *s1, char *s2, char *s3)
 
 	dst = malloc(sizeof(char) * (1 + ft_strlen_to(s1, '\0')
 			+ ft_strlen_to(s2, '\0') + ft_strlen_to(s3, '\0')));
-	if (!dst || !s1)
+	if (!dst || !s1 || !s3)
 	{
 		if (dst)
 			free(dst);
 		if (s1)
 			free(s1);
-		free(s3);
+		if (s3)
+			free(s3);
 		return (0);
 	}
 	return (dst);
@@ -445,9 +446,9 @@ int	var_to_value(t_ms *head)
 	return (1);
 }
 
-char *get_username(t_env *env)
+char	*get_username(t_env *env)
 {
-    char *username;
+    char	*username;
 
     username = get_var_value(env, "USER");
     if (!username)
