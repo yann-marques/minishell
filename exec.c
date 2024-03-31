@@ -29,6 +29,43 @@ int token_len(t_token *tokens)
     return (i);
 }
 
+int ft_strlen(char *str)
+{
+    int i;
+
+    i = 0;
+    while (str[i])
+        i++;
+    return (i);
+}
+
+int str_is_in(char *str, char *substr)
+{
+    int i;
+    int j;
+    int count;
+
+    i = 0;
+    j = 0;
+    count = 0;
+    if (ft_strlen(str) < ft_strlen(substr))
+        return (0);
+    while (str[i])
+    {
+        while (substr[j])
+        {
+            if (substr[j] == str[i + j])
+                count++;
+            j++;
+        }
+        if (count == ft_strlen(substr))
+            return (1);
+        j = 0;
+        i++;
+    }
+    return (0);
+}
+
 char *find_path(t_token *token, char **envp)
 {
     char    **paths;
@@ -36,12 +73,10 @@ char *find_path(t_token *token, char **envp)
     char    *path_cmd;
     int     i;
 
-    if (access(token->value[0], F_OK))
-    {
+    if (access(token->value[0], F_OK) != -1)
         return (token->value[0]);
-    }
     i = 0;
-    while (envp[i] && strcmp(envp[i], "PATH") != 0)
+    while (envp[i] && str_is_in(envp[i], "PATH") != 1)
         i++;
     if (!envp[i])
         return (NULL);
@@ -50,10 +85,10 @@ char *find_path(t_token *token, char **envp)
     {
         path = ms_join_three(paths[i], NULL, "/");
         path_cmd = ms_join_three(path, NULL, token->value[0]);
-        free(path);
-        if (access(path_cmd, X_OK))
+        //free(path);
+        if (access(path_cmd, F_OK) != -1)
             return (path_cmd);
-        free(path_cmd);
+        //free(path_cmd);
         i++;
     }
     return (NULL);
@@ -64,8 +99,8 @@ int execute(t_token *token, char **envp)
     char *path;
 
     path = find_path(token, envp);
-    if (!path)
-        return (-1);
+    /* if (!path)
+        return (-1); */
     if (execve(path, token->value, envp) == -1)
     {
         perror("error");
@@ -123,9 +158,12 @@ void    command_manager(t_ms *head, char **envp)
 {
     t_token *tokens;
     int saved_stdout;
+    int saved_stdin;
 
     saved_stdout = dup(STDOUT_FILENO);
+    saved_stdin = dup(STDIN_FILENO);
     tokens = head->tokens;
     multi_commands(tokens, envp);
     dup2(saved_stdout, STDOUT_FILENO);
+    dup2(saved_stdin, STDIN_FILENO);
 }
