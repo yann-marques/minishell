@@ -128,6 +128,6 @@ int	ms_exit(t_ms *head)
 	if (head->tokens)
 		tokens_clear(head->tokens);
 	free(head);
-	printf("exit");
+	printf("exit\n");
 	exit(0);
 }

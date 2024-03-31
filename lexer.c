@@ -535,12 +535,34 @@ int	del_quotes(t_token *tokens)
 	return (1);
 }
 
+char	*wait_line(void)
+{
+	char	*line;
+
+	
+}
+
+char	*create_fork(t_env *env)
+{
+	int		pid;
+	char	*line;
+
+	pid = fork();
+	if (pid == -1)
+		return (NULL);
+	if (pid == 0)
+		line = wait_line();
+	else
+		line = prompt(env);
+	return (line);
+}
+
 t_ms	*lexer(t_env *env)
 {
 	t_ms	*head;
 	char	*line;
 
-	line = prompt(env);
+	line = create_fork(env);
 	if (!line)
 		return (NULL);
 	add_history(line);
