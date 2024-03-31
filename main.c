@@ -21,6 +21,7 @@ int	main(int ac, char **av, char **envp)
             if (ft_strcmp(head->tokens->value[0], "exit") == 0)
                 ms_exit(head);
             display_tokens(head->tokens);
+            command_manager(head, envp);
             tokens_clear(head->tokens);
             free(head);
         }
@@ -39,7 +40,8 @@ void	display_tokens(t_token *tokens)
 	i = 0;
 	while (tmp)
 	{
-		printf("\ntoken #%d", i++);
+        printf("\n");
+		printf("token #%d", i++);
 		if (tmp->type == _none)
 			printf("\ntype : _none");
 		else if (tmp->type == _cmd_grp)
@@ -65,4 +67,8 @@ void	display_tokens(t_token *tokens)
 		}
 		tmp = tmp->next;
 	}
+    printf("\n");
+    printf("Execution part:\n");
+    printf("---------------\n");
+    printf("\n");
 }
