@@ -119,17 +119,31 @@ void    launch_process(t_ms *head, t_token *token, int last_cmd)
 	}
 }
 
+t_token	*get_n_token(t_token *tokens, int count)
+{
+	t_token	*tmp;
+	int		i;
+
+	tmp = tokens;
+	i = 0;
+	while (tmp && i < count)
+	{
+		tmp = tmp->next;
+		++i;
+	}
+	return (tmp);
+}
+
 int multi_commands(t_ms *head)
 {
     t_token *tmp;
 
-    tmp = head->tokens;
+    tmp = get_n_token(head->tokens, head->token_count);
     while (tmp)
     {
-        if (tmp->type == _cmd_grp && tmp->next)
-            launch_process(head, tmp, 0);
-		else
-			launch_process(head, tmp, 1);
+        if (tmp->type == _cmd_grp)
+            launch_process(head);
+		head->token_count += 1;
         tmp = tmp->next;
     }
     return (0);

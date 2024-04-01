@@ -65,6 +65,7 @@ typedef struct s_env
 typedef struct s_ms
 {
 	t_token	*tokens;
+	int		token_count;
 	t_env	*env;
 }	t_ms;
 

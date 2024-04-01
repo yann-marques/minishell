@@ -27,7 +27,11 @@ int	main(int ac, char **av, char **envp)
 	{
 		head = send_head(NULL);
 		if (!head)
+		{
 			head = lexer(env);
+			if (head)
+				head->token_count = 0;
+		}
 		if (head)
 		{
 			display_tokens(head->tokens);
