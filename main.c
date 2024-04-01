@@ -25,7 +25,6 @@ int	main(int ac, char **av, char **envp)
 		return (-1);
 	while (1)
 	{
-		usleep(100);
 		head = send_head(NULL);
 		if (!head)
 			head = lexer(env);
@@ -33,11 +32,11 @@ int	main(int ac, char **av, char **envp)
 		{
 			display_tokens(head->tokens);
 			command_manager(head);
-			// tokens_clear(head->tokens);
-			// free(head);
+			tokens_clear(head->tokens);
+			free(head);
 		}
 	}
-	// free_env(env);
+	free_env(env);
 	return (0);
 }
 

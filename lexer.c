@@ -249,13 +249,6 @@ int	ft_isalpha(char c)
 	return (0);
 }
 
-int	ft_isdigit(char c)
-{
-	if (c >= '0' && c <= '9')
-		return (1);
-	return (0);
-}
-
 int	ft_aretoken(t_token *tokens, char token)
 {
 	t_token	*tmp;
@@ -479,7 +472,7 @@ char	*prompt(t_env *env)
 	while (absolute[i])
 		++i;
     username = get_username(env);
-	printf("\033[1;32m%s\033[1;0m\033[1;0m@\033[1;36mminishell\033[1;0m:\033[1;33m~%s\033[1;0m", username, &pwd[i]);
+	printf("\033[1;32m%s\033[1;0m\033[1;0m@\033[1;36mminishell\033[1;0m:\033[1;33m~%s\033[1;0m (%d)", username, &pwd[i], getpid());
 	free(pwd);
 	line = readline("$ ");
 	return (line);

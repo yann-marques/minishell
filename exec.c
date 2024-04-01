@@ -34,10 +34,12 @@ int token_len(t_token *tokens)
 	return (i);
 }
 
+
 char *find_path(t_ms *head)
 {
     char    **paths;
     char    *path;
+	char	*path_command;
     int     i;
 
     if (access(head->tokens->value[0], F_OK) != -1)
@@ -46,22 +48,21 @@ char *find_path(t_ms *head)
     path = get_var_value(head->env, "PATH");
 	if (!path)
 		return (NULL);
-    paths = ms_split(path, ":");
+    paths = ft_split(path, ':');
     i = 0;
-    while (paths && paths[i])
-    {
-        path = ms_join_three(ft_strndup(paths[i], 0), NULL, ft_strndup("/", 0));
-        path = ms_join_three(path, NULL, ft_strndup(head->tokens->value[0], 0));
-        if (!path)
-            break ;
-        if (access(path, F_OK) != -1)
-        {
-            strtab_clear(paths);
-            return (path);
-        }
-        free(path);
-        i++;
-    }
+    while (paths[i])
+	{
+		path = ft_strjoin(paths[i++], "/");
+		path_command = ft_strjoin(path, head->tokens->value[0]);
+		free(path);
+		if (access(path_command, F_OK) == 0)
+		{
+			strtab_clear(paths);
+			return (path_command);
+		}
+		else
+			free(path_command);
+	}
     strtab_clear(paths);
     return (NULL);
 }
@@ -77,10 +78,10 @@ int execute(t_ms *head)
     {
         free(path);
         perror("error");
-        exit(0);
+    	return (-1);
     }
     free(path);
-    exit(1);
+   	return (0);
 }
 
 void    error_exit(char *str)
@@ -96,17 +97,16 @@ void    launch_process(t_ms *head)
 
 	if (pipe(fd) == -1)
 		error_exit("Error with the pipe");
-	send_head(head);
 	pid = fork();
 	if (pid == -1)
 		error_exit("Error with the pipe");
 	if (pid == 0)
 	{
-		send_head(NULL);
 		close(fd[0]);
 		dup2(fd[1], STDOUT_FILENO);
 		close(fd[1]);
-		execute(head);
+		if (execute(head) == -1)
+			exit(2);
 	}
 	else
 	{

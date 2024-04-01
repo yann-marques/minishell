@@ -31,6 +31,7 @@
 # include <termios.h>
 # include <curses.h>
 
+
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 100
 # endif
@@ -66,6 +67,25 @@ typedef struct s_ms
 	t_token	*tokens;
 	t_env	*env;
 }	t_ms;
+
+
+
+//LIBFT PART
+char	**ft_split(char const *s, char c);
+char	*ft_strjoin(char const *s1, char const *s2);
+int	ft_atoi(const char *nptr);
+int	ft_isascii(int c);
+int	ft_isprint(int c);
+int	ft_isdigit(int c);
+char	*ft_strdup(const char *s);
+char	*ft_strjoin(char const *s1, char const *s2);
+size_t	ft_strlcat(char *dst, const char *src, size_t size);
+size_t	ft_strlcpy(char *dst, const char *src, size_t size);
+size_t	ft_strlen(const char *s);
+void	*ft_calloc(size_t nmemb, size_t size);
+void	ft_bzero(void *s, size_t n);
+
+
 
 // lexer
 t_ms	*lexer(t_env *env);
@@ -107,7 +127,6 @@ int		get_next_sep(char *str, char *sep);
 int		check_quotes(char *str);
 int		check_env_var(t_token *begin_tokens, t_token *token, char *str);
 int		ft_isalpha(char c);
-int		ft_isdigit(char c);
 //exec
 void	command_manager(t_ms *head);
 t_ms	*send_head(t_ms *new_head);
