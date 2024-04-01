@@ -15,6 +15,8 @@ void	strtab_clear(char **tab)
 	int	k;
 
 	k = 0;
+	if (!tab)
+		return ;
 	while (tab[k])
 	{
 		free(tab[k]);
@@ -480,8 +482,6 @@ char	*prompt(t_env *env)
 	printf("\033[1;32m%s\033[1;0m\033[1;0m@\033[1;36mminishell\033[1;0m:\033[1;33m~%s\033[1;0m", username, &pwd[i]);
 	free(pwd);
 	line = readline("$ ");
-	if (!line)
-		return (NULL);
 	return (line);
 }
 
@@ -535,34 +535,12 @@ int	del_quotes(t_token *tokens)
 	return (1);
 }
 
-char	*wait_line(void)
-{
-	char	*line;
-
-	
-}
-
-char	*create_fork(t_env *env)
-{
-	int		pid;
-	char	*line;
-
-	pid = fork();
-	if (pid == -1)
-		return (NULL);
-	if (pid == 0)
-		line = wait_line();
-	else
-		line = prompt(env);
-	return (line);
-}
-
 t_ms	*lexer(t_env *env)
 {
 	t_ms	*head;
 	char	*line;
 
-	line = create_fork(env);
+	line = prompt(env);
 	if (!line)
 		return (NULL);
 	add_history(line);

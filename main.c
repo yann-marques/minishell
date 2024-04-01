@@ -2,6 +2,16 @@
 
 void	display_tokens(t_token *tokens);
 
+t_ms	*send_head(t_ms *new_head)
+{
+	static t_ms	*head = NULL;
+	t_ms		*tmp;
+
+	tmp = head;
+	head = new_head;
+	return (tmp);
+}
+
 int	main(int ac, char **av, char **envp)
 {
 	t_env	*env;
@@ -15,18 +25,19 @@ int	main(int ac, char **av, char **envp)
 		return (-1);
 	while (1)
 	{
-		head = lexer(env);
-        if (head)
-        {
-            if (ft_strcmp(head->tokens->value[0], "exit") == 0)
-                ms_exit(head);
-            display_tokens(head->tokens);
-            command_manager(head, envp);
-            tokens_clear(head->tokens);
-            free(head);
-        }
+		usleep(100);
+		head = send_head(NULL);
+		if (!head)
+			head = lexer(env);
+		if (head)
+		{
+			display_tokens(head->tokens);
+			command_manager(head);
+			// tokens_clear(head->tokens);
+			// free(head);
+		}
 	}
-	free_env(env);
+	// free_env(env);
 	return (0);
 }
 
@@ -40,7 +51,7 @@ void	display_tokens(t_token *tokens)
 	i = 0;
 	while (tmp)
 	{
-        printf("\n");
+		printf("\n");
 		printf("token #%d", i++);
 		if (tmp->type == _none)
 			printf("\ntype : _none");
@@ -67,8 +78,8 @@ void	display_tokens(t_token *tokens)
 		}
 		tmp = tmp->next;
 	}
-    printf("\n");
-    printf("Execution part:\n");
-    printf("---------------\n");
-    printf("\n");
+	printf("\n");
+	printf("Execution part:\n");
+	printf("---------------\n");
+	printf("\n");
 }

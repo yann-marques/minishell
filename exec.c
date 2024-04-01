@@ -21,102 +21,66 @@ int is_builtin(char *cmd)
 
 int token_len(t_token *tokens)
 {
-    int i;
+	t_token	*tmp;
+	int		i;
 
-    i = 0;
-    while (tokens->next)
-        i++;
-    return (i);
+	i = 0;
+	tmp = tokens;
+	while (tmp)
+	{
+		tmp = tmp->next;
+		++i;
+	}
+	return (i);
 }
 
-int ft_strlen(char *str)
-{
-    int i;
-
-    i = 0;
-    while (str[i])
-        i++;
-    return (i);
-}
-
-int str_is_in(char *str, char *substr)
-{
-    int i;
-    int j;
-    int count;
-
-    i = 0;
-    j = 0;
-    count = 0;
-    if (ft_strlen(str) < ft_strlen(substr))
-        return (0);
-    while (str[i])
-    {
-        while (substr[j])
-        {
-            if (substr[j] == str[i + j])
-                count++;
-            j++;
-        }
-        if (count == ft_strlen(substr))
-            return (1);
-        j = 0;
-        i++;
-    }
-    return (0);
-}
-
-char *find_path(t_token *token, char **envp)
+char *find_path(t_ms *head)
 {
     char    **paths;
     char    *path;
-    char    *path_cmd;
     int     i;
 
-    if (access(token->value[0], F_OK) != -1)
-        return (token->value[0]);
+    if (access(head->tokens->value[0], F_OK) != -1)
+        return (head->tokens->value[0]);
     i = 0;
-    while (envp[i] && str_is_in(envp[i], "PATH") != 1)
-        i++;
-    if (!envp[i])
-        return (NULL);
-    paths = ms_split(envp[i], ":");
+    path = get_var_value(head->env, "PATH");
+	if (!path)
+		return (NULL);
+    paths = ms_split(path, ":");
     i = 0;
-    while (paths[i])
+    while (paths && paths[i])
     {
         path = ms_join_three(ft_strndup(paths[i], 0), NULL, ft_strndup("/", 0));
+        path = ms_join_three(path, NULL, ft_strndup(head->tokens->value[0], 0));
         if (!path)
             break ;
-        path_cmd = ms_join_three(path, NULL, ft_strndup(token->value[0], 0));
-        if (!path_cmd)
-            break ;
-        if (access(path_cmd, F_OK) != -1)
+        if (access(path, F_OK) != -1)
         {
             strtab_clear(paths);
-            return (path_cmd);
+            return (path);
         }
-        free(path_cmd);
+        free(path);
         i++;
     }
     strtab_clear(paths);
     return (NULL);
 }
 
-int execute(t_token *token, char **envp)
+int execute(t_ms *head)
 {
     char *path;
 
-    path = find_path(token, envp);
+    path = find_path(head);
     if (!path)
         return (-1);
-    if (execve(path, token->value, envp) == -1)
+    if (execve(path, head->tokens->value, NULL) == -1)
     {
         free(path);
         perror("error");
-        return (-1);
+        exit(0);
     }
     free(path);
-    return (0);
+    exit(1);
 }
 
 void    error_exit(char *str)
@@ -125,55 +89,57 @@ void    error_exit(char *str)
     exit(EXIT_FAILURE);
 }
 
-void    launch_process(t_token *tokens, char **envp)
+void    launch_process(t_ms *head)
 {
-    int     pid;
-    int     fd[2];
+	int	pid;
+	int	fd[2];
 
-    if (pipe(fd) == -1)
-        error_exit("Error with the pipe");
-    pid = fork();
-    if (pid == -1)
-        error_exit("Error with the pipe");
-    if (pid == 0)
-    {
-        close(fd[0]);
-        dup2(fd[1], STDOUT_FILENO);
-        close(fd[1]);
-        execute(tokens, envp);
-    }
-    else
-    {
-        waitpid(pid, NULL, 0);
-        close(fd[1]);
-        dup2(fd[0], STDIN_FILENO);
-    }
+	if (pipe(fd) == -1)
+		error_exit("Error with the pipe");
+	send_head(head);
+	pid = fork();
+	if (pid == -1)
+		error_exit("Error with the pipe");
+	if (pid == 0)
+	{
+		send_head(NULL);
+		close(fd[0]);
+		dup2(fd[1], STDOUT_FILENO);
+		close(fd[1]);
+		execute(head);
+	}
+	else
+	{
+		waitpid(pid, NULL, 0);
+		close(fd[1]);
+		dup2(fd[0], STDIN_FILENO);
+	}
 }
 
-int multi_commands(t_token *tokens, char **envp)
+int multi_commands(t_ms *head)
 {
     t_token *tmp;
 
-    tmp = tokens;
+    tmp = head->tokens;
     while (tmp)
     {
         if (tmp->type == _cmd_grp)
-            launch_process(tokens, envp);
+            launch_process(head);
         tmp = tmp->next;
     }
     return (0);
 }
 
-void    command_manager(t_ms *head, char **envp)
+void	command_manager(t_ms *head)
 {
-    t_token *tokens;
-    int saved_stdout;
-    int saved_stdin;
+	int	saved_stdout;
+	int	saved_stdin;
 
-    saved_stdout = dup(STDOUT_FILENO);
-    saved_stdin = dup(STDIN_FILENO);
-    tokens = head->tokens;
-    multi_commands(tokens, envp);
-    dup2(saved_stdout, STDOUT_FILENO);
-    dup2(saved_stdin, STDIN_FILENO);
+	if (ft_strcmp(head->tokens->value[0], "exit") == 0)
+		exit(1);
+	saved_stdout = dup(STDOUT_FILENO);
+	saved_stdin = dup(STDIN_FILENO);
+	multi_commands(head);
+	dup2(saved_stdout, STDOUT_FILENO);
+	dup2(saved_stdin, STDIN_FILENO);
 }

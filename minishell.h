@@ -109,6 +109,7 @@ int		check_env_var(t_token *begin_tokens, t_token *token, char *str);
 int		ft_isalpha(char c);
 int		ft_isdigit(char c);
 //exec
-void    command_manager(t_ms *head, char **envp);
+void	command_manager(t_ms *head);
+t_ms	*send_head(t_ms *new_head);
 
 #endif
