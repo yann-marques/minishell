@@ -67,14 +67,14 @@ char *find_path(t_ms *head)
     return (NULL);
 }
 
-int execute(t_ms *head)
+int execute(t_ms *head, t_token *token)
 {
     char *path;
 
     path = find_path(head);
     if (!path)
         return (-1);
-    if (execve(path, head->tokens->value, NULL) == -1)
+    if (execve(path, token->value, NULL) == -1)
     {
         free(path);
         perror("error");
@@ -90,7 +90,7 @@ void    error_exit(char *str)
     exit(EXIT_FAILURE);
 }
 
-void    launch_process(t_ms *head)
+void    launch_process(t_ms *head, t_token *token, int last_cmd)
 {
 	int	pid;
 	int	fd[2];
@@ -105,14 +105,17 @@ void    launch_process(t_ms *head)
 		close(fd[0]);
 		dup2(fd[1], STDOUT_FILENO);
 		close(fd[1]);
-		if (execute(head) == -1)
+		if (execute(head, token) == -1)
 			exit(2);
 	}
 	else
 	{
 		waitpid(pid, NULL, 0);
 		close(fd[1]);
-		dup2(fd[0], STDIN_FILENO);
+		if (!last_cmd)
+			dup2(fd[0], STDIN_FILENO);
+		else
+			dup2(STDOUT_FILENO, fd[0]);
 	}
 }
 
@@ -123,8 +126,10 @@ int multi_commands(t_ms *head)
     tmp = head->tokens;
     while (tmp)
     {
-        if (tmp->type == _cmd_grp)
-            launch_process(head);
+        if (tmp->type == _cmd_grp && tmp->next)
+            launch_process(head, tmp, 0);
+		else
+			launch_process(head, tmp, 1);
         tmp = tmp->next;
     }
     return (0);
@@ -132,14 +137,14 @@ int multi_commands(t_ms *head)
 
 void	command_manager(t_ms *head)
 {
-	int	saved_stdout;
-	int	saved_stdin;
+	//int	saved_stdout;
+	//int	saved_stdin;
 
 	if (ft_strcmp(head->tokens->value[0], "exit") == 0)
 		exit(1);
-	saved_stdout = dup(STDOUT_FILENO);
-	saved_stdin = dup(STDIN_FILENO);
+	//saved_stdout = dup(STDOUT_FILENO);
+	//saved_stdin = dup(STDIN_FILENO);
 	multi_commands(head);
-	dup2(saved_stdout, STDOUT_FILENO);
-	dup2(saved_stdin, STDIN_FILENO);
+	//dup2(saved_stdout, STDOUT_FILENO);
+	//dup2(saved_stdin, STDIN_FILENO);
 }
