@@ -1,4 +1,19 @@
 
+int	env_size(t_env *env)
+{
+	t_env	*tmp;
+	int		count;
+
+	tmp = env;
+	count = 0;
+	while (tmp)
+	{
+		tmp = tmp->next;
+		++count;
+	}
+	return (count);
+}
+
 char	**t_env_to_strtab(t_env *env)
 {
 	char	**envp;
