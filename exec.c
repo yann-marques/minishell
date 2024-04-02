@@ -35,15 +35,15 @@ int token_len(t_token *tokens)
 }
 
 
-char *find_path(t_ms *head)
+char *find_path(t_ms *head, t_token *token)
 {
     char    **paths;
     char    *path;
 	char	*path_command;
     int     i;
 
-    if (access(head->tokens->value[0], F_OK) != -1)
-        return (head->tokens->value[0]);
+    if (access(token->value[0], F_OK) != -1)
+        return (token->value[0]);
     i = 0;
     path = get_var_value(head->env, "PATH");
 	if (!path)
@@ -53,7 +53,7 @@ char *find_path(t_ms *head)
     while (paths[i])
 	{
 		path = ft_strjoin(paths[i++], "/");
-		path_command = ft_strjoin(path, head->tokens->value[0]);
+		path_command = ft_strjoin(path, token->value[0]);
 		free(path);
 		if (access(path_command, F_OK) == 0)
 		{
@@ -67,16 +67,39 @@ char *find_path(t_ms *head)
     return (NULL);
 }
 
+
+char	**token_value_to_args(t_token *token)
+{
+	char	**args;
+	int		i;
+
+	i = 0;
+	while (token->value[i])
+		i++;
+	args = (char **) malloc(sizeof(char *) * (i + 1));
+	i = 0;
+	while (token->value[i])
+	{
+		args[i] = token->value[i];
+		i++;
+	}
+	args[i] = NULL;
+	return (args);
+}
+
 int execute(t_ms *head, t_token *token)
 {
-    char *path;
+	char	**args;
+    char 	*path;
 
-    path = find_path(head);
+    path = find_path(head, token);
     if (!path)
-        return (-1);
-    if (execve(path, token->value, NULL) == -1)
+		return (-1);
+	args = token_value_to_args(token);
+    if (execve(path, args, NULL) == -1)
     {
         free(path);
+		strtab_clear(args);
         perror("error");
     	return (-1);
     }
@@ -104,22 +127,18 @@ void    pipe_and_exec(t_ms *head, t_token *token, int last_command)
 		error_exit("Error with the pipe");
 	if (pid == 0)
 	{
-		dup2(fd[0], STDIN_FILENO);
-		dup2(fd[1], STDOUT_FILENO);
 		close(fd[0]);
-		close(fd[1]);
+		dup2(fd[1], STDOUT_FILENO);
+		//close(fd[1]);
 		if (execute(head, token) == -1)
 			exit(2);
 	}
 	else
 	{
 		waitpid(pid, NULL, 0);
-		//close(fd[1]);
+		close(fd[1]);
 		if (!last_command)
-		{
 			dup2(fd[0], STDIN_FILENO);
-			dup2(fd[1], STDOUT_FILENO);
-		}
 		else
 		{
 			while ((bytes_read = read(fd[0], buffer, sizeof(buffer))) > 0)
@@ -163,7 +182,11 @@ int multi_commands(t_ms *head)
 
 void	command_manager(t_ms *head)
 {
+	int original_stdint;
+	
+	original_stdint = dup(STDIN_FILENO);
 	if (ft_strcmp(head->tokens->value[0], "exit") == 0)
 		exit(1);
 	multi_commands(head);
+	dup2(original_stdint, STDIN_FILENO);
 }
