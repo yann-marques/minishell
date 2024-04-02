@@ -25,13 +25,14 @@ int	main(int ac, char **av, char **envp)
 		return (-1);
 	while (1)
 	{
-		head = send_head(NULL);
+		/* head = send_head(NULL);
 		if (!head)
 		{
 			head = lexer(env);
 			if (head)
 				head->token_count = 0;
-		}
+		} */
+		head = lexer(env);
 		if (head)
 		{
 			display_tokens(head->tokens);
