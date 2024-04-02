@@ -129,7 +129,6 @@ void    pipe_and_exec(t_ms *head, t_token *token, int last_command)
 	{
 		close(fd[0]);
 		dup2(fd[1], STDOUT_FILENO);
-		//close(fd[1]);
 		if (execute(head, token) == -1)
 			exit(2);
 	}
