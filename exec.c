@@ -90,10 +90,12 @@ void    error_exit(char *str)
     exit(EXIT_FAILURE);
 }
 
-void    launch_process(t_ms *head, t_token *token, int last_cmd)
+void    pipe_and_exec(t_ms *head, t_token *token, int last_command)
 {
-	int	pid;
-	int	fd[2];
+	int		pid;
+	int		fd[2];
+	char	buffer[4096];
+	ssize_t	bytes_read;
 
 	if (pipe(fd) == -1)
 		error_exit("Error with the pipe");
@@ -102,8 +104,9 @@ void    launch_process(t_ms *head, t_token *token, int last_cmd)
 		error_exit("Error with the pipe");
 	if (pid == 0)
 	{
-		close(fd[0]);
+		dup2(fd[0], STDIN_FILENO);
 		dup2(fd[1], STDOUT_FILENO);
+		close(fd[0]);
 		close(fd[1]);
 		if (execute(head, token) == -1)
 			exit(2);
@@ -111,12 +114,19 @@ void    launch_process(t_ms *head, t_token *token, int last_cmd)
 	else
 	{
 		waitpid(pid, NULL, 0);
-		close(fd[1]);
-		if (!last_cmd)
+		//close(fd[1]);
+		if (!last_command)
+		{
 			dup2(fd[0], STDIN_FILENO);
+			dup2(fd[1], STDOUT_FILENO);
+		}
 		else
-			dup2(STDOUT_FILENO, fd[0]);
+		{
+			while ((bytes_read = read(fd[0], buffer, sizeof(buffer))) > 0)
+				write(STDOUT_FILENO, buffer, bytes_read);
+		}
 	}
+	return ;
 }
 
 t_token	*get_n_token(t_token *tokens, int count)
@@ -141,8 +151,10 @@ int multi_commands(t_ms *head)
     tmp = get_n_token(head->tokens, head->token_count);
     while (tmp)
     {
-        if (tmp->type == _cmd_grp)
-            launch_process(head);
+        if (tmp->type == _cmd_grp && tmp->next && tmp->next->type == _pipe && tmp->next->next && tmp->next->next->type == _cmd_grp)
+            pipe_and_exec(head, tmp, 0);
+		else if (tmp->type == _cmd_grp)
+			pipe_and_exec(head, tmp, 1);
 		head->token_count += 1;
         tmp = tmp->next;
     }
@@ -151,14 +163,7 @@ int multi_commands(t_ms *head)
 
 void	command_manager(t_ms *head)
 {
-	//int	saved_stdout;
-	//int	saved_stdin;
-
 	if (ft_strcmp(head->tokens->value[0], "exit") == 0)
 		exit(1);
-	//saved_stdout = dup(STDOUT_FILENO);
-	//saved_stdin = dup(STDIN_FILENO);
 	multi_commands(head);
-	//dup2(saved_stdout, STDOUT_FILENO);
-	//dup2(saved_stdin, STDIN_FILENO);
 }
