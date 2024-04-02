@@ -68,38 +68,16 @@ char *find_path(t_ms *head, t_token *token)
 }
 
 
-char	**token_value_to_args(t_token *token)
-{
-	char	**args;
-	int		i;
-
-	i = 0;
-	while (token->value[i])
-		i++;
-	args = (char **) malloc(sizeof(char *) * (i + 1));
-	i = 0;
-	while (token->value[i])
-	{
-		args[i] = token->value[i];
-		i++;
-	}
-	args[i] = NULL;
-	return (args);
-}
-
 int execute(t_ms *head, t_token *token)
 {
-	char	**args;
     char 	*path;
 
     path = find_path(head, token);
     if (!path)
 		return (-1);
-	args = token_value_to_args(token);
-    if (execve(path, args, NULL) == -1)
+    if (execve(path, token->value, NULL) == -1)
     {
         free(path);
-		strtab_clear(args);
         perror("error");
     	return (-1);
     }
@@ -162,19 +140,26 @@ t_token	*get_n_token(t_token *tokens, int count)
 	return (tmp);
 }
 
+void	redirection(t_ms *head, t_token *token)
+{
+	
+}
+
 int multi_commands(t_ms *head)
 {
-    t_token *tmp;
+    t_token *token;
 
-    tmp = get_n_token(head->tokens, head->token_count);
-    while (tmp)
+    token = get_n_token(head->tokens, head->token_count);
+    while (token)
     {
-        if (tmp->type == _cmd_grp && tmp->next && tmp->next->type == _pipe && tmp->next->next && tmp->next->next->type == _cmd_grp)
-            pipe_and_exec(head, tmp, 0);
-		else if (tmp->type == _cmd_grp)
-			pipe_and_exec(head, tmp, 1);
+        if (token->type == _cmd_grp && token->next && token->next->type == _pipe && token->next->next && token->next->next->type == _cmd_grp)
+            pipe_and_exec(head, token, 0);
+		else if (token->type == _cmd_grp && token->next && token->next->type == _redirection && token->next->value[0][0] == '>' && token->next->next->type == _file)
+			pipe_and_exec(head, token, 1);
+		else if (token->type == _cmd_grp)
+			pipe_and_exec(head, token, 1);
 		head->token_count += 1;
-        tmp = tmp->next;
+        token = token->next;
     }
     return (0);
 }
