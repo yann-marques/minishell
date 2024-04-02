@@ -67,17 +67,65 @@ char *find_path(t_ms *head, t_token *token)
     return (NULL);
 }
 
+int	env_size(t_env *env)
+{
+	t_env	*tmp;
+	int		count;
+
+	tmp = env;
+	count = 0;
+	while (tmp)
+	{
+		tmp = tmp->next;
+		++count;
+	}
+	return (count);
+}
+
+char	**t_env_to_strtab(t_env *env)
+{
+	char	**envp;
+	t_env	*tmp_env;
+	char	*tmp;
+	int		k;
+
+	envp = malloc(sizeof(char *) * (env_size(env) + 1));
+	if (!envp)
+		return (NULL);
+	tmp_env = env;
+	k = 0;
+	while (tmp_env)
+	{
+		tmp = ft_strjoin(tmp_env->var, "=");
+		envp[k] = ft_strjoin(tmp, tmp_env->value);
+		if (tmp)
+			free(tmp);
+		if (!envp[k])
+		{
+			strtab_clear(envp);
+			return (NULL);
+		}
+		++k;
+		tmp_env = tmp_env->next; 
+	}
+	return (envp);
+}
 
 int execute(t_ms *head, t_token *token)
 {
+	char	**env;
     char 	*path;
 
     path = find_path(head, token);
     if (!path)
 		return (-1);
-    if (execve(path, token->value, NULL) == -1)
+	env = t_env_to_strtab(head->env);
+    if (!env)
+		return (-1);
+	if (execve(path, token->value, env) == -1)
     {
         free(path);
+		strtab_clear(env);
         perror("error");
     	return (-1);
     }
@@ -140,10 +188,10 @@ t_token	*get_n_token(t_token *tokens, int count)
 	return (tmp);
 }
 
-void	redirection(t_ms *head, t_token *token)
+/* void	redirection(t_ms *head, t_token *token)
 {
-	
-}
+0
+} */
 
 int multi_commands(t_ms *head)
 {
