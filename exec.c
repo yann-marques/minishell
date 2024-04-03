@@ -240,6 +240,8 @@ void	redirection(t_ms *head, t_token *token)
 }
 
 /* void	here_doc(t_ms *head, t) */
+/* void redirection file to stdin(t_ms *head, t) */
+/* void builtin_handler  */
 
 int multi_commands(t_ms *head)
 {
