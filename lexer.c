@@ -448,7 +448,32 @@ char	*get_username(t_env *env)
     username = get_var_value(env, "USER");
     if (!username)
         return ("anonynous");
-    return (username);   
+    return (username);
+}
+
+char *make_prompt_line(char *username, char *pwd)
+{
+	char	*user_part;
+	char	*prog_name_part;
+	char	*pwd_part;
+	char	*reset_part;
+
+	user_part = ft_strjoin("\033[1;32m", username);
+	if (!user_part)
+		return (NULL);
+	prog_name_part = ft_strjoin(user_part, "\033[1;0m\033[1;0m@\033[1;36mminishell\033[1;0m:\033[1;33m~");
+	free(user_part);
+	if (!prog_name_part)
+		return (NULL);
+	pwd_part = ft_strjoin(prog_name_part, pwd);
+	free(prog_name_part);
+	if (!pwd_part)
+		return (NULL);
+	reset_part = ft_strjoin(pwd_part, "\033[1;0m$ ");
+	free(pwd_part);
+	if (!reset_part)
+		return (NULL);
+	return (reset_part);
 }
 
 char	*prompt(t_env *env)
@@ -472,9 +497,11 @@ char	*prompt(t_env *env)
 	while (absolute[i])
 		++i;
     username = get_username(env);
-	printf("\033[1;32m%s\033[1;0m\033[1;0m@\033[1;36mminishell\033[1;0m:\033[1;33m~%s\033[1;0m (%d)", username, &pwd[i], getpid());
+	absolute = make_prompt_line(username, &pwd[i]);
 	free(pwd);
-	line = readline("$ ");
+	if (!absolute)
+		return (NULL);
+	line = readline(absolute);
 	return (line);
 }
 

@@ -143,8 +143,6 @@ void    pipe_and_exec(t_ms *head, t_token *token, int last_command)
 {
 	int		pid;
 	int		fd[2];
-	char	buffer[4096];
-	ssize_t	bytes_read;
 
 	if (pipe(fd) == -1)
 		error_exit("Error with the pipe");
@@ -153,8 +151,12 @@ void    pipe_and_exec(t_ms *head, t_token *token, int last_command)
 		error_exit("Error with the pipe");
 	if (pid == 0)
 	{
-		close(fd[0]);
-		dup2(fd[1], STDOUT_FILENO);
+		if (!last_command)
+		{
+			dup2(fd[1], STDOUT_FILENO);
+			close(fd[0]);
+			close(fd[1]);
+		}
 		if (execute(head, token) == -1)
 			exit(2);
 	}
@@ -164,11 +166,6 @@ void    pipe_and_exec(t_ms *head, t_token *token, int last_command)
 		close(fd[1]);
 		if (!last_command)
 			dup2(fd[0], STDIN_FILENO);
-		else
-		{
-			while ((bytes_read = read(fd[0], buffer, sizeof(buffer))) > 0)
-				write(STDOUT_FILENO, buffer, bytes_read);
-		}
 	}
 	return ;
 }
