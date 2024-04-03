@@ -185,22 +185,76 @@ t_token	*get_n_token(t_token *tokens, int count)
 	return (tmp);
 }
 
-/* void	redirection(t_ms *head, t_token *token)
+
+void	creat_needed_files(t_token *tokens)
 {
-0
-} */
+	int		outfile;
+	t_token *tmp;
+
+	tmp = tokens;
+	while (tmp)
+	{
+		if (tmp->type == _redirection)
+		{
+			if (tmp->value[0][0] == '>')
+			{
+				if (access(tmp->next->value[0], F_OK) != 0)
+				{
+					outfile = open(tmp->next->value[0], O_CREAT | O_WRONLY | O_TRUNC, 0644);
+					if (!outfile)
+						error_exit("Error for creating output file");
+				}
+			}
+		}
+		if (tmp->type == _append)
+		{
+			if (access(tmp->next->value[0], F_OK) != 0)
+			{
+				outfile = open(tmp->next->value[0], O_CREAT | O_WRONLY | O_APPEND, 0644);
+				if (!outfile)
+					error_exit("Error for creating output file");
+			}
+		}
+		tmp = tmp->next;
+	}
+}
+
+void	redirection(t_ms *head, t_token *token)
+{
+	pid_t	outfile;
+	char 	buffer[4096];
+    ssize_t bytes_read;
+
+	if (token->next->type == _redirection)
+		outfile = open(token->next->next->value[0], O_CREAT | O_WRONLY | O_TRUNC, 0644);
+	if (token->next->type == _append)
+		outfile = open(token->next->next->value[0], O_CREAT | O_WRONLY | O_APPEND, 0644);
+	if (!outfile)
+		error_exit("Error with the outfile");
+	pipe_and_exec(head, token, 0);
+	while ((bytes_read = read(STDIN_FILENO, buffer, sizeof(buffer))) > 0) {
+		write(outfile, buffer, bytes_read);
+	}
+	close(outfile);
+	return ; 
+}
+
+/* void	here_doc(t_ms *head, t) */
 
 int multi_commands(t_ms *head)
 {
     t_token *token;
 
+	creat_needed_files(head->tokens);
     token = get_n_token(head->tokens, head->token_count);
     while (token)
     {
         if (token->type == _cmd_grp && token->next && token->next->type == _pipe && token->next->next && token->next->next->type == _cmd_grp)
             pipe_and_exec(head, token, 0);
 		else if (token->type == _cmd_grp && token->next && token->next->type == _redirection && token->next->value[0][0] == '>' && token->next->next->type == _file)
-			pipe_and_exec(head, token, 1);
+			redirection(head, token);
+		else if (token->type == _cmd_grp && token->next && token->next->type == _append && token->next->next->type == _file)
+			redirection(head, token);
 		else if (token->type == _cmd_grp)
 			pipe_and_exec(head, token, 1);
 		head->token_count += 1;

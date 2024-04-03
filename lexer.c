@@ -458,10 +458,10 @@ char *make_prompt_line(char *username, char *pwd)
 	char	*pwd_part;
 	char	*reset_part;
 
-	user_part = ft_strjoin("\033[1;32m", username);
+	user_part = ft_strjoin("\001\033[1;32m\002", username);
 	if (!user_part)
 		return (NULL);
-	prog_name_part = ft_strjoin(user_part, "\033[1;0m\033[1;0m@\033[1;36mminishell\033[1;0m:\033[1;33m~");
+	prog_name_part = ft_strjoin(user_part, "\001\033[1;0m\033[1;0m@\033[1;36m\002minishell\001\033[1;0m:\033[1;33m\002~");
 	free(user_part);
 	if (!prog_name_part)
 		return (NULL);
@@ -469,7 +469,7 @@ char *make_prompt_line(char *username, char *pwd)
 	free(prog_name_part);
 	if (!pwd_part)
 		return (NULL);
-	reset_part = ft_strjoin(pwd_part, "\033[1;0m$ ");
+	reset_part = ft_strjoin(pwd_part, "\001\033[1;0m\002$ ");
 	free(pwd_part);
 	if (!reset_part)
 		return (NULL);
