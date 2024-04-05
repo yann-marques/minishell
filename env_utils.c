@@ -22,22 +22,6 @@ t_env	*set_env(char **env)
 	return (s_env);
 }
 
-int	ft_strcmp(char *s1, char *s2)
-{
-	int	i;
-
-	i = 0;
-	while (s1[i] || s2[i])
-	{
-		if (s1[i] != s2[i])
-			return (s1[i] - s2[i]);
-		++i;
-	}
-	if (s1[i] != s2[i])
-		return (s1[i] - s2[i]);
-	return (0);
-}
-
 char	*get_var_value(t_env *env, char *var)
 {
 	t_env	*tmp;
@@ -118,21 +102,4 @@ void	env_addback(t_env **env, t_env *new)
 	while (tmp->next)
 		tmp = tmp->next;
 	tmp->next = new;
-}
-
-void	free_env(t_env *env)
-{
-	t_env	*tmp;
-
-	tmp = env;
-	while (tmp)
-	{
-		if (tmp->var)
-			free(tmp->var);
-		if (tmp->value)
-			free(tmp->value);
-		env = env->next;
-		free(tmp);
-		tmp = env;
-	}
 }
