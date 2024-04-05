@@ -1,4 +1,5 @@
 #include "minishell.h"
+#include "gnl/get_next_line.h"
 
 int is_builtin(char *cmd)
 {
@@ -142,6 +143,7 @@ void    error_exit(char *str)
 void    pipe_and_exec(t_ms *head, t_token *token, int last_command)
 {
 	int		pid;
+	int		tmp_fd;
 	int		fd[2];
 
 	if (pipe(fd) == -1)
@@ -151,6 +153,17 @@ void    pipe_and_exec(t_ms *head, t_token *token, int last_command)
 		error_exit("Error with the pipe");
 	if (pid == 0)
 	{
+		if (access("/tmp/ms_tmp", F_OK) == 0)
+		{
+			tmp_fd = open("/tmp/ms_tmp", O_RDONLY, 0644);
+			if (tmp_fd == -1)
+				error_exit("Error with ms_tmp");
+			dup2(tmp_fd, STDIN_FILENO);
+			unlink("/tmp/ms_tmp");
+			close(fd[0]);
+			close(fd[1]);
+			close(tmp_fd);
+		}
 		if (!last_command)
 		{
 			dup2(fd[1], STDOUT_FILENO);
@@ -166,6 +179,7 @@ void    pipe_and_exec(t_ms *head, t_token *token, int last_command)
 		close(fd[1]);
 		if (!last_command)
 			dup2(fd[0], STDIN_FILENO);
+		close(fd[0]);	
 	}
 	return ;
 }
@@ -238,10 +252,45 @@ void	redirection(t_ms *head, t_token *token)
 	close(outfile);
 	return ; 
 }
-
-/* void	here_doc(t_ms *head, t) */
 /* void redirection file to stdin(t_ms *head, t) */
 /* void builtin_handler  */
+
+void	free_rest_gnl(int fd, char *line, char *limiter)
+{
+	free(line);
+	free(limiter);
+	close(fd);
+	line = get_next_line(fd);
+	free(line);
+}
+
+void	here_doc(t_ms *head, t_token *token)
+{
+	char	*line;
+	int		tmp_fd;
+	char	*limiter;
+
+	(void) head;
+	limiter = ft_strjoin(token->value[1], "\n");
+	tmp_fd = open("/tmp/ms_tmp", O_CREAT | O_TRUNC | O_WRONLY | O_APPEND, 0644);
+	if (tmp_fd == -1)
+		error_exit("Error with fileout");
+	write(STDOUT_FILENO, ">", 1);
+	line = get_next_line(0);
+	if (!line)
+		return (free_rest_gnl(tmp_fd, line, limiter));
+	while (ft_strncmp(line, limiter, ft_strlen(limiter) + 1) != 0)
+	{
+		write(STDOUT_FILENO, ">", 1);
+		write(tmp_fd, line, ft_strlen(line));
+		free(line);
+		line = get_next_line(0);
+		if (!line)
+			break ;
+	}
+	free_rest_gnl(tmp_fd, line, limiter);
+	close(tmp_fd);
+}
 
 int multi_commands(t_ms *head)
 {
@@ -249,6 +298,12 @@ int multi_commands(t_ms *head)
 
 	creat_needed_files(head->tokens);
     token = get_n_token(head->tokens, head->token_count);
+	if (token->type == _delimiter && token->value[1])
+	{
+		here_doc(head, token);
+		head->token_count += 1;
+		token = token->next;
+	}
     while (token)
     {
         if (token->type == _cmd_grp && token->next && token->next->type == _pipe && token->next->next && token->next->next->type == _cmd_grp)

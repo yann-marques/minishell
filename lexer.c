@@ -561,7 +561,7 @@ t_ms	*lexer(t_env *env)
 	char	*line;
 
 	line = prompt(env);
-	if (!line)
+	if (!line || !line[0])
 		return (NULL);
 	add_history(line);
 	head = malloc(sizeof(t_ms));
