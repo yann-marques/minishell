@@ -12,26 +12,6 @@ t_ms	*send_head(t_ms *new_head)
 	return (tmp);
 }
 
-void	parent_sigint(int signum)
-{
-	(void)signum;
-	write(1, "\n", 1);
-	rl_on_new_line(); 
-	rl_redisplay();
-}
-
-void	parent_sigquit(int signum)
-{
-	(void)signum;
-	ms_exit(NULL);
-}
-
-void	sig_control(void)
-{
-	signal(SIGINT, parent_sigint);
-	signal(SIGQUIT, parent_sigquit);
-}
-
 int	main(int ac, char **av, char **envp)
 {
 	t_env	*env;
@@ -43,7 +23,7 @@ int	main(int ac, char **av, char **envp)
 	env = set_env(envp);
 	if (!env)
 		return (-1);
-	sig_control();
+	sig_control(0);
 	while (1)
 	{
 		head = send_head(NULL);

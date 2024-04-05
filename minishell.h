@@ -83,6 +83,8 @@ size_t	ft_strlcpy(char *dst, const char *src, size_t size);
 size_t	ft_strlen(const char *s);
 void	*ft_calloc(size_t nmemb, size_t size);
 void	ft_bzero(void *s, size_t n);
+//signal
+void	sig_control(int	child);
 //env_utils
 t_env	*set_env(char **env);
 char	*get_var_value(t_env *env, char *var);
@@ -102,6 +104,8 @@ int		quotes_jump(char *str);
 int		check_quotes(char *str);
 //ms_split
 char	**ms_split(char *str, char *sep);
+//builtins
+int		ms_cd(t_token *token);
 int		ms_echo_n(t_token *token);
 int		ms_env(t_env *env, char *begin);
 int		ms_exit(t_ms *head);
@@ -109,8 +113,6 @@ int		ms_export(t_env	*env, t_token *token);
 int		ms_pwd(void);
 char	*get_pwd(int count);
 int		ms_unset(t_env *env, t_token *token);
-//builtins
-int	ms_cd(t_token *token);
 //utils
 char	*ft_strndup(char *str, int n);
 char	*ft_strchr(char *str, char c);
