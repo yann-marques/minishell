@@ -160,8 +160,6 @@ void    pipe_and_exec(t_ms *head, t_token *token, int last_command)
 				error_exit("Error with ms_tmp");
 			dup2(tmp_fd, STDIN_FILENO);
 			unlink("/tmp/ms_tmp");
-			close(fd[0]);
-			close(fd[1]);
 			close(tmp_fd);
 		}
 		if (!last_command)
@@ -303,6 +301,19 @@ int multi_commands(t_ms *head)
 		here_doc(head, token);
 		head->token_count += 1;
 		token = token->next;
+	}
+	if (token->type == _cmd_grp && token->next && token->next->type == _delimiter && token->next->value[1] && token->next->next && token->next->next->type == _pipe)
+	{
+		here_doc(head, token->next);
+		pipe_and_exec(head, token, 0);
+		head->token_count += 3;
+		token = token->next->next->next;
+	}
+	if (token->type == _cmd_grp && token->next && token->next->type == _delimiter && token->next->value[1] && !token->next->next)
+	{
+		here_doc(head, token->next);
+		pipe_and_exec(head, token, 1);
+		return (0);
 	}
     while (token)
     {
