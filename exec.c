@@ -1,23 +1,23 @@
 #include "minishell.h"
 #include "gnl/get_next_line.h"
 
-int is_builtin(char *cmd)
+int is_builtin(t_ms *head, t_token *token)
 {
-    if (strcmp(cmd, "echo"))
-        return (1);
-    if (strcmp(cmd, "cd"))
-        return (1);
-    if (strcmp(cmd, "pwd"))
-        return (1);
-    if (strcmp(cmd, "export"))
-        return (1);
-    if (strcmp(cmd, "unset"))
-        return (1);
-    if (strcmp(cmd, "env"))
-        return (1);
-    if (strcmp(cmd, "exit"))
-        return (1);
-    return (0);
+    if (ft_strncmp(token->value[0], "echo", 4) == 0)
+        return (ms_echo_n(token));
+    if (ft_strncmp(token->value[0], "cd", 2) == 0)
+        return (ms_cd(token));
+    if (ft_strncmp(token->value[0], "pwd", 3) == 0)
+        return (ms_pwd());
+    if (ft_strncmp(token->value[0], "export", 6) == 0)
+        return (ms_export(head->env, token));
+    if (ft_strncmp(token->value[0], "unset", 5) == 0)
+        return (ms_unset(head->env, token));
+    if (ft_strncmp(token->value[0], "env", 3) == 0)
+        return (ms_env(head->env, "BEGIN")); //what is begin yann ?
+    if (ft_strncmp(token->value[0], "exit", 4) == 0)
+        return (ms_exit(head));
+    return (1);
 }
 
 int token_len(t_token *tokens)
@@ -146,6 +146,8 @@ void    pipe_and_exec(t_ms *head, t_token *token, int last_command)
 	int		tmp_fd;
 	int		fd[2];
 
+	if (is_builtin(head, token) != 1) //builtin handler (beta)
+		return ;
 	if (pipe(fd) == -1)
 		error_exit("Error with the pipe");
 	pid = fork();
@@ -177,7 +179,7 @@ void    pipe_and_exec(t_ms *head, t_token *token, int last_command)
 		close(fd[1]);
 		if (!last_command)
 			dup2(fd[0], STDIN_FILENO);
-		close(fd[0]);	
+		close(fd[0]);
 	}
 	return ;
 }
