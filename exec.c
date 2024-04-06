@@ -1,21 +1,43 @@
 #include "minishell.h"
 #include "gnl/get_next_line.h"
 
+int	check_echo_builtin(char **value)
+{
+	int	i;
+
+	i = 0;
+	if (ft_strcmp(value[0], "echo") != 0)
+		return (0);
+	if (!value[1])
+		return (0);
+	if (value[1][i++] != '-')
+		return (0);
+	if (value[1][i++] != 'n')
+		return (0);
+	while (value[1][i])
+	{
+		if (value[1][i] != 'n')
+			return (0);
+		++i;
+	}
+	return (1);
+}
+
 int is_builtin(t_ms *head, t_token *token)
 {
-    if (ft_strncmp(token->value[0], "echo", 4) == 0)
+    if (check_echo_builtin(token->value))
         return (ms_echo_n(token));
-    if (ft_strncmp(token->value[0], "cd", 2) == 0)
+    if (ft_strcmp(token->value[0], "cd") == 0)
         return (ms_cd(token));
-    if (ft_strncmp(token->value[0], "pwd", 3) == 0)
+    if (ft_strcmp(token->value[0], "pwd") == 0)
         return (ms_pwd());
-    if (ft_strncmp(token->value[0], "export", 6) == 0)
+    if (ft_strcmp(token->value[0], "export") == 0)
         return (ms_export(head->env, token));
-    if (ft_strncmp(token->value[0], "unset", 5) == 0)
+    if (ft_strcmp(token->value[0], "unset") == 0)
         return (ms_unset(head->env, token));
-    if (ft_strncmp(token->value[0], "env", 3) == 0)
-        return (ms_env(head->env, "BEGIN")); //what is begin yann ?
-    if (ft_strncmp(token->value[0], "exit", 4) == 0)
+    if (ft_strcmp(token->value[0], "env") == 0 && !token->value[1])
+        return (ms_env(head->env, NULL)); //tqt c'est pour ms_export
+    if (ft_strcmp(token->value[0], "exit") == 0)
         return (ms_exit(head));
     return (1);
 }
@@ -210,7 +232,7 @@ void	creat_needed_files(t_token *tokens)
 	{
 		if (tmp->type == _redirection)
 		{
-			if (tmp->value[0][0] == '>')
+			if (tmp->value[0][0] == '>')// quand c dans l'autre sens aussi nan ?
 			{
 				if (access(tmp->next->value[0], F_OK) != 0)
 				{
