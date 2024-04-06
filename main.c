@@ -20,10 +20,10 @@ int	main(int ac, char **av, char **envp)
 	if (ac != 1)
 		return (-1);
 	(void)av;
+	sig_control();
 	env = set_env(envp);
 	if (!env)
 		return (-1);
-	sig_control(0);
 	while (1)
 	{
 		head = send_head(NULL);

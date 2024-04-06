@@ -20,7 +20,10 @@ int	check_quotes(char *str)
 		++i;
 	}
 	if (count_splquotes % 2 != 0 || count_dblquotes % 2 != 0)
+	{
+		free(str);
 		return (0);
+	}
 	return (1);
 }
 

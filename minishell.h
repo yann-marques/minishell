@@ -85,9 +85,8 @@ void	*ft_calloc(size_t nmemb, size_t size);
 void	ft_bzero(void *s, size_t n);
 int	ft_strncmp(const char *s1, const char *s2, size_t n);
 
-
 //signal
-void	sig_control(int	child);
+void	sig_control(void);
 //env_utils
 t_env	*set_env(char **env);
 char	*get_var_value(t_env *env, char *var);
@@ -96,7 +95,7 @@ void	put_env_var(t_env **env, t_env *new);
 void	env_addback(t_env **env, t_env *new);
 //lexer
 t_ms	*lexer(t_env *env);
-char	*prompt(t_env *env);
+char	*prompt(t_ms *head);
 t_token	*set_tokens(char *str);
 void	set_type(t_token *tokens);
 int		var_to_value(t_ms *head);

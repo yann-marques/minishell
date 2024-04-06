@@ -361,7 +361,7 @@ void	command_manager(t_ms *head)
 	
 	original_stdint = dup(STDIN_FILENO);
 	if (ft_strcmp(head->tokens->value[0], "exit") == 0)
-		exit(1);
+		ms_exit(head);
 	multi_commands(head);
 	dup2(original_stdint, STDIN_FILENO);
 }

@@ -1,42 +1,17 @@
 #include "minishell.h"
 
-static void	child_sig(int signum);
-static void	parent_sig(int signum);
+static void	handler_sigint(int signum);
 
-void	sig_control(int	child)
+void	sig_control(void)
 {
-	if (child)
-	{
-		signal(SIGINT, child_sig);
-		signal(SIGQUIT, child_sig);
-	}
-	else
-	{
-		signal(SIGINT, parent_sig);
-		signal(SIGQUIT, parent_sig);
-	}
+	signal(SIGINT, handler_sigint);
+	signal(SIGQUIT, SIG_IGN);
 }
 
-static void	child_sig(int signum)
+static void	handler_sigint(int signum)
 {
-	if (signum == SIGINT)
-	{
-		write(1, "\n", 1);
-		rl_on_new_line(); 
-		rl_redisplay();
-	}
-	else
-		ms_exit(NULL);
-}
-
-static void	parent_sig(int signum)
-{
-	if (signum == SIGINT)
-	{
-		write(1, "\n", 1);
-		rl_on_new_line(); 
-		rl_redisplay();
-	}
-	else
-		ms_exit(NULL);
+	(void)signum;
+	write(1, "\n", 1);
+	rl_on_new_line();
+	rl_redisplay();
 }
