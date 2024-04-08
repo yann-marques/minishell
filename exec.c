@@ -249,9 +249,9 @@ void	creat_needed_files(t_token *tokens)
 		{
 			if (tmp->value[0][0] == '>')
 			{
-				if (access(tmp->next->value[0], F_OK) != 0)
+				if (access(tmp->value[1], F_OK) != 0)
 				{
-					outfile = open(tmp->next->value[0], O_CREAT | O_WRONLY | O_TRUNC, 0644);
+					outfile = open(tmp->value[1], O_CREAT | O_WRONLY | O_TRUNC, 0644);
 					if (!outfile)
 						error_exit("Error for creating output file");
 				}
@@ -259,9 +259,9 @@ void	creat_needed_files(t_token *tokens)
 		}
 		if (tmp->type == _append)
 		{
-			if (access(tmp->next->value[0], F_OK) != 0)
+			if (access(tmp->value[1], F_OK) != 0)
 			{
-				outfile = open(tmp->next->value[0], O_CREAT | O_WRONLY | O_APPEND, 0644);
+				outfile = open(tmp->value[1], O_CREAT | O_WRONLY | O_APPEND, 0644);
 				if (!outfile)
 					error_exit("Error for creating output file");
 			}
