@@ -162,14 +162,12 @@ void    error_exit(char *str)
     exit(EXIT_FAILURE);
 }
 
-int    pipe_and_exec(t_ms *head, t_token *token, int last_command)
+int    pipe_and_exec(t_ms *head, t_token *token, char *path_doc, int last_command)
 {
 	int		pid;
 	int		tmp_fd;
 	int		fd[2];
 
-	if (is_builtin(head, token) != 1)
-		return (0);
 	if (pipe(fd) == -1)
 		error_exit("Error with the pipe");
 	pid = fork();
@@ -177,13 +175,13 @@ int    pipe_and_exec(t_ms *head, t_token *token, int last_command)
 		error_exit("Error with the pipe");
 	if (pid == 0)
 	{
-		if (access("/tmp/ms_tmp", F_OK) == 0)
+		if (path_doc && access(path_doc, F_OK) == 0)
 		{
-			tmp_fd = open("/tmp/ms_tmp", O_RDONLY, 0644);
+			tmp_fd = open(path_doc, O_RDONLY, 0644);
 			if (tmp_fd == -1)
-				error_exit("Error with ms_tmp");
+				error_exit("Error with path_doc");
 			dup2(tmp_fd, STDIN_FILENO);
-			unlink("/tmp/ms_tmp");
+			unlink(path_doc);
 			close(tmp_fd);
 		}
 		if (!last_command)
@@ -192,6 +190,8 @@ int    pipe_and_exec(t_ms *head, t_token *token, int last_command)
 			close(fd[0]);
 			close(fd[1]);
 		}
+		if (is_builtin(head, token) != 1)
+			exit(2);
 		if (execute(head, token) == -1)
 			exit(2);
 	}
@@ -219,23 +219,6 @@ t_token	*get_n_token(t_token *tokens, int count)
 	}
 	return (tmp);
 }
-
-int	get_nb_cmd(t_token *token)
-{
-	t_token *tmp;
-	int	i;
-
-	i = 0;
-	tmp = token;
-	while(tmp)
-	{
-		if (tmp->type == _cmd_grp)
-			i++;
-		tmp = tmp->next;
-	}
-	return (i);
-}
-
 
 void	creat_needed_files(t_token *tokens)
 {
@@ -284,7 +267,7 @@ int	redirection_out(t_ms *head, t_token *token)
 		outfile = open(token->next->value[1], O_CREAT | O_WRONLY | O_APPEND, 0644);
 	if (!outfile)
 		error_exit("Error with the outfile");
-	pid = pipe_and_exec(head, token, 0);
+	pid = pipe_and_exec(head, token, NULL, 0);
 	while ((bytes_read = read(STDIN_FILENO, buffer, sizeof(buffer))) > 0) {
 		write(outfile, buffer, bytes_read);
 	}
@@ -313,21 +296,57 @@ void	free_rest_gnl(int fd, char *line, char *limiter)
 	free(line);
 }
 
-void	here_doc(t_ms *head, t_token *token)
+char	*get_random_tmp_path(void)
+{
+	int 			fd;
+    ssize_t 		num_bytes_read;
+    unsigned char	buffer[16];
+	char			*path_doc;
+
+    fd = open("/dev/random", O_RDONLY);
+    if (fd == -1) {
+        perror("Error opening /dev/random");
+        exit(EXIT_FAILURE);
+    }
+    num_bytes_read = read(fd, buffer, 16);
+    if (num_bytes_read == -1) {
+        perror("Error reading from /dev/random");
+        close(fd);
+        exit(EXIT_FAILURE);
+    }
+    close(fd);
+	path_doc = ft_strjoin("/tmp/ms_heredoc_", (char *) buffer);
+	printf("Path: %s", path_doc);
+	if (!path_doc)
+	{
+		perror("Error joining the tmp directory");
+        exit(EXIT_FAILURE);
+	}
+	if (access(path_doc, F_OK) == 0)
+		return (get_random_tmp_path());
+	return (path_doc);
+}
+
+char	*here_doc(t_ms *head, t_token *token)
 {
 	char	*line;
+	char	*path_doc;
 	int		tmp_fd;
 	char	*limiter;
 
 	(void) head;
 	limiter = ft_strjoin(token->value[1], "\n");
-	tmp_fd = open("/tmp/ms_tmp", O_CREAT | O_TRUNC | O_WRONLY | O_APPEND, 0644);
+	path_doc = get_random_tmp_path();
+	tmp_fd = open(path_doc, O_CREAT | O_TRUNC | O_WRONLY | O_APPEND, 0644);
 	if (tmp_fd == -1)
 		error_exit("Error with fileout");
 	write(STDOUT_FILENO, ">", 1);
 	line = get_next_line(0);
 	if (!line)
-		return (free_rest_gnl(tmp_fd, line, limiter));
+	{
+		free_rest_gnl(tmp_fd, line, limiter);
+		exit(EXIT_FAILURE);
+	}
 	while (ft_strncmp(line, limiter, ft_strlen(limiter) + 1) != 0)
 	{
 		write(STDOUT_FILENO, ">", 1);
@@ -339,14 +358,17 @@ void	here_doc(t_ms *head, t_token *token)
 	}
 	free_rest_gnl(tmp_fd, line, limiter);
 	close(tmp_fd);
+	return (path_doc);
 }
 
 int multi_commands(t_ms *head)
 {
+	char	*path_doc;
     t_token *token;
 
 	creat_needed_files(head->tokens);
     token = get_n_token(head->tokens, head->token_count);
+	path_doc = NULL;
 	if (token->type == _redirection && token->value[0][0] == '<')
 	{
 		redirection_in(token);
@@ -355,41 +377,32 @@ int multi_commands(t_ms *head)
 	}
 	if (token->type == _delimiter && token->value[1])
 	{
-		here_doc(head, token);
+		path_doc = here_doc(head, token);
 		head->token_count += 1;
 		token = token->next;
 	}
-	if (token->type == _cmd_grp && token->next && token->next->type == _delimiter && token->next->value[1] && token->next->next && token->next->next->type == _pipe)
+	if (token->type == _cmd_grp && token->next && token->next->type == _delimiter && token->next->value[1])
 	{
-		here_doc(head, token->next);
-		pids_addback(head->pids, pipe_and_exec(head, token, 0));
+		path_doc = here_doc(head, token->next);
+		if (!token->next->next)
+			return (pids_addback(head->pids, pipe_and_exec(head, token, path_doc, 1)));
+		pids_addback(head->pids, pipe_and_exec(head, token, path_doc, 0));
 		head->token_count += 3;
 		token = token->next->next->next;
-	}
-	if (token->type == _cmd_grp && token->next && token->next->type == _delimiter && token->next->value[1] && !token->next->next)
-	{
-		here_doc(head, token->next);
-		pids_addback(head->pids, pipe_and_exec(head, token, 1));
-		return (0);
 	}
     while (token)
     {
         if (token->type == _cmd_grp && token->next && token->next->type == _pipe && token->next->next && token->next->next->type == _cmd_grp)
-            pids_addback(head->pids, pipe_and_exec(head, token, 0));
+            pids_addback(head->pids, pipe_and_exec(head, token, path_doc, 0));
 		else if (token->type == _cmd_grp && token->next && token->next->type == _redirection && token->next->value[0][0] == '>' && token->next->value[1])
 			pids_addback(head->pids, redirection_out(head, token));
 		else if (token->type == _cmd_grp && token->next && token->next->type == _append && token->next->value[1])
 			pids_addback(head->pids, redirection_out(head, token));
 		else if (token->type == _cmd_grp)
-			pids_addback(head->pids, pipe_and_exec(head, token, 1));
+			pids_addback(head->pids, pipe_and_exec(head, token, path_doc, 1));
 		head->token_count += 1;
         token = token->next;
     }
-	while(head->pids)
-	{
-		waitpid(head->pids->pid, NULL, 0);
-		head->pids = head->pids->next;
-	}
     return (0);
 }
 
@@ -401,5 +414,11 @@ void	command_manager(t_ms *head)
 		ms_exit(head);
 	original_stdint = dup(STDIN_FILENO);
 	multi_commands(head);
+	while(head->pids)
+	{
+		if (head->pids->pid != 0)
+			waitpid(head->pids->pid, NULL, 0);
+		head->pids = head->pids->next;
+	}
 	dup2(original_stdint, STDIN_FILENO);
 }
