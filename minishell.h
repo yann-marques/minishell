@@ -47,12 +47,19 @@ typedef enum e_type
 	_file,
 }	t_type;
 
+typedef struct s_pids
+{
+	int				pid;
+	struct s_pids	*next;
+}	t_pids;
+
 typedef struct s_token
 {
 	t_type			type;
 	char			**value;
 	struct s_token	*next;
 }	t_token;
+
 
 typedef struct s_env
 {
@@ -66,6 +73,7 @@ typedef struct s_ms
 	t_token	*tokens;
 	int		token_count;
 	t_env	*env;
+	t_pids	*pids;
 }	t_ms;
 
 //libft_fonctions
@@ -83,7 +91,7 @@ size_t	ft_strlcpy(char *dst, const char *src, size_t size);
 size_t	ft_strlen(const char *s);
 void	*ft_calloc(size_t nmemb, size_t size);
 void	ft_bzero(void *s, size_t n);
-int	ft_strncmp(const char *s1, const char *s2, size_t n);
+int		ft_strncmp(const char *s1, const char *s2, size_t n);
 
 //signal
 void	sig_control(void);
@@ -93,6 +101,7 @@ char	*get_var_value(t_env *env, char *var);
 t_env	*env_new(char *env);
 void	put_env_var(t_env **env, t_env *new);
 void	env_addback(t_env **env, t_env *new);
+int		pids_addback(t_pids *pids, int pid);
 //lexer
 t_ms	*lexer(t_env *env);
 char	*prompt(t_ms *head);

@@ -36,7 +36,7 @@ int is_builtin(t_ms *head, t_token *token)
     if (ft_strcmp(token->value[0], "unset") == 0)
         return (ms_unset(head->env, token));
     if (ft_strcmp(token->value[0], "env") == 0 && !token->value[1])
-        return (ms_env(head->env, NULL)); //tqt c'est pour ms_export
+        return (ms_env(head->env, NULL));
     if (ft_strcmp(token->value[0], "exit") == 0)
         return (ms_exit(head));
     return (1);
@@ -162,14 +162,14 @@ void    error_exit(char *str)
     exit(EXIT_FAILURE);
 }
 
-void    pipe_and_exec(t_ms *head, t_token *token, int last_command)
+int    pipe_and_exec(t_ms *head, t_token *token, int last_command)
 {
 	int		pid;
 	int		tmp_fd;
 	int		fd[2];
 
-	if (is_builtin(head, token) != 1) //builtin handler (beta)
-		return ;
+	if (is_builtin(head, token) != 1)
+		return (0);
 	if (pipe(fd) == -1)
 		error_exit("Error with the pipe");
 	pid = fork();
@@ -197,13 +197,12 @@ void    pipe_and_exec(t_ms *head, t_token *token, int last_command)
 	}
 	else
 	{
-		waitpid(pid, NULL, 0);
-		close(fd[1]);
 		if (!last_command)
 			dup2(fd[0], STDIN_FILENO);
+		close(fd[1]);
 		close(fd[0]);
 	}
-	return ;
+	return (pid);
 }
 
 t_token	*get_n_token(t_token *tokens, int count)
@@ -221,6 +220,22 @@ t_token	*get_n_token(t_token *tokens, int count)
 	return (tmp);
 }
 
+int	get_nb_cmd(t_token *token)
+{
+	t_token *tmp;
+	int	i;
+
+	i = 0;
+	tmp = token;
+	while(tmp)
+	{
+		if (tmp->type == _cmd_grp)
+			i++;
+		tmp = tmp->next;
+	}
+	return (i);
+}
+
 
 void	creat_needed_files(t_token *tokens)
 {
@@ -232,7 +247,7 @@ void	creat_needed_files(t_token *tokens)
 	{
 		if (tmp->type == _redirection)
 		{
-			if (tmp->value[0][0] == '>')// quand c dans l'autre sens aussi nan ?
+			if (tmp->value[0][0] == '>')
 			{
 				if (access(tmp->next->value[0], F_OK) != 0)
 				{
@@ -255,27 +270,39 @@ void	creat_needed_files(t_token *tokens)
 	}
 }
 
-void	redirection(t_ms *head, t_token *token)
+int	redirection_out(t_ms *head, t_token *token)
 {
-	pid_t	outfile;
+	int		outfile;
 	char 	buffer[4096];
     ssize_t bytes_read;
+	int		pid;
 
+	pid = 0;
 	if (token->next->type == _redirection)
-		outfile = open(token->next->next->value[0], O_CREAT | O_WRONLY | O_TRUNC, 0644);
+		outfile = open(token->next->value[1], O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	if (token->next->type == _append)
-		outfile = open(token->next->next->value[0], O_CREAT | O_WRONLY | O_APPEND, 0644);
+		outfile = open(token->next->value[1], O_CREAT | O_WRONLY | O_APPEND, 0644);
 	if (!outfile)
 		error_exit("Error with the outfile");
-	pipe_and_exec(head, token, 0);
+	pid = pipe_and_exec(head, token, 0);
 	while ((bytes_read = read(STDIN_FILENO, buffer, sizeof(buffer))) > 0) {
 		write(outfile, buffer, bytes_read);
 	}
 	close(outfile);
-	return ; 
+	return (pid); 
 }
-/* void redirection file to stdin(t_ms *head, t) */
-/* void builtin_handler  */
+
+void	redirection_in(t_token *token)
+{
+	int	infile;
+
+	if (token->value[1])
+		infile = open(token->value[1], O_RDONLY, 0644);
+	if (!infile)
+		error_exit("Error with infile");
+	dup2(infile, STDIN_FILENO);
+	close(infile);
+}
 
 void	free_rest_gnl(int fd, char *line, char *limiter)
 {
@@ -320,6 +347,12 @@ int multi_commands(t_ms *head)
 
 	creat_needed_files(head->tokens);
     token = get_n_token(head->tokens, head->token_count);
+	if (token->type == _redirection && token->value[0][0] == '<')
+	{
+		redirection_in(token);
+		head->token_count += 1;
+		token = token->next;
+	}
 	if (token->type == _delimiter && token->value[1])
 	{
 		here_doc(head, token);
@@ -329,29 +362,34 @@ int multi_commands(t_ms *head)
 	if (token->type == _cmd_grp && token->next && token->next->type == _delimiter && token->next->value[1] && token->next->next && token->next->next->type == _pipe)
 	{
 		here_doc(head, token->next);
-		pipe_and_exec(head, token, 0);
+		pids_addback(head->pids, pipe_and_exec(head, token, 0));
 		head->token_count += 3;
 		token = token->next->next->next;
 	}
 	if (token->type == _cmd_grp && token->next && token->next->type == _delimiter && token->next->value[1] && !token->next->next)
 	{
 		here_doc(head, token->next);
-		pipe_and_exec(head, token, 1);
+		pids_addback(head->pids, pipe_and_exec(head, token, 1));
 		return (0);
 	}
     while (token)
     {
         if (token->type == _cmd_grp && token->next && token->next->type == _pipe && token->next->next && token->next->next->type == _cmd_grp)
-            pipe_and_exec(head, token, 0);
-		else if (token->type == _cmd_grp && token->next && token->next->type == _redirection && token->next->value[0][0] == '>' && token->next->next->type == _file)
-			redirection(head, token);
-		else if (token->type == _cmd_grp && token->next && token->next->type == _append && token->next->next->type == _file)
-			redirection(head, token);
+            pids_addback(head->pids, pipe_and_exec(head, token, 0));
+		else if (token->type == _cmd_grp && token->next && token->next->type == _redirection && token->next->value[0][0] == '>' && token->next->value[1])
+			pids_addback(head->pids, redirection_out(head, token));
+		else if (token->type == _cmd_grp && token->next && token->next->type == _append && token->next->value[1])
+			pids_addback(head->pids, redirection_out(head, token));
 		else if (token->type == _cmd_grp)
-			pipe_and_exec(head, token, 1);
+			pids_addback(head->pids, pipe_and_exec(head, token, 1));
 		head->token_count += 1;
         token = token->next;
     }
+	while(head->pids)
+	{
+		waitpid(head->pids->pid, NULL, 0);
+		head->pids = head->pids->next;
+	}
     return (0);
 }
 
@@ -359,9 +397,9 @@ void	command_manager(t_ms *head)
 {
 	int original_stdint;
 	
-	original_stdint = dup(STDIN_FILENO);
 	if (ft_strcmp(head->tokens->value[0], "exit") == 0)
 		ms_exit(head);
+	original_stdint = dup(STDIN_FILENO);
 	multi_commands(head);
 	dup2(original_stdint, STDIN_FILENO);
 }

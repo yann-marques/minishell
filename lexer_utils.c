@@ -98,6 +98,26 @@ int	tokens_addback(t_token **tokens, t_type type, char **value)
 	return (0);
 }
 
+int	pids_addback(t_pids *pids, int pid)
+{
+	t_pids	*tmp;
+	t_pids	*new;
+
+	new = malloc(sizeof(t_pids));
+	if (!new)
+		return (-1);
+	new->pid = pid;
+	new->next = NULL;
+	tmp = pids;
+	while (tmp && tmp->next)
+		tmp = tmp->next;
+	if (!pids)
+		pids = new;
+	else
+		tmp->next = new;
+	return (0);
+}
+
 int	quotes_jump(char *str)
 {
 	int		i;
