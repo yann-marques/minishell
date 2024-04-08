@@ -1,5 +1,7 @@
 #include "minishell.h"
 
+static void	add_or_replace(t_env *env, t_env *new);
+
 t_env	*set_env(char **env)
 {
 	t_env	*s_env;
@@ -16,7 +18,7 @@ t_env	*set_env(char **env)
 			free_env(s_env);
 			return (NULL);
 		}
-		env_addback(&s_env, tmp);
+		put_env_var(&s_env, tmp);
 		++k;
 	}
 	return (s_env);
@@ -65,41 +67,44 @@ void	put_env_var(t_env **env, t_env *new)
 	t_env	*tmp;
 	int		i;
 
-
-    i = 0;
+	i = 0;
 	tmp = *env;
 	if (!*env)
 	{
+		*env = new;
+		return ;
+	}
+	if (ft_strcmp(tmp->var, new->var) > 0)
+	{
+		new->next = *env;
 		*env = new;
 		return ;
 	}
 	while (tmp && tmp->next)
 	{
-		if ((tmp->next && tmp->next->var[i] < new->var[i])
-			|| (tmp->var[i] == new->var[i] && !new->var[i])
-			|| tmp->var[i] < new->var[i])
+		i = ft_strcmp(tmp->var, new->var);
+		if (i == 0 || (i < 0 && ft_strcmp(tmp->next->var, new->var) > 0))
 			break ;
-		else if (tmp->var[i] > new->var[i])
+		else
 			tmp = tmp->next;
-		else if (tmp->var[i] == new->var[i]
-				&& ft_strlen_to(tmp->next->var, '\0') < i)
-			++i;
 	}
-	new->next = tmp->next;
-	tmp->next = new;
+	add_or_replace(tmp, new);
 }
 
-void	env_addback(t_env **env, t_env *new)
+static void	add_or_replace(t_env *env, t_env *new)
 {
 	t_env	*tmp;
 
-	if (!*env)
+	if (env->next && ft_strcmp(env->next->var, new->var) == 0)
 	{
-		*env = new;
+		tmp = env->next;
+		new->next = tmp->next;
+		env->next = new;
+		free(tmp->var);
+		free(tmp->value);
+		free(tmp);
 		return ;
 	}
-	tmp = *env;
-	while (tmp->next)
-		tmp = tmp->next;
-	tmp->next = new;
+	new->next = env->next;
+	env->next = new;
 }

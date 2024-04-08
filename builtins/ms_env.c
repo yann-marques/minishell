@@ -12,7 +12,7 @@ int	ms_env(t_env *env, char *begin)
 			if (tmp->value[0])
 				printf("%s=%s\n", tmp->var, tmp->value);
 		}
-		else
+		else if (ft_strcmp(tmp->var, "_") != 0)
 			printf("%s%s=%s\n", begin, tmp->var, tmp->value);
 		tmp = tmp->next;
 	}

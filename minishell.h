@@ -100,7 +100,6 @@ t_env	*set_env(char **env);
 char	*get_var_value(t_env *env, char *var);
 t_env	*env_new(char *env);
 void	put_env_var(t_env **env, t_env *new);
-void	env_addback(t_env **env, t_env *new);
 int		pids_addback(t_pids *pids, int pid);
 //lexer
 t_ms	*lexer(t_env *env);
