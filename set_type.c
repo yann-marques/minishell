@@ -38,8 +38,6 @@ static t_token	*redirection_type(t_token *token)
 			token->type = _append;
 		else
 			token->type = _redirection;
-		if (token->next)
-			token->next->type = _file;
 	}
 	return (token);
 }

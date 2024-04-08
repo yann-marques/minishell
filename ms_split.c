@@ -67,7 +67,7 @@ static int	get_next_sep(char *str, char *sep)
 		++i;
 		if (ft_strchr(sep, str[i]))
 			++i;
-		if (str[0] == '<' && str[1] == '<')
+		if (str[0] == '<' || str[0] == '>')
 		{
 			while (str[i] == ' ')
 				++i;
