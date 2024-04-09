@@ -101,7 +101,7 @@ t_env	*set_env(char **env);
 char	*get_var_value(t_env *env, char *var);
 t_env	*env_new(char *env);
 void	put_env_var(t_env **env, t_env *new);
-int		pids_addback(t_pids **pids, int pid);
+int		pids_addback(t_pids *pids, int pid);
 //lexer
 t_ms	*lexer(t_env *env);
 char	*prompt(t_ms *head);
@@ -132,9 +132,34 @@ int		ft_strcmp(char *s1, char *s2);
 //clear
 void	strtab_clear(char **tab);
 void	tokens_clear(t_token *tokens);
-void	pids_clear(t_pids *pids);
 void	free_env(t_env *env);
-//exec
+
+
+//EXEC: redirect utils
+int		redirection_out(t_ms *head, t_token *token);
+void	redirection_in(t_token *token);
+char	*here_doc(t_ms *head, t_token *token);
+
+//EXEC: parse utils
+char	**t_env_to_strtab(t_env *env);
+t_token	*get_n_token(t_token *tokens, int count);
+int		env_size(t_env *env);
+
+//EXEC: files utils
+char	*get_random_tmp_path(void);
+void	creat_needed_files(t_token *tokens);
+
+//EXEC: exec.c
+int		multi_commands(t_ms *head);
+void	command_manager(t_ms *head);
+
+//EXEC: commands utils
+char	*find_path(t_ms *head, t_token *token);
+int		execute(t_ms *head, t_token *token);
+int		pipe_and_exec(t_ms *head, t_token *token, char *path_doc, int last_command);
+int		check_echo_builtin(char **value);
+int		is_builtin(t_ms *head, t_token *token);
+
 void	command_manager(t_ms *head);
 t_ms	*send_head(t_ms *new_head);
 
