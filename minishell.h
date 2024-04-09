@@ -119,8 +119,8 @@ char	**ms_split(char *str, char *sep);
 int		ms_cd(t_token *token);
 int		ms_echo_n(t_token *token);
 int		ms_env(t_env *env, char *begin);
-int		ms_exit(t_ms *head, int status);
-int		ms_export(t_env	*env, t_token *token);
+int		ms_exit(t_ms *head, t_token *token);
+int		ms_export(t_ms *head, t_env	*env, t_token *token);
 int		ms_pwd(void);
 char	*get_pwd(int count);
 int		ms_unset(t_env *env, t_token *token);
@@ -134,7 +134,7 @@ void	strtab_clear(char **tab);
 void	tokens_clear(t_token *tokens);
 void	pids_clear(t_pids *pids);
 void	free_env(t_env *env);
-void	error_exit(t_ms *head, int status, char *str);
+void	error_exit(t_ms *head, char *str);
 
 //EXEC: redirect utils
 int		redirection_out(t_ms *head, t_token *token);

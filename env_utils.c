@@ -16,7 +16,7 @@ t_env	*set_env(char **env)
 		if (!tmp)
 		{
 			free_env(s_env);
-			return (NULL);
+			error_exit(NULL, NULL);
 		}
 		put_env_var(&s_env, tmp);
 		++k;

@@ -60,11 +60,11 @@ void	free_env(t_env *env)
 	}
 }
 
-void	error_exit(t_ms *head, int status, char *str)
+void	error_exit(t_ms *head, char *str)
 {
 	if (str)
 		printf("Error\n%s\n", str);
 	else
 		printf("Error\n%s\n", strerror(errno));
-	ms_exit(head, status);
+	ms_exit(head, NULL);
 }

@@ -35,7 +35,7 @@ t_ms	*init_head(t_env *env)
 
 	head = malloc(sizeof(t_ms));
 	if (!head)
-		return (NULL);
+		error_exit(head, NULL);
 	head->env = env;
 	head->tokens = NULL;
 	head->pids = NULL;

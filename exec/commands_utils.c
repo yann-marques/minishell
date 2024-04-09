@@ -62,17 +62,17 @@ int	pipe_and_exec(t_ms *head, t_token *token, char *path_doc, int last_command)
 	int		fd[2];
 
 	if (pipe(fd) == -1)
-		error_exit(head, EXIT_FAILURE, NULL);
+		error_exit(head, NULL);
 	pid = fork();
 	if (pid == -1)
-		error_exit(head, EXIT_FAILURE, NULL);
+		error_exit(head, NULL);
 	if (pid == 0)
 	{
 		if (path_doc && access(path_doc, F_OK) == 0)
 		{
 			tmp_fd = open(path_doc, O_RDONLY, 0644);
 			if (tmp_fd == -1)
-				error_exit(head, EXIT_FAILURE, NULL);
+				error_exit(head, NULL);
 			dup2(tmp_fd, STDIN_FILENO);
 			unlink(path_doc);
 			close(tmp_fd);
@@ -129,12 +129,12 @@ int	is_builtin(t_ms *head, t_token *token)
 	if (ft_strcmp(token->value[0], "pwd") == 0)
 		return (ms_pwd());
 	if (ft_strcmp(token->value[0], "export") == 0)
-		return (ms_export(head->env, token));
+		return (ms_export(head, head->env, token));
 	if (ft_strcmp(token->value[0], "unset") == 0)
 		return (ms_unset(head->env, token));
 	if (ft_strcmp(token->value[0], "env") == 0 && !token->value[1])
 		return (ms_env(head->env, NULL));
 	if (ft_strcmp(token->value[0], "exit") == 0)
-		return (ms_exit(head, EXIT_SUCCESS));
+		return (ms_exit(head, token));
 	return (1);
 }

@@ -34,7 +34,7 @@ char	*prompt(t_ms *head)
 static char	*line_error(char *line, t_ms *head)
 {
 	if (!line)
-		ms_exit(head, EXIT_SUCCESS);
+		error_exit(head, NULL);
 	if (!line[0])
 	{
 		free(line);
