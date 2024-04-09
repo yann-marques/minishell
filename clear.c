@@ -30,6 +30,19 @@ void	tokens_clear(t_token *tokens)
 	}
 }
 
+void	pids_clear(t_pids *pids)
+{
+	t_pids	*tmp;
+
+	tmp = pids;
+	while (tmp)
+	{
+		pids = pids->next;
+		free(tmp);
+		tmp = pids;
+	}
+}
+
 void	free_env(t_env *env)
 {
 	t_env	*tmp;

@@ -38,9 +38,7 @@ t_ms	*init_head(t_env *env)
 		return (NULL);
 	head->env = env;
 	head->tokens = NULL;
-	head->pids = (t_pids *) malloc(sizeof(t_pids));
-	if (!head->pids)
-		return (NULL);
+	head->pids = NULL;
 	return (head);
 }
 

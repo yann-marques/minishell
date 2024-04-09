@@ -101,7 +101,7 @@ t_env	*set_env(char **env);
 char	*get_var_value(t_env *env, char *var);
 t_env	*env_new(char *env);
 void	put_env_var(t_env **env, t_env *new);
-int		pids_addback(t_pids *pids, int pid);
+int		pids_addback(t_pids **pids, int pid);
 //lexer
 t_ms	*lexer(t_env *env);
 char	*prompt(t_ms *head);
@@ -132,6 +132,7 @@ int		ft_strcmp(char *s1, char *s2);
 //clear
 void	strtab_clear(char **tab);
 void	tokens_clear(t_token *tokens);
+void	pids_clear(t_pids *pids);
 void	free_env(t_env *env);
 //exec
 void	command_manager(t_ms *head);

@@ -130,6 +130,7 @@ char	**t_env_to_strtab(t_env *env)
 		++k;
 		tmp_env = tmp_env->next;
 	}
+	envp[k] = NULL;
 	return (envp);
 }
 
@@ -389,21 +390,21 @@ int	multi_commands(t_ms *head)
 	{
 		path_doc = here_doc(head, token->next);
 		if (!token->next->next)
-			return (pids_addback(head->pids, pipe_and_exec(head, token, path_doc, 1)));
-		pids_addback(head->pids, pipe_and_exec(head, token, path_doc, 0));
+			return (pids_addback(&head->pids, pipe_and_exec(head, token, path_doc, 1)));
+		pids_addback(&head->pids, pipe_and_exec(head, token, path_doc, 0));
 		head->token_count += 3;
 		token = token->next->next->next;
 	}
 	while (token)
 	{
 		if (token->type == _cmd_grp && token->next && token->next->type == _pipe && token->next->next && token->next->next->type == _cmd_grp)
-			pids_addback(head->pids, pipe_and_exec(head, token, path_doc, 0));
+			pids_addback(&head->pids, pipe_and_exec(head, token, path_doc, 0));
 		else if (token->type == _cmd_grp && token->next && token->next->type == _redirection && token->next->value[0][0] == '>' && token->next->value[1])
-			pids_addback(head->pids, redirection_out(head, token));
+			pids_addback(&head->pids, redirection_out(head, token));
 		else if (token->type == _cmd_grp && token->next && token->next->type == _append && token->next->value[1])
-			pids_addback(head->pids, redirection_out(head, token));
+			pids_addback(&head->pids, redirection_out(head, token));
 		else if (token->type == _cmd_grp)
-			pids_addback(head->pids, pipe_and_exec(head, token, path_doc, 1));
+			pids_addback(&head->pids, pipe_and_exec(head, token, path_doc, 1));
 		head->token_count += 1;
 		token = token->next;
 	}
@@ -412,24 +413,29 @@ int	multi_commands(t_ms *head)
 
 void	command_manager(t_ms *head)
 {
-	int	original_stdint;
+	int		original_stdint;
+	t_pids	*tmp;
 
 	if (ft_strcmp(head->tokens->value[0], "exit") == 0)
 		ms_exit(head);
 	original_stdint = dup(STDIN_FILENO);
 	sig_control(0);
 	multi_commands(head);
-	while (head->pids)
+	tmp = head->pids;
+	while (tmp)
 	{
-		if (head->pids->pid != 0)
+		if (tmp->pid > 0)
 		{
 			if (g_sig_received)
-				kill(head->pids->pid, g_sig_received);
-			waitpid(head->pids->pid, NULL, 0);
+				kill(tmp->pid, g_sig_received);
+			waitpid(tmp->pid, NULL, 0);
 		}
-		head->pids = head->pids->next;
+		tmp = tmp->next;
 	}
+	pids_clear(head->pids);
+	head->pids = NULL;
 	g_sig_received = 0;
 	sig_control(1);
 	dup2(original_stdint, STDIN_FILENO);
+	close(original_stdint);
 }
