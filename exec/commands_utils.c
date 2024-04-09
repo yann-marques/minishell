@@ -1,11 +1,5 @@
-#include "minishell.h"
-#include "gnl/get_next_line.h"
-
-static error_exit(char *str)
-{
-	printf("%s", str);
-	exit(EXIT_FAILURE);
-}
+#include "../minishell.h"
+#include "../gnl/get_next_line.h"
 
 char	*find_path(t_ms *head, t_token *token)
 {
@@ -68,17 +62,17 @@ int	pipe_and_exec(t_ms *head, t_token *token, char *path_doc, int last_command)
 	int		fd[2];
 
 	if (pipe(fd) == -1)
-		error_exit("Error with the pipe");
+		error_exit(head, EXIT_FAILURE, NULL);
 	pid = fork();
 	if (pid == -1)
-		error_exit("Error with the pipe");
+		error_exit(head, EXIT_FAILURE, NULL);
 	if (pid == 0)
 	{
 		if (path_doc && access(path_doc, F_OK) == 0)
 		{
 			tmp_fd = open(path_doc, O_RDONLY, 0644);
 			if (tmp_fd == -1)
-				error_exit("Error with path_doc");
+				error_exit(head, EXIT_FAILURE, NULL);
 			dup2(tmp_fd, STDIN_FILENO);
 			unlink(path_doc);
 			close(tmp_fd);
@@ -141,6 +135,6 @@ int	is_builtin(t_ms *head, t_token *token)
 	if (ft_strcmp(token->value[0], "env") == 0 && !token->value[1])
 		return (ms_env(head->env, NULL));
 	if (ft_strcmp(token->value[0], "exit") == 0)
-		return (ms_exit(head));
+		return (ms_exit(head, EXIT_SUCCESS));
 	return (1);
 }

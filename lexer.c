@@ -63,6 +63,6 @@ t_ms	*lexer(t_env *env)
 		return (NULL);
 	}
 	if (!var_to_value(head) || !del_quotes(head->tokens))
-		ms_exit(head);
+		ms_exit(head, EXIT_FAILURE);
 	return (head);
 }

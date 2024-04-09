@@ -42,6 +42,7 @@ char	**t_env_to_strtab(t_env *env)
 		++k;
 		tmp_env = tmp_env->next;
 	}
+	envp[k] = NULL;
 	return (envp);
 }
 

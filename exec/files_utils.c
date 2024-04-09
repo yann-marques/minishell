@@ -1,13 +1,7 @@
 #include "../minishell.h"
 #include "../gnl/get_next_line.h"
 
-static void error_exit(char *str)
-{
-	printf("%s", str);
-	exit(EXIT_FAILURE);
-}
-
-char	*get_random_tmp_path(void)
+char	*get_random_tmp_path(t_ms *head)
 {
 	int				fd;
 	ssize_t			num_bytes_read;
@@ -16,31 +10,24 @@ char	*get_random_tmp_path(void)
 
 	fd = open("/dev/random", O_RDONLY);
 	if (fd == -1)
-	{
-		perror("Error opening /dev/random");
-		exit(EXIT_FAILURE);
-	}
+		error_exit(head, EXIT_FAILURE, NULL);
 	num_bytes_read = read(fd, buffer, 16);
 	if (num_bytes_read == -1)
 	{
-		perror("Error reading from /dev/random");
 		close(fd);
-		exit(EXIT_FAILURE);
+		error_exit(head, EXIT_FAILURE, NULL);
 	}
 	close(fd);
 	path_doc = ft_strjoin("/tmp/ms_heredoc_", (char *) buffer);
 	printf("Path: %s", path_doc);
 	if (!path_doc)
-	{
-		perror("Error joining the tmp directory");
-		exit(EXIT_FAILURE);
-	}
+		error_exit(head, EXIT_FAILURE, NULL);
 	if (access(path_doc, F_OK) == 0)
-		return (get_random_tmp_path());
+		return (get_random_tmp_path(head));
 	return (path_doc);
 }
 
-void	creat_needed_files(t_token *tokens)
+void	creat_needed_files(t_ms *head, t_token *tokens)
 {
 	int		outfile;
 	t_token	*tmp;
@@ -56,7 +43,7 @@ void	creat_needed_files(t_token *tokens)
 				{
 					outfile = open(tmp->value[1], O_CREAT | O_WRONLY | O_TRUNC, 0644);
 					if (!outfile)
-						error_exit("Error for creating output file");
+						error_exit(head, EXIT_FAILURE, NULL);
 				}
 			}
 		}
@@ -66,7 +53,7 @@ void	creat_needed_files(t_token *tokens)
 			{
 				outfile = open(tmp->value[1], O_CREAT | O_WRONLY | O_APPEND, 0644);
 				if (!outfile)
-					error_exit("Error for creating output file");
+					error_exit(head, EXIT_FAILURE, NULL);
 			}
 		}
 		tmp = tmp->next;

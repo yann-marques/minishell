@@ -6,12 +6,12 @@ int	multi_commands(t_ms *head)
 	char	*path_doc;
 	t_token	*token;
 
-	creat_needed_files(head->tokens);
+	creat_needed_files(head, head->tokens);
 	token = get_n_token(head->tokens, head->token_count);
 	path_doc = NULL;
 	if (token->type == _redirection && token->value[0][0] == '<')
 	{
-		redirection_in(token);
+		redirection_in(head, token);
 		head->token_count += 1;
 		token = token->next;
 	}
@@ -51,8 +51,6 @@ void	command_manager(t_ms *head)
 	int		original_stdint;
 	t_pids	*tmp;
 
-	if (ft_strcmp(head->tokens->value[0], "exit") == 0)
-		ms_exit(head);
 	original_stdint = dup(STDIN_FILENO);
 	sig_control(0);
 	multi_commands(head);
