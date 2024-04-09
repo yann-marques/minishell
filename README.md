@@ -1,2 +1,4 @@
 # minishell
-minishell with L'0live
+42 - minishell with L'0live
+
+like bash
