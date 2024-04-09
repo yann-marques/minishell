@@ -413,12 +413,19 @@ void	command_manager(t_ms *head)
 	if (ft_strcmp(head->tokens->value[0], "exit") == 0)
 		ms_exit(head);
 	original_stdint = dup(STDIN_FILENO);
+	sig_control(0);
 	multi_commands(head);
 	while(head->pids)
 	{
 		if (head->pids->pid != 0)
+		{
+			if (sig_received)
+				kill(head->pids->pid, sig_received);
 			waitpid(head->pids->pid, NULL, 0);
+		}
 		head->pids = head->pids->next;
 	}
+	sig_received = 0;
+	sig_control(1);
 	dup2(original_stdint, STDIN_FILENO);
 }

@@ -76,6 +76,8 @@ typedef struct s_ms
 	t_pids	*pids;
 }	t_ms;
 
+extern int	sig_received;
+
 //libft_fonctions
 char	**ft_split(char const *s, char c);
 char	*ft_strjoin(char const *s1, char const *s2);
@@ -94,7 +96,7 @@ void	ft_bzero(void *s, size_t n);
 int		ft_strncmp(const char *s1, const char *s2, size_t n);
 
 //signal
-void	sig_control(void);
+void	sig_control(int handle);
 //env_utils
 t_env	*set_env(char **env);
 char	*get_var_value(t_env *env, char *var);

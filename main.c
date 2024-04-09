@@ -23,7 +23,7 @@ int	main(int ac, char **av, char **envp)
 	env = set_env(envp);
 	if (!env)
 		return (-1);
-	sig_control();
+	sig_control(1);
 	while (1)
 	{
 		head = send_head(NULL);
