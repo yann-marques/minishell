@@ -1,8 +1,8 @@
 #include "minishell.h"
 
 static t_token	*redirection_type(t_token *token);
-static int	check_env_var(t_token *begin_tokens, t_token *token, char *str);
-static int	there_istoken(t_token *tokens, char token);
+static int		check_env_var(t_token *begin_tokens, t_token *token, char *str);
+static int		there_istoken(t_token *tokens, char token);
 
 void	set_type(t_token *tokens)
 {

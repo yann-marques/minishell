@@ -23,26 +23,26 @@ int	check_echo_builtin(char **value)
 	return (1);
 }
 
-int is_builtin(t_ms *head, t_token *token)
+int	is_builtin(t_ms *head, t_token *token)
 {
-    if (check_echo_builtin(token->value))
-        return (ms_echo_n(token));
-    if (ft_strcmp(token->value[0], "cd") == 0)
-        return (ms_cd(token));
-    if (ft_strcmp(token->value[0], "pwd") == 0)
-        return (ms_pwd());
-    if (ft_strcmp(token->value[0], "export") == 0)
-        return (ms_export(head->env, token));
-    if (ft_strcmp(token->value[0], "unset") == 0)
-        return (ms_unset(head->env, token));
-    if (ft_strcmp(token->value[0], "env") == 0 && !token->value[1])
-        return (ms_env(head->env, NULL));
-    if (ft_strcmp(token->value[0], "exit") == 0)
-        return (ms_exit(head));
-    return (1);
+	if (check_echo_builtin(token->value))
+		return (ms_echo_n(token));
+	if (ft_strcmp(token->value[0], "cd") == 0)
+		return (ms_cd(token));
+	if (ft_strcmp(token->value[0], "pwd") == 0)
+		return (ms_pwd());
+	if (ft_strcmp(token->value[0], "export") == 0)
+		return (ms_export(head->env, token));
+	if (ft_strcmp(token->value[0], "unset") == 0)
+		return (ms_unset(head->env, token));
+	if (ft_strcmp(token->value[0], "env") == 0 && !token->value[1])
+		return (ms_env(head->env, NULL));
+	if (ft_strcmp(token->value[0], "exit") == 0)
+		return (ms_exit(head));
+	return (1);
 }
 
-int token_len(t_token *tokens)
+int	token_len(t_token *tokens)
 {
 	t_token	*tmp;
 	int		i;
@@ -57,23 +57,22 @@ int token_len(t_token *tokens)
 	return (i);
 }
 
-
-char *find_path(t_ms *head, t_token *token)
+char	*find_path(t_ms *head, t_token *token)
 {
-    char    **paths;
-    char    *path;
+	char	**paths;
+	char	*path;
 	char	*path_command;
-    int     i;
+	int		i;
 
-    if (access(token->value[0], F_OK) != -1)
-        return (token->value[0]);
-    i = 0;
-    path = get_var_value(head->env, "PATH");
+	if (access(token->value[0], F_OK) != -1)
+		return (token->value[0]);
+	i = 0;
+	path = get_var_value(head->env, "PATH");
 	if (!path)
 		return (NULL);
-    paths = ft_split(path, ':');
-    i = 0;
-    while (paths[i])
+	paths = ft_split(path, ':');
+	i = 0;
+	while (paths[i])
 	{
 		path = ft_strjoin(paths[i++], "/");
 		path_command = ft_strjoin(path, token->value[0]);
@@ -86,8 +85,8 @@ char *find_path(t_ms *head, t_token *token)
 		else
 			free(path_command);
 	}
-    strtab_clear(paths);
-    return (NULL);
+	strtab_clear(paths);
+	return (NULL);
 }
 
 int	env_size(t_env *env)
@@ -129,40 +128,40 @@ char	**t_env_to_strtab(t_env *env)
 			return (NULL);
 		}
 		++k;
-		tmp_env = tmp_env->next; 
+		tmp_env = tmp_env->next;
 	}
 	return (envp);
 }
 
-int execute(t_ms *head, t_token *token)
+int	execute(t_ms *head, t_token *token)
 {
 	char	**env;
-    char 	*path;
+	char	*path;
 
-    path = find_path(head, token);
-    if (!path)
+	path = find_path(head, token);
+	if (!path)
 		return (-1);
 	env = t_env_to_strtab(head->env);
-    if (!env)
+	if (!env)
 		return (-1);
 	if (execve(path, token->value, env) == -1)
-    {
-        free(path);
+	{
+		free(path);
 		strtab_clear(env);
-        perror("error");
-    	return (-1);
-    }
-    free(path);
-   	return (0);
+		perror("error");
+		return (-1);
+	}
+	free(path);
+	return (0);
 }
 
-void    error_exit(char *str)
+void	error_exit(char *str)
 {
-    printf("%s", str);
-    exit(EXIT_FAILURE);
+	printf("%s", str);
+	exit(EXIT_FAILURE);
 }
 
-int    pipe_and_exec(t_ms *head, t_token *token, char *path_doc, int last_command)
+int	pipe_and_exec(t_ms *head, t_token *token, char *path_doc, int last_command)
 {
 	int		pid;
 	int		tmp_fd;
@@ -223,7 +222,7 @@ t_token	*get_n_token(t_token *tokens, int count)
 void	creat_needed_files(t_token *tokens)
 {
 	int		outfile;
-	t_token *tmp;
+	t_token	*tmp;
 
 	tmp = tokens;
 	while (tmp)
@@ -256,8 +255,8 @@ void	creat_needed_files(t_token *tokens)
 int	redirection_out(t_ms *head, t_token *token)
 {
 	int		outfile;
-	char 	buffer[4096];
-    ssize_t bytes_read;
+	char	buffer[4096];
+	ssize_t	bytes_read;
 	int		pid;
 
 	pid = 0;
@@ -268,11 +267,14 @@ int	redirection_out(t_ms *head, t_token *token)
 	if (!outfile)
 		error_exit("Error with the outfile");
 	pid = pipe_and_exec(head, token, NULL, 0);
-	while ((bytes_read = read(STDIN_FILENO, buffer, sizeof(buffer))) > 0) {
+	bytes_read = read(STDIN_FILENO, buffer, sizeof(buffer));
+	while (bytes_read > 0)
+	{
 		write(outfile, buffer, bytes_read);
+		bytes_read = read(STDIN_FILENO, buffer, sizeof(buffer));
 	}
 	close(outfile);
-	return (pid); 
+	return (pid);
 }
 
 void	redirection_in(t_token *token)
@@ -298,29 +300,31 @@ void	free_rest_gnl(int fd, char *line, char *limiter)
 
 char	*get_random_tmp_path(void)
 {
-	int 			fd;
-    ssize_t 		num_bytes_read;
-    unsigned char	buffer[16];
+	int				fd;
+	ssize_t			num_bytes_read;
+	unsigned char	buffer[16];
 	char			*path_doc;
 
-    fd = open("/dev/random", O_RDONLY);
-    if (fd == -1) {
-        perror("Error opening /dev/random");
-        exit(EXIT_FAILURE);
-    }
-    num_bytes_read = read(fd, buffer, 16);
-    if (num_bytes_read == -1) {
-        perror("Error reading from /dev/random");
-        close(fd);
-        exit(EXIT_FAILURE);
-    }
-    close(fd);
+	fd = open("/dev/random", O_RDONLY);
+	if (fd == -1)
+	{
+		perror("Error opening /dev/random");
+		exit(EXIT_FAILURE);
+	}
+	num_bytes_read = read(fd, buffer, 16);
+	if (num_bytes_read == -1)
+	{
+		perror("Error reading from /dev/random");
+		close(fd);
+		exit(EXIT_FAILURE);
+	}
+	close(fd);
 	path_doc = ft_strjoin("/tmp/ms_heredoc_", (char *) buffer);
 	printf("Path: %s", path_doc);
 	if (!path_doc)
 	{
 		perror("Error joining the tmp directory");
-        exit(EXIT_FAILURE);
+		exit(EXIT_FAILURE);
 	}
 	if (access(path_doc, F_OK) == 0)
 		return (get_random_tmp_path());
@@ -361,13 +365,13 @@ char	*here_doc(t_ms *head, t_token *token)
 	return (path_doc);
 }
 
-int multi_commands(t_ms *head)
+int	multi_commands(t_ms *head)
 {
 	char	*path_doc;
-    t_token *token;
+	t_token	*token;
 
 	creat_needed_files(head->tokens);
-    token = get_n_token(head->tokens, head->token_count);
+	token = get_n_token(head->tokens, head->token_count);
 	path_doc = NULL;
 	if (token->type == _redirection && token->value[0][0] == '<')
 	{
@@ -390,10 +394,10 @@ int multi_commands(t_ms *head)
 		head->token_count += 3;
 		token = token->next->next->next;
 	}
-    while (token)
-    {
-        if (token->type == _cmd_grp && token->next && token->next->type == _pipe && token->next->next && token->next->next->type == _cmd_grp)
-            pids_addback(head->pids, pipe_and_exec(head, token, path_doc, 0));
+	while (token)
+	{
+		if (token->type == _cmd_grp && token->next && token->next->type == _pipe && token->next->next && token->next->next->type == _cmd_grp)
+			pids_addback(head->pids, pipe_and_exec(head, token, path_doc, 0));
 		else if (token->type == _cmd_grp && token->next && token->next->type == _redirection && token->next->value[0][0] == '>' && token->next->value[1])
 			pids_addback(head->pids, redirection_out(head, token));
 		else if (token->type == _cmd_grp && token->next && token->next->type == _append && token->next->value[1])
@@ -401,31 +405,31 @@ int multi_commands(t_ms *head)
 		else if (token->type == _cmd_grp)
 			pids_addback(head->pids, pipe_and_exec(head, token, path_doc, 1));
 		head->token_count += 1;
-        token = token->next;
-    }
-    return (0);
+		token = token->next;
+	}
+	return (0);
 }
 
 void	command_manager(t_ms *head)
 {
-	int original_stdint;
-	
+	int	original_stdint;
+
 	if (ft_strcmp(head->tokens->value[0], "exit") == 0)
 		ms_exit(head);
 	original_stdint = dup(STDIN_FILENO);
 	sig_control(0);
 	multi_commands(head);
-	while(head->pids)
+	while (head->pids)
 	{
 		if (head->pids->pid != 0)
 		{
-			if (sig_received)
-				kill(head->pids->pid, sig_received);
+			if (g_sig_received)
+				kill(head->pids->pid, g_sig_received);
 			waitpid(head->pids->pid, NULL, 0);
 		}
 		head->pids = head->pids->next;
 	}
-	sig_received = 0;
+	g_sig_received = 0;
 	sig_control(1);
 	dup2(original_stdint, STDIN_FILENO);
 }

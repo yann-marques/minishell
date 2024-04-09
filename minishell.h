@@ -60,7 +60,6 @@ typedef struct s_token
 	struct s_token	*next;
 }	t_token;
 
-
 typedef struct s_env
 {
 	char			*var;
@@ -76,7 +75,7 @@ typedef struct s_ms
 	t_pids	*pids;
 }	t_ms;
 
-extern int	sig_received;
+extern int	g_sig_received;
 
 //libft_fonctions
 char	**ft_split(char const *s, char c);

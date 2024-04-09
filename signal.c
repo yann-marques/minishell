@@ -3,7 +3,7 @@
 static void	handle_fork(int signum);
 static void	handler_sigint(int signum);
 
-int	sig_received;
+int	g_sig_received;
 
 void	sig_control(int handle)
 {
@@ -21,7 +21,7 @@ void	sig_control(int handle)
 
 static void	handle_fork(int signum)
 {
-	sig_received = signum;
+	g_sig_received = signum;
 	printf("\n");
 }
 

@@ -105,7 +105,7 @@ static char	*malloc_join_three(char *s1, char *s2, char *s3)
 	char	*dst;
 
 	dst = malloc(sizeof(char) * (1 + ft_strlen_to(s1, '\0')
-			+ ft_strlen_to(s2, '\0') + ft_strlen_to(s3, '\0')));
+				+ ft_strlen_to(s2, '\0') + ft_strlen_to(s3, '\0')));
 	if (!dst || !s1 || !s3)
 	{
 		if (dst)

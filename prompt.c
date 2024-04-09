@@ -8,7 +8,7 @@ char	*prompt(t_ms *head)
 {
 	char	*pwd;
 	char	*absolute;
-    char    *username;
+	char	*username;
 	char	*line;
 
 	pwd = get_pwd(1);
@@ -20,7 +20,7 @@ char	*prompt(t_ms *head)
 		free(pwd);
 		return (NULL);
 	}
-    username = get_username(head->env);
+	username = get_username(head->env);
 	absolute = make_prompt_line(username, &pwd[ft_strlen(absolute)]);
 	free(pwd);
 	if (!absolute)
@@ -72,10 +72,10 @@ static char	*make_prompt_line(char *username, char *pwd)
 
 static char	*get_username(t_env *env)
 {
-    char	*username;
+	char	*username;
 
-    username = get_var_value(env, "USER");
-    if (!username)
-        return ("anonynous");
-    return (username);
+	username = get_var_value(env, "USER");
+	if (!username)
+		return ("anonynous");
+	return (username);
 }
