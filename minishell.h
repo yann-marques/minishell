@@ -157,10 +157,12 @@ void	command_manager(t_ms *head);
 char	*find_path(t_ms *head, t_token *token);
 int		execute(t_ms *head, t_token *token);
 int		pipe_and_exec(t_ms *head, t_token *token, char *path_doc, int last_command);
-int		check_echo_builtin(char **value);
-int		is_builtin(t_ms *head, t_token *token);
 
-void	command_manager(t_ms *head);
+//EXEC: builtins utils
+int		check_echo_builtin(char **value);
+int		builtin_child(t_ms *head, t_token *token);
+int		check_if_builtins_parent(t_ms *head, t_token *token);
+
 t_ms	*send_head(t_ms *new_head);
 
 #endif

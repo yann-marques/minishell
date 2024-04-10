@@ -1,14 +1,32 @@
 #include "../minishell.h"
 #include "../gnl/get_next_line.h"
 
-int	multi_commands(t_ms *head)
+int	is_tvnext(t_token *token, t_type type)
 {
-	char	*path_doc;
-	t_token	*token;
+	if (!token)
+		return (0);
+	if (!token->next)
+		return (0);
+	if (!token->next->value[1])
+		return (0);
+	if (token->next->type != type)
+		return (0);
+	return (1);
+}
 
-	creat_needed_files(head->tokens);
-	token = get_n_token(head->tokens, head->token_count);
-	path_doc = NULL;
+int	is_tnext(t_token *token, t_type type)
+{
+	if (!token)
+		return (0);
+	if (!token->next)
+		return (0);
+	if (token->next->type != type)
+		return (0);
+	return (1);
+}
+
+int	do_here_doc(t_ms *head, t_token *token, char *path_doc)
+{
 	if (token->type == _redirection && token->value[0][0] == '<')
 	{
 		redirection_in(token);
@@ -21,27 +39,45 @@ int	multi_commands(t_ms *head)
 		head->token_count += 1;
 		token = token->next;
 	}
-	if (token->type == _cmd_grp && token->next && token->next->type == _delimiter && token->next->value[1])
+	if (token->type == _cmd_grp && is_tvnext(token, _delimiter))
 	{
 		path_doc = here_doc(head, token->next);
 		if (!token->next->next)
-			return (pids_addback(&head->pids, pipe_and_exec(head, token, path_doc, 1)));
+		{
+			pids_addback(&head->pids, pipe_and_exec(head, token, path_doc, 1));
+			return (1);
+		}
 		pids_addback(&head->pids, pipe_and_exec(head, token, path_doc, 0));
 		head->token_count += 3;
 		token = token->next->next->next;
 	}
-	while (token)
+	return (0);
+}
+
+int	multi_commands(t_ms *head)
+{
+	char	*path_doc;
+	t_token	*tk;
+	t_token	*tkn;
+
+	creat_needed_files(head->tokens);
+	tk = get_n_token(head->tokens, head->token_count);
+	path_doc = NULL;
+	if (do_here_doc(head, tk, path_doc))
+		return (0);
+	while (tk)
 	{
-		if (token->type == _cmd_grp && token->next && token->next->type == _pipe && token->next->next && token->next->next->type == _cmd_grp)
-			pids_addback(&head->pids, pipe_and_exec(head, token, path_doc, 0));
-		else if (token->type == _cmd_grp && token->next && token->next->type == _redirection && token->next->value[0][0] == '>' && token->next->value[1])
-			pids_addback(&head->pids, redirection_out(head, token));
-		else if (token->type == _cmd_grp && token->next && token->next->type == _append && token->next->value[1])
-			pids_addback(&head->pids, redirection_out(head, token));
-		else if (token->type == _cmd_grp)
-			pids_addback(&head->pids, pipe_and_exec(head, token, path_doc, 1));
+		tkn = tk->next;
+		if (tk->type == _cmd_grp && is_tnext(tk, _pipe) && is_tnext(tkn, _cmd_grp))   
+			pids_addback(&head->pids, pipe_and_exec(head, tk, path_doc, 0));
+		else if (tk->type == _cmd_grp && is_tnext(tk, _redirection) && tkn->value[0][0] == '>')
+			pids_addback(&head->pids, redirection_out(head, tk));
+		else if (tk->type == _cmd_grp && is_tnext(tk, _append))
+			pids_addback(&head->pids, redirection_out(head, tk));
+		else if (tk->type == _cmd_grp)
+			pids_addback(&head->pids, pipe_and_exec(head, tk, path_doc, 1));
 		head->token_count += 1;
-		token = token->next;
+		tk = tk->next;
 	}
 	return (0);
 }
@@ -51,8 +87,6 @@ void	command_manager(t_ms *head)
 	int		original_stdint;
 	t_pids	*tmp;
 
-	if (ft_strcmp(head->tokens->value[0], "exit") == 0)
-		ms_exit(head);
 	original_stdint = dup(STDIN_FILENO);
 	sig_control(0);
 	multi_commands(head);

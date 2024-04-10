@@ -57,6 +57,7 @@ void	creat_needed_files(t_token *tokens)
 					outfile = open(tmp->value[1], O_CREAT | O_WRONLY | O_TRUNC, 0644);
 					if (!outfile)
 						error_exit("Error for creating output file");
+					close(outfile);
 				}
 			}
 		}
@@ -67,6 +68,7 @@ void	creat_needed_files(t_token *tokens)
 				outfile = open(tmp->value[1], O_CREAT | O_WRONLY | O_APPEND, 0644);
 				if (!outfile)
 					error_exit("Error for creating output file");
+				close(outfile);
 			}
 		}
 		tmp = tmp->next;

@@ -46,10 +46,10 @@ int	execute(t_ms *head, t_token *token)
 
 	path = find_path(head, token);
 	if (!path)
-		return (-1);
+		error_exit("command not found");
 	env = t_env_to_strtab(head->env);
 	if (!env)
-		return (-1);
+		error_exit("fail to get ENV var"); //en attentend d'avoir une fonction exit: pour l'instant ca met la ligne avant le prompt
 	if (execve(path, token->value, env) == -1)
 	{
 		free(path);
@@ -67,11 +67,13 @@ int	pipe_and_exec(t_ms *head, t_token *token, char *path_doc, int last_command)
 	int		tmp_fd;
 	int		fd[2];
 
+	if (check_if_builtins_parent(head, token))
+		return (0);
 	if (pipe(fd) == -1)
-		error_exit("Error with the pipe");
+		return (-1);
 	pid = fork();
 	if (pid == -1)
-		error_exit("Error with the pipe");
+		return (-1);
 	if (pid == 0)
 	{
 		if (path_doc && access(path_doc, F_OK) == 0)
@@ -89,7 +91,7 @@ int	pipe_and_exec(t_ms *head, t_token *token, char *path_doc, int last_command)
 			close(fd[0]);
 			close(fd[1]);
 		}
-		if (is_builtin(head, token) != 1)
+		if (builtin_child(head, token) != 1)
 			exit(2);
 		if (execute(head, token) == -1)
 			exit(2);
@@ -102,45 +104,4 @@ int	pipe_and_exec(t_ms *head, t_token *token, char *path_doc, int last_command)
 		close(fd[0]);
 	}
 	return (pid);
-}
-
-int	check_echo_builtin(char **value)
-{
-	int	i;
-
-	i = 0;
-	if (ft_strcmp(value[0], "echo") != 0)
-		return (0);
-	if (!value[1])
-		return (0);
-	if (value[1][i++] != '-')
-		return (0);
-	if (value[1][i++] != 'n')
-		return (0);
-	while (value[1][i])
-	{
-		if (value[1][i] != 'n')
-			return (0);
-		++i;
-	}
-	return (1);
-}
-
-int	is_builtin(t_ms *head, t_token *token)
-{
-	if (check_echo_builtin(token->value))
-		return (ms_echo_n(token));
-	if (ft_strcmp(token->value[0], "cd") == 0)
-		return (ms_cd(token));
-	if (ft_strcmp(token->value[0], "pwd") == 0)
-		return (ms_pwd());
-	if (ft_strcmp(token->value[0], "export") == 0)
-		return (ms_export(head->env, token));
-	if (ft_strcmp(token->value[0], "unset") == 0)
-		return (ms_unset(head->env, token));
-	if (ft_strcmp(token->value[0], "env") == 0 && !token->value[1])
-		return (ms_env(head->env, NULL));
-	if (ft_strcmp(token->value[0], "exit") == 0)
-		return (ms_exit(head));
-	return (1);
 }
