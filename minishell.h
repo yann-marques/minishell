@@ -119,8 +119,8 @@ char	**ms_split(char *str, char *sep);
 int		ms_cd(t_token *token);
 int		ms_echo_n(t_token *token);
 int		ms_env(t_env *env, char *begin);
-int		ms_exit(t_ms *head, t_token *token);
-int		ms_export(t_ms *head, t_env	*env, t_token *token);
+int		ms_exit(t_ms *head);
+int		ms_export(t_env	*env, t_token *token);
 int		ms_pwd(void);
 char	*get_pwd(int count);
 int		ms_unset(t_env *env, t_token *token);
@@ -134,11 +134,10 @@ void	strtab_clear(char **tab);
 void	tokens_clear(t_token *tokens);
 void	pids_clear(t_pids *pids);
 void	free_env(t_env *env);
-void	error_exit(t_ms *head, char *str);
 
 //EXEC: redirect utils
 int		redirection_out(t_ms *head, t_token *token);
-void	redirection_in(t_ms *head, t_token *token);
+void	redirection_in(t_token *token);
 char	*here_doc(t_ms *head, t_token *token);
 
 //EXEC: parse utils
@@ -147,8 +146,8 @@ t_token	*get_n_token(t_token *tokens, int count);
 int		env_size(t_env *env);
 
 //EXEC: files utils
-char	*get_random_tmp_path(t_ms *head);
-void	creat_needed_files(t_ms *head, t_token *tokens);
+char	*get_random_tmp_path(void);
+void	creat_needed_files(t_token *tokens);
 
 //EXEC: exec.c
 int		multi_commands(t_ms *head);

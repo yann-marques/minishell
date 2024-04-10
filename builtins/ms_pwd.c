@@ -22,10 +22,9 @@ char	*get_pwd(int count)
 		if (errno == ERANGE)
 		{
 			free(buffer);
-			buffer = get_pwd(count + 1);
-			if (!buffer)
+			if (!get_pwd(count + 1))
 				return (NULL);
-			return (buffer);
+			return (0);
 		}
 		printf("Error\n%s", strerror(errno));
 		return (NULL);

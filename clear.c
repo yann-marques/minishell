@@ -59,12 +59,3 @@ void	free_env(t_env *env)
 		tmp = env;
 	}
 }
-
-void	error_exit(t_ms *head, char *str)
-{
-	if (str)
-		printf("Error\n%s\n", str);
-	else
-		printf("Error\n%s\n", strerror(errno));
-	ms_exit(head, NULL);
-}

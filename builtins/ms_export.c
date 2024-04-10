@@ -1,6 +1,6 @@
 #include "../minishell.h"
 
-int	ms_export(t_ms *head, t_env	*env, t_token *token)
+int	ms_export(t_env	*env, t_token *token)
 {
 	t_env	*tmp;
 
@@ -14,7 +14,7 @@ int	ms_export(t_ms *head, t_env	*env, t_token *token)
 	else
 		tmp = env_new(token->value[1]);
 	if (!tmp)
-		error_exit(head, NULL);
+		return (-1);
 	put_env_var(&env, tmp);
 	return (0);
 }

@@ -35,7 +35,7 @@ t_ms	*init_head(t_env *env)
 
 	head = malloc(sizeof(t_ms));
 	if (!head)
-		error_exit(head, NULL);
+		return (NULL);
 	head->env = env;
 	head->tokens = NULL;
 	head->pids = NULL;
@@ -63,6 +63,6 @@ t_ms	*lexer(t_env *env)
 		return (NULL);
 	}
 	if (!var_to_value(head) || !del_quotes(head->tokens))
-		ms_exit(head, EXIT_FAILURE);
+		ms_exit(head);
 	return (head);
 }
