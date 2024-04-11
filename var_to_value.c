@@ -40,7 +40,8 @@ static int	replace_var_call(t_ms *head, char **str, int k, int i)
 	char	*begin;
 	char	*end;
 
-	if (str[k][i] != '$')
+	if (str[k][i] != '$' ||	(str[k][i] == '$'
+			&& (str[k][i + 1] == ' ' || !str[k][i + 1])))
 		return (1);
 	begin = find_var(str[k], i);
 	if (!begin)
