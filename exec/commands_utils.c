@@ -40,7 +40,7 @@ int	execute(t_ms *head, t_token *token)
 
 	path = find_path(head, token);
 	if (!path)
-		perror("");
+		perror(" ");
 	env = t_env_to_strtab(head->env);
 	if (!env)
 		perror("");
@@ -48,7 +48,7 @@ int	execute(t_ms *head, t_token *token)
 	{
 		free(path);
 		strtab_clear(env);
-		perror("");
+		perror(" ");
 		return (-1);
 	}
 	free(path);
