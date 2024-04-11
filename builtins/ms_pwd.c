@@ -5,7 +5,7 @@ int	ms_pwd(void)
 	char	*buffer;
 
 	buffer = get_pwd(1);
-	printf("%s", buffer);
+	printf("%s\n", buffer);
 	free(buffer);
 	return (0);
 }
@@ -26,7 +26,7 @@ char	*get_pwd(int count)
 				return (NULL);
 			return (0);
 		}
-		printf("Error\n%s", strerror(errno));
+		perror("");
 		return (NULL);
 	}
 	return (buffer);
