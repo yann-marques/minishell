@@ -16,7 +16,7 @@ int	ms_echo_n(t_token *token)
 			printf(" ");
 		++k;
 	}
-	if (check_flag(token->value[1], 'n'))
+	if (!check_flag(token->value[1], 'n'))
 		printf("\n");
 	return (0);
 }
