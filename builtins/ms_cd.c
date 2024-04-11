@@ -5,7 +5,7 @@ int	ms_cd(t_token *token)
 	if (chdir(token->value[1]) == -1)
 	{
 		printf("Error\n%s\n", strerror(errno));
-		return (-1);
+		return (EXIT_FAILURE);
 	}
-	return (0);
+	return (EXIT_SUCCESS);
 }

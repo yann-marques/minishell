@@ -92,6 +92,7 @@ void	command_manager(t_ms *head)
 	sig_control(0);
 	multi_commands(head);
 	tmp = head->pids;
+	status = 0;
 	while (tmp)
 	{
 		if (tmp->pid > 0)
@@ -99,10 +100,10 @@ void	command_manager(t_ms *head)
 			if (g_sig_received)
 				kill(tmp->pid, g_sig_received);
 			waitpid(tmp->pid, &status, 0);
+			head->last_status = status;
 		}
 		tmp = tmp->next;
 	}
-	head->last_status = status;
 	pids_clear(head->pids);
 	head->pids = NULL;
 	g_sig_received = 0;

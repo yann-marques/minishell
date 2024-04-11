@@ -85,8 +85,8 @@ int	pipe_and_exec(t_ms *head, t_token *token, char *path_doc, int last_command)
 			close(fd[0]);
 			close(fd[1]);
 		}
-		if (builtin_child(head, token) != 1)
-			exit(1);
+		if (builtin_child(head, token))
+			exit(head->last_status);
 		if (execute(head, token) == -1)
 			exit(1);
 	}

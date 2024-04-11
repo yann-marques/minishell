@@ -38,12 +38,17 @@ int	check_if_builtins_parent(t_ms *head, t_token *token)
 	//EXIT ET CD DOIVENT etre execute dans le parent (mais il faut les laisser dans builtin_child()). peut-etre aussi export et unset mais j'ai pas pu test ils ont lair de pas fonctionner.
 	if (ft_strcmp(token->value[0], "exit") == 0)
 	{
-		ms_exit(head);
+		head->last_status = ms_exit(head);
 		return (1);
 	}
 	if (ft_strcmp(token->value[0], "cd") == 0)
 	{
-		ms_cd(token);
+		head->last_status = ms_cd(token);
+		return (1);
+	}
+	if (ft_strcmp(token->value[0], "export") == 0)
+	{
+		head->last_status = ms_export(head->env, token);
 		return (1);
 	}
 	return (0);
@@ -51,19 +56,24 @@ int	check_if_builtins_parent(t_ms *head, t_token *token)
 
 int	builtin_child(t_ms *head, t_token *token)
 {
+	int	status;
+
 	if (check_echo_builtin(token->value))
-		return (ms_echo_n(token));
-	if (ft_strcmp(token->value[0], "cd") == 0)
-		return (ms_cd(token));
-	if (ft_strcmp(token->value[0], "pwd") == 0)
-		return (ms_pwd());
-	if (ft_strcmp(token->value[0], "export") == 0)
-		return (ms_export(head->env, token));
-	if (ft_strcmp(token->value[0], "unset") == 0)
-		return (ms_unset(head->env, token));
-	if (ft_strcmp(token->value[0], "env") == 0 && !token->value[1])
-		return (ms_env(head->env, NULL));
-	if (ft_strcmp(token->value[0], "exit") == 0)
-		return (ms_exit(head));
+		status = (ms_echo_n(token));
+	else if (ft_strcmp(token->value[0], "cd") == 0)
+		status = (ms_cd(token));
+	else if  (ft_strcmp(token->value[0], "pwd") == 0)
+		status = (ms_pwd());
+	else if  (ft_strcmp(token->value[0], "export") == 0)
+		status = (ms_export(head->env, token));
+	else if  (ft_strcmp(token->value[0], "unset") == 0)
+		status = (ms_unset(head->env, token));
+	else if  (ft_strcmp(token->value[0], "env") == 0 && !token->value[1])
+		status = (ms_env(head->env, NULL));
+	else if (ft_strcmp(token->value[0], "exit") == 0)
+		status = (ms_exit(head));
+	else
+		return (0);
+	head->last_status = status;
 	return (1);
 }
