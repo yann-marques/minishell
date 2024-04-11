@@ -75,10 +75,13 @@ static int	get_next_sep(char *str, char *sep)
 		}
 		return (i);
 	}
-	while (str[i] && !ft_strchr(sep, str[i]))
+	if (sep[0] == ' ' && (str[0] == '<' || str[0] == '>'))
 	{
-		i += quotes_jump(&str[i]);
-		++i;
+		while (str[i] == str[0])
+			++i;
+		return (i);
 	}
+	while (str[i] && !ft_strchr(sep, str[i]))
+		i += quotes_jump(&str[i]) + 1;
 	return (i);
 }
