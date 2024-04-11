@@ -11,7 +11,7 @@ char	*find_path(t_ms *head, t_token *token)
 	if (access(token->value[0], F_OK) != -1)
 		return (token->value[0]);
 	i = 0;
-	path = get_var_value(head->env, "PATH");
+	path = get_var_value(head, "PATH");
 	if (!path)
 		return (NULL);
 	paths = ft_split(path, ':');

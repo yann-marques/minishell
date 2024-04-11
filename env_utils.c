@@ -24,11 +24,13 @@ t_env	*set_env(char **env)
 	return (s_env);
 }
 
-char	*get_var_value(t_env *env, char *var)
+char	*get_var_value(t_ms *head, char *var)
 {
 	t_env	*tmp;
 
-	tmp = env;
+	tmp = head->env;
+	if (ft_strncmp(var, "?", 2) == 0)
+		return (ft_itoa(head->last_status));
 	while (tmp)
 	{
 		if (ft_strcmp(tmp->var, var) == 0)

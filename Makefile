@@ -5,7 +5,7 @@ FT_LIBFT=libft_functions/ft_split.c libft_functions/ft_atoi.c libft_functions/ft
 	libft_functions/ft_isascii.c libft_functions/ft_isdigit.c libft_functions/ft_isprint.c \
 	libft_functions/ft_strdup.c libft_functions/ft_strjoin.c libft_functions/ft_strlcat.c \
 	libft_functions/ft_strlcpy.c libft_functions/ft_strlen.c libft_functions/ft_calloc.c \
-	libft_functions/ft_bzero.c libft_functions/ft_strncmp.c gnl/get_next_line.c gnl/get_next_line_utils.c
+	libft_functions/ft_bzero.c libft_functions/ft_strncmp.c libft_functions/ft_itoa.c gnl/get_next_line.c gnl/get_next_line_utils.c
 BUILTINS=builtins/ms_cd.c builtins/ms_echo_n.c builtins/ms_env.c builtins/ms_exit.c \
 	builtins/ms_export.c builtins/ms_pwd.c builtins/ms_unset.c
 EXECS=exec/exec.c exec/commands_utils.c exec/files_utils.c exec/parse_utils.c exec/redirect_utils.c exec/builtins_utils.c

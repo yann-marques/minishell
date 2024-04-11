@@ -85,6 +85,7 @@ int	multi_commands(t_ms *head)
 void	command_manager(t_ms *head)
 {
 	int		original_stdint;
+	int		status;
 	t_pids	*tmp;
 
 	original_stdint = dup(STDIN_FILENO);
@@ -97,10 +98,11 @@ void	command_manager(t_ms *head)
 		{
 			if (g_sig_received)
 				kill(tmp->pid, g_sig_received);
-			waitpid(tmp->pid, NULL, 0);
+			waitpid(tmp->pid, &status, 0);
 		}
 		tmp = tmp->next;
 	}
+	head->last_status = status;
 	pids_clear(head->pids);
 	head->pids = NULL;
 	g_sig_received = 0;

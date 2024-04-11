@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-static int	replace_var_call(t_env *env, char **str, int k, int i);
+static int	replace_var_call(t_ms *head, char **str, int k, int i);
 static char	*find_var(char *str, int i);
 static char	*ms_join_three(char *s1, char *s2, char *s3);
 static char	*malloc_join_three(char *s1, char *s2, char *s3);
@@ -25,7 +25,7 @@ int	var_to_value(t_ms *head)
 					while (tmp->value[k][i] != '\'')
 						++i;
 				}
-				if (!replace_var_call(head->env, tmp->value, k, i))
+				if (!replace_var_call(head, tmp->value, k, i))
 					return (0);
 			}
 		}
@@ -34,7 +34,7 @@ int	var_to_value(t_ms *head)
 	return (1);
 }
 
-static int	replace_var_call(t_env *env, char **str, int k, int i)
+static int	replace_var_call(t_ms *head, char **str, int k, int i)
 {
 	char	*var;
 	char	*begin;
@@ -45,7 +45,7 @@ static int	replace_var_call(t_env *env, char **str, int k, int i)
 	begin = find_var(str[k], i);
 	if (!begin)
 		return (0);
-	var = get_var_value(env, begin);
+	var = get_var_value(head, begin);
 	end = ft_strndup(&str[k][i + ft_strlen_to(begin, '\0') + 1], 0);
 	free(begin);
 	if (!end)

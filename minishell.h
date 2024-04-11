@@ -73,6 +73,7 @@ typedef struct s_ms
 	int		token_count;
 	t_env	*env;
 	t_pids	*pids;
+	int		last_status;
 }	t_ms;
 
 extern int	g_sig_received;
@@ -93,12 +94,13 @@ size_t	ft_strlen(const char *s);
 void	*ft_calloc(size_t nmemb, size_t size);
 void	ft_bzero(void *s, size_t n);
 int		ft_strncmp(const char *s1, const char *s2, size_t n);
+char	*ft_itoa(int n);
 
 //signal
 void	sig_control(int handle);
 //env_utils
 t_env	*set_env(char **env);
-char	*get_var_value(t_env *env, char *var);
+char	*get_var_value(t_ms *head, char *var);
 t_env	*env_new(char *env);
 void	put_env_var(t_env **env, t_env *new);
 int		pids_addback(t_pids **pids, int pid);
