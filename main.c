@@ -33,6 +33,8 @@ int	main(int ac, char **av, char **envp)
 			if (head)
 				head->token_count = 0;
 		}
+		else
+			free_env(env);
 		if (head)
 		{
 			// display_tokens(head->tokens);

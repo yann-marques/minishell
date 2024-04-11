@@ -1,25 +1,35 @@
 #include "../minishell.h"
 #include "../gnl/get_next_line.h"
 
-int	check_echo_builtin(char **value)
+int	check_flag(char *str, char flag)
 {
 	int	i;
 
 	i = 0;
-	if (ft_strcmp(value[0], "echo") != 0)
+	if (str[i++] != '-')
 		return (0);
-	if (!value[1])
+	if (str[i++] != flag)
 		return (0);
-	if (value[1][i++] != '-')
-		return (0);
-	if (value[1][i++] != 'n')
-		return (0);
-	while (value[1][i])
+	while (str[i])
 	{
-		if (value[1][i] != 'n')
+		if (str[i] != flag)
 			return (0);
 		++i;
 	}
+	return (1);
+}
+
+int	check_echo_builtin(char **value)
+{
+	if (ft_strcmp(value[0], "echo") != 0)
+		return (0);
+	if (!value[1])
+		return (1);
+	if (check_flag(value[1] ,'e') || check_flag(value[1] ,'E'))
+		return (0);
+	if (check_flag(value[1] ,'n') && value[2]
+			&& (check_flag(value[2] ,'e') || check_flag(value[2] ,'E')))
+		return (0);
 	return (1);
 }
 
