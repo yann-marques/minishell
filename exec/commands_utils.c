@@ -40,15 +40,15 @@ int	execute(t_ms *head, t_token *token)
 
 	path = find_path(head, token);
 	if (!path)
-		error_exit("command not found");
+		perror("");
 	env = t_env_to_strtab(head->env);
 	if (!env)
-		error_exit("fail to get ENV var"); //en attentend d'avoir une fonction exit: pour l'instant ca met la ligne avant le prompt
+		perror("");
 	if (execve(path, token->value, env) == -1)
 	{
 		free(path);
 		strtab_clear(env);
-		perror("error");
+		perror("");
 		return (-1);
 	}
 	free(path);
