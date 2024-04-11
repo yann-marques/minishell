@@ -40,18 +40,23 @@ int	execute(t_ms *head, t_token *token)
 
 	path = find_path(head, token);
 	if (!path)
+	{
 		perror(" ");
+		exit(EXIT_FAILURE);
+	}
 	env = t_env_to_strtab(head->env);
 	if (!env)
-		perror("");
+	{
+		perror(" ");
+		exit(EXIT_FAILURE);
+	}
 	if (execve(path, token->value, env) == -1)
 	{
 		free(path);
 		strtab_clear(env);
 		perror(" ");
-		return (-1);
+		exit(EXIT_FAILURE);
 	}
-	free(path);
 	return (0);
 }
 
@@ -87,8 +92,7 @@ int	pipe_and_exec(t_ms *head, t_token *token, char *path_doc, int last_command)
 		}
 		if (builtin_child(head, token))
 			exit(head->last_status);
-		if (execute(head, token) == -1)
-			exit(1);
+		execute(head, token);
 	}
 	else
 	{
