@@ -1,12 +1,6 @@
 #include "../minishell.h"
 #include "../gnl/get_next_line.h"
 
-static void	error_exit(char *str)
-{
-	printf("%s", str);
-	exit(EXIT_FAILURE);
-}
-
 char	*find_path(t_ms *head, t_token *token)
 {
 	char	**paths;
@@ -92,9 +86,9 @@ int	pipe_and_exec(t_ms *head, t_token *token, char *path_doc, int last_command)
 			close(fd[1]);
 		}
 		if (builtin_child(head, token) != 1)
-			exit(2);
+			exit(1);
 		if (execute(head, token) == -1)
-			exit(2);
+			exit(1);
 	}
 	else
 	{

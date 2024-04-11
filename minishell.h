@@ -163,6 +163,9 @@ int		check_echo_builtin(char **value);
 int		builtin_child(t_ms *head, t_token *token);
 int		check_if_builtins_parent(t_ms *head, t_token *token);
 
+//exit
+void 	error_exit(char *str);
+
 t_ms	*send_head(t_ms *new_head);
 
 #endif

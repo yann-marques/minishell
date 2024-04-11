@@ -1,12 +1,6 @@
 #include "../minishell.h"
 #include "../gnl/get_next_line.h"
 
-static void error_exit(char *str)
-{
-	printf("%s", str);
-	exit(EXIT_FAILURE);
-}
-
 char	*get_random_tmp_path(void)
 {
 	int				fd;
