@@ -121,7 +121,7 @@ char	**ms_split(char *str, char *sep);
 int		ms_cd(t_token *token);
 int		ms_echo_n(t_token *token);
 int		ms_env(t_env *env, char *begin);
-int		ms_exit(t_ms *head);
+int		ms_exit(t_ms *head, t_token *token);
 int		ms_export(t_env	*env, t_token *token);
 int		ms_pwd(void);
 char	*get_pwd(int count);

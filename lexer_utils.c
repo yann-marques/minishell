@@ -5,24 +5,25 @@ static char	*ft_strdup_noquotes(char *str);
 int	check_quotes(char *str)
 {
 	int	i;
-	int	count_splquotes;
-	int	count_dblquotes;
 
 	i = 0;
-	count_splquotes = 0;
-	count_dblquotes = 0;
 	while (str[i])
 	{
-		if (str[i] == '\'')
-			++count_splquotes;
-		else if (str[i] == '"')
-			++count_dblquotes;
+		if (str[i] == '"' && ++i)
+		{
+			while (str[i] && str[i] != '"')
+				++i;
+			if (!str[i])
+				return (0);
+		}
+		else if (str[i] == '\'' && ++i)
+		{
+			while (str[i] && str[i] != '\'')
+				++i;
+			if (!str[i])
+				return (0);
+		}
 		++i;
-	}
-	if (count_splquotes % 2 != 0 || count_dblquotes % 2 != 0)
-	{
-		free(str);
-		return (0);
 	}
 	return (1);
 }
@@ -58,6 +59,7 @@ int	del_quotes(t_token *tokens)
 static char	*ft_strdup_noquotes(char *str)
 {
 	char	*dst;
+	char	c;
 	int		i;
 	int		j;
 
@@ -68,10 +70,20 @@ static char	*ft_strdup_noquotes(char *str)
 	j = 0;
 	while (str[i + j])
 	{
-		while (str[i + j] == '\'' || str[i + j] == '"')
-			++j;
-		dst[i] = str[i + j];
-		++i;
+		if ((str[i + j] == '\'' || str[i + j] == '"')
+				&& ft_strchr(&str[i + j + 1], str[i + j]))
+		{
+			c = str[i-- + j++];
+			while (str[++i + j] && str[i + j] != c)
+				dst[i] = str[i + j];
+			if (str[i + j] == c)
+				++j;
+		}
+		else
+		{
+			dst[i] = str[i + j];
+			++i;
+		}
 	}
 	dst[i] = '\0';
 	return (dst);

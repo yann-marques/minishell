@@ -1,6 +1,7 @@
 #include "minishell.h"
 
 static int	replace_var_call(t_ms *head, char **str, int k, int i);
+static int	check_if_replace(char *str, int i_var);
 static char	*find_var(char *str, int i);
 static char	*ms_join_three(char *s1, char *s2, char *s3);
 static char	*malloc_join_three(char *s1, char *s2, char *s3);
@@ -20,12 +21,12 @@ int	var_to_value(t_ms *head)
 			i = -1;
 			while (tmp->value[k][++i])
 			{
-				if (tmp->value[k][i] == '\'' && ++i)
-				{
-					while (tmp->value[k][i] != '\'')
-						++i;
-				}
-				if (!replace_var_call(head, tmp->value, k, i))
+				if (!(tmp->value[k][i] != '$' ||	(tmp->value[k][i] == '$'
+						&& (tmp->value[k][i + 1] == ' '
+						|| tmp->value[k][i + 1] == '\''
+						|| tmp->value[k][i + 1] == '"'
+						|| !tmp->value[k][i + 1])))
+						&& !replace_var_call(head, tmp->value, k, i))
 					return (0);
 			}
 		}
@@ -40,8 +41,7 @@ static int	replace_var_call(t_ms *head, char **str, int k, int i)
 	char	*begin;
 	char	*end;
 
-	if (str[k][i] != '$' ||	(str[k][i] == '$'
-			&& (str[k][i + 1] == ' ' || !str[k][i + 1])))
+	if (!check_if_replace(str[k], i))
 		return (1);
 	begin = find_var(str[k], i);
 	if (!begin)
@@ -62,6 +62,31 @@ static int	replace_var_call(t_ms *head, char **str, int k, int i)
 	return (1);
 }
 
+static int	check_if_replace(char *str, int i_var)
+{
+	int	i;
+	int	replace;
+
+	replace = 1;
+	i = 0;
+	while (str[i] && i != i_var)
+	{
+		if (str[i] == '\'' && ft_strchr(&str[i + 1], '\'') && ++i)
+		{
+			replace = 0;
+			while (str[i] && str[i] != '\'' && i != i_var)
+				++i;
+		}
+		if (!str[i] || i == i_var)
+			break ;
+		replace = 1;
+		++i;
+	}
+	if (replace)
+		return (1);
+	return (0);
+}
+
 static char	*find_var(char *str, int i)
 {
 	char	*var;
@@ -70,6 +95,10 @@ static char	*find_var(char *str, int i)
 	tmp = ft_strlen_to(&str[i + 1], ' ');
 	if (tmp > ft_strlen_to(&str[i + 1], '"'))
 		tmp = ft_strlen_to(&str[i + 1], '"');
+	if (tmp > ft_strlen_to(&str[i + 1], '\''))
+		tmp = ft_strlen_to(&str[i + 1], '\'');
+	if (str[i + 1] == '?')
+		tmp = 1;
 	var = ft_strndup(&str[i + 1], tmp);
 	if (!var)
 		return (NULL);
