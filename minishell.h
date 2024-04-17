@@ -58,6 +58,7 @@ typedef struct s_token
 	t_type			type;
 	char			**value;
 	struct s_token	*next;
+	struct s_token	*prev;
 }	t_token;
 
 typedef struct s_env
@@ -139,7 +140,7 @@ void	free_env(t_env *env);
 
 //EXEC: redirect utils
 int		redirection_out(t_ms *head, t_token *token);
-void	redirection_in(t_token *token);
+void	redirection_in(char *path);
 char	*here_doc(t_ms *head, t_token *token);
 
 //EXEC: parse utils
@@ -149,7 +150,7 @@ int		env_size(t_env *env);
 
 //EXEC: files utils
 char	*get_random_tmp_path(void);
-void	creat_needed_files(t_token *tokens);
+int		do_needed_files(t_ms *head);
 
 //EXEC: exec.c
 int		multi_commands(t_ms *head);

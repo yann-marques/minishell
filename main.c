@@ -37,7 +37,7 @@ int	main(int ac, char **av, char **envp)
 			free_env(env);
 		if (head)
 		{
-			// display_tokens(head->tokens);
+			//display_tokens(head->tokens);
 			command_manager(head);
 			tokens_clear(head->tokens);
 			free(head);

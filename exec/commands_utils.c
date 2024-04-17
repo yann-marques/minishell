@@ -98,6 +98,8 @@ int	pipe_and_exec(t_ms *head, t_token *token, char *path_doc, int last_command)
 	{
 		if (!last_command)
 			dup2(fd[0], STDIN_FILENO);
+		else
+			close(STDIN_FILENO);
 		close(fd[1]);
 		close(fd[0]);
 	}

@@ -23,7 +23,6 @@ char	*get_random_tmp_path(void)
 	}
 	close(fd);
 	path_doc = ft_strjoin("/tmp/ms_heredoc_", (char *) buffer);
-	printf("Path: %s", path_doc);
 	if (!path_doc)
 	{
 		perror("Error joining the tmp directory");
@@ -34,25 +33,35 @@ char	*get_random_tmp_path(void)
 	return (path_doc);
 }
 
-void	creat_needed_files(t_token *tokens)
+int	do_needed_files(t_ms *head)
 {
 	int		outfile;
+	int		i;
 	t_token	*tmp;
 
-	tmp = tokens;
+	tmp = head->tokens;
 	while (tmp)
 	{
+		i = 0;
 		if (tmp->type == _redirection)
 		{
-			if (tmp->value[0][0] == '>')
+			if (tmp->value[0][0] == '>' && access(tmp->value[1], F_OK) != 0)
 			{
-				if (access(tmp->value[1], F_OK) != 0)
-				{
-					outfile = open(tmp->value[1], O_CREAT | O_WRONLY | O_TRUNC, 0644);
-					if (!outfile)
-						error_exit("Error for creating output file");
-					close(outfile);
-				}
+				outfile = open(tmp->value[1], O_CREAT | O_WRONLY | O_TRUNC, 0644);
+				if (!outfile)
+					return (0);
+				close(outfile);
+			}
+			if (tmp->value[0][0] == '<')
+			{
+				i = 1;
+				while (tmp->value[i])
+					i++;
+				if (i > 1)
+					i--;
+				if (access(tmp->value[i], F_OK) != 0)
+					return (0);
+				redirection_in(tmp->value[i]);
 			}
 		}
 		if (tmp->type == _append)
@@ -61,10 +70,11 @@ void	creat_needed_files(t_token *tokens)
 			{
 				outfile = open(tmp->value[1], O_CREAT | O_WRONLY | O_APPEND, 0644);
 				if (!outfile)
-					error_exit("Error for creating output file");
+					return (0);
 				close(outfile);
 			}
 		}
 		tmp = tmp->next;
 	}
+	return (1);
 }

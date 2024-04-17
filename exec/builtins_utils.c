@@ -35,7 +35,6 @@ int	check_echo_builtin(char **value)
 
 int	check_if_builtins_parent(t_ms *head, t_token *token)
 {
-	//EXIT ET CD DOIVENT etre execute dans le parent (mais il faut les laisser dans builtin_child()). peut-etre aussi export et unset mais j'ai pas pu test ils ont lair de pas fonctionner.
 	if (ft_strcmp(token->value[0], "exit") == 0)
 	{
 		head->last_status = ms_exit(head, token);

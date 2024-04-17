@@ -26,12 +26,13 @@ int	redirection_out(t_ms *head, t_token *token)
 	return (pid);
 }
 
-void	redirection_in(t_token *token)
+void	redirection_in(char *path)
 {
 	int	infile;
 
-	if (token->value[1])
-		infile = open(token->value[1], O_RDONLY, 0644);
+	if (!path)
+		error_exit("Error path redirection in NULL");
+	infile = open(path, O_RDONLY, 0644);
 	if (!infile)
 		error_exit("Error with infile");
 	dup2(infile, STDIN_FILENO);

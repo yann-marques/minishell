@@ -11,6 +11,8 @@ int	ms_export(t_env	*env, t_token *token)
 		ms_env(env, "declare -x ");
 		return (EXIT_SUCCESS);
 	}
+	if (token->value[1] && token->next)
+		return (EXIT_FAILURE);
 	if (token->type == _env_var)
 		tmp = env_new(token->value[0]);
 	else if (!check_env_var(token->value[1]))

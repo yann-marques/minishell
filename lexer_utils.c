@@ -100,9 +100,11 @@ int	tokens_addback(t_token **tokens, t_type type, char **value)
 	new->type = type;
 	new->value = value;
 	new->next = NULL;
+	new->prev = NULL;
 	tmp = *tokens;
 	while (tmp && tmp->next)
 		tmp = tmp->next;
+	new->prev = tmp;
 	if (!*tokens)
 		*tokens = new;
 	else

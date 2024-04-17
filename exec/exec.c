@@ -27,12 +27,6 @@ int	is_tnext(t_token *token, t_type type)
 
 int	do_here_doc(t_ms *head, t_token *token, char *path_doc)
 {
-	if (token->type == _redirection && token->value[0][0] == '<')
-	{
-		redirection_in(token);
-		head->token_count += 1;
-		token = token->next;
-	}
 	if (token->type == _delimiter && token->value[1])
 	{
 		path_doc = here_doc(head, token);
@@ -60,8 +54,9 @@ int	multi_commands(t_ms *head)
 	t_token	*tk;
 	t_token	*tkn;
 
-	creat_needed_files(head->tokens);
 	tk = get_n_token(head->tokens, head->token_count);
+	if (!do_needed_files(head))
+		return (0);
 	path_doc = NULL;
 	if (do_here_doc(head, tk, path_doc))
 		return (0);
@@ -72,6 +67,8 @@ int	multi_commands(t_ms *head)
 			pids_addback(&head->pids, pipe_and_exec(head, tk, path_doc, 0));
 		else if (tk->type == _cmd_grp && is_tnext(tk, _redirection) && tkn->value[0][0] == '>')
 			pids_addback(&head->pids, redirection_out(head, tk));
+		else if (tk->type == _cmd_grp && is_tnext(tk, _redirection) && is_tnext(tkn, _pipe) && tkn->value[0][0] == '<')
+			pids_addback(&head->pids, pipe_and_exec(head, tk, path_doc, 0));
 		else if (tk->type == _cmd_grp && is_tnext(tk, _append))
 			pids_addback(&head->pids, redirection_out(head, tk));
 		else if (tk->type == _cmd_grp)
@@ -100,7 +97,8 @@ void	command_manager(t_ms *head)
 			if (g_sig_received)
 				kill(tmp->pid, g_sig_received);
 			waitpid(tmp->pid, &status, 0);
-			head->last_status = status;
+			if (WIFEXITED(status))
+				head->last_status = WEXITSTATUS(status);
 		}
 		tmp = tmp->next;
 	}
