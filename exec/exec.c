@@ -55,20 +55,21 @@ int	multi_commands(t_ms *head)
 	t_token	*tkn;
 
 	tk = get_n_token(head->tokens, head->token_count);
-	if (!do_needed_files(head))
-		return (0);
+	do_needed_files(head);
 	path_doc = NULL;
 	if (do_here_doc(head, tk, path_doc))
 		return (0);
 	while (tk)
 	{
 		tkn = tk->next;
-		if (tk->type == _cmd_grp && is_tnext(tk, _pipe) && is_tnext(tkn, _cmd_grp))   
+		if (tk->type == _cmd_grp && is_tnext(tk, _pipe) && (is_tnext(tkn, _cmd_grp) || is_tnext(tkn, _pipe)))
 			pids_addback(&head->pids, pipe_and_exec(head, tk, path_doc, 0));
+		else if (tk->type == _redirection && tk->value[0][0] == '<')
+			do_redirection_in(head, tk);
+		else if (tk->type == _cmd_grp && is_tnext(tk, _redirection) && tkn->value[0][0] == '<')
+			do_redirection_in(head, tk);
 		else if (tk->type == _cmd_grp && is_tnext(tk, _redirection) && tkn->value[0][0] == '>')
 			pids_addback(&head->pids, redirection_out(head, tk));
-		else if (tk->type == _cmd_grp && is_tnext(tk, _redirection) && is_tnext(tkn, _pipe) && tkn->value[0][0] == '<')
-			pids_addback(&head->pids, pipe_and_exec(head, tk, path_doc, 0));
 		else if (tk->type == _cmd_grp && is_tnext(tk, _append))
 			pids_addback(&head->pids, redirection_out(head, tk));
 		else if (tk->type == _cmd_grp)

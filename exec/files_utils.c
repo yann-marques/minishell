@@ -36,32 +36,19 @@ char	*get_random_tmp_path(void)
 int	do_needed_files(t_ms *head)
 {
 	int		outfile;
-	int		i;
 	t_token	*tmp;
 
 	tmp = head->tokens;
 	while (tmp)
 	{
-		i = 0;
 		if (tmp->type == _redirection)
 		{
 			if (tmp->value[0][0] == '>' && access(tmp->value[1], F_OK) != 0)
 			{
 				outfile = open(tmp->value[1], O_CREAT | O_WRONLY | O_TRUNC, 0644);
 				if (!outfile)
-					return (0);
+					return (-1);
 				close(outfile);
-			}
-			if (tmp->value[0][0] == '<')
-			{
-				i = 1;
-				while (tmp->value[i])
-					i++;
-				if (i > 1)
-					i--;
-				if (access(tmp->value[i], F_OK) != 0)
-					return (0);
-				redirection_in(tmp->value[i]);
 			}
 		}
 		if (tmp->type == _append)
@@ -70,7 +57,7 @@ int	do_needed_files(t_ms *head)
 			{
 				outfile = open(tmp->value[1], O_CREAT | O_WRONLY | O_APPEND, 0644);
 				if (!outfile)
-					return (0);
+					return (-1);
 				close(outfile);
 			}
 		}

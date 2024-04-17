@@ -39,6 +39,50 @@ void	redirection_in(char *path)
 	close(infile);
 }
 
+int	do_redirection_in(t_ms *head, t_token *tk)
+{
+	t_token	*tkn;
+	t_token *tmp;
+	int		i;
+
+	if (tk->type == _redirection)
+	{
+		i = 1;
+		while (tk->value[i])
+			i++;
+		if (i > 1)
+			i--;
+		if (access(tk->value[i], F_OK) != 0)
+			return (-1);
+		redirection_in(tk->value[i]);
+	}
+	if (tk->type == _cmd_grp)
+	{
+		tkn = tk->next;
+		tmp = tkn;
+		while (tmp->next && tmp->next->type == _redirection && tmp->type == _redirection && tmp->value[0][0] == '<')
+		{
+			tmp = tmp->next;
+			head->token_count += 1;
+		}
+		i = 1;
+		while (tmp->value[i])
+			i++;
+		if (i > 1)
+			i--;
+		if (access(tmp->value[i], F_OK) != 0)
+			return (-1);
+		redirection_in(tmp->value[i]);
+		if (tmp->next && tmp->next->type == _pipe)
+			pids_addback(&head->pids, pipe_and_exec(head, tk, NULL, 0));
+		else
+			pids_addback(&head->pids, pipe_and_exec(head, tk, NULL, 1));
+		*tk = *tmp;
+		head->token_count += 1;
+	}
+	return (1);
+}
+
 static void	free_rest_gnl(int fd, char *line, char *limiter)
 {
 	free(line);

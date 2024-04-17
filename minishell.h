@@ -141,6 +141,7 @@ void	free_env(t_env *env);
 //EXEC: redirect utils
 int		redirection_out(t_ms *head, t_token *token);
 void	redirection_in(char *path);
+int		do_redirection_in(t_ms *head, t_token *token);
 char	*here_doc(t_ms *head, t_token *token);
 
 //EXEC: parse utils

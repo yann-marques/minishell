@@ -41,6 +41,7 @@ int	execute(t_ms *head, t_token *token)
 	path = find_path(head, token);
 	if (!path)
 	{
+		//write(2, " command not found\n", 19);
 		perror(" ");
 		exit(EXIT_FAILURE);
 	}
@@ -54,7 +55,7 @@ int	execute(t_ms *head, t_token *token)
 	{
 		free(path);
 		strtab_clear(env);
-		perror(" ");
+		perror(token->value[0]);
 		exit(EXIT_FAILURE);
 	}
 	return (0);
