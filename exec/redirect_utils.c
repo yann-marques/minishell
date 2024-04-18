@@ -43,41 +43,78 @@ int	do_redirection_in(t_ms *head, t_token *tk)
 {
 	t_token	*tkn;
 	t_token *tmp;
+	t_token *tmp_prev;
+	int		error;
 	int		i;
 
+	error = 0;
 	if (tk->type == _redirection)
 	{
+		tmp = tk;
 		i = 1;
-		while (tk->value[i])
-			i++;
-		if (i > 1)
-			i--;
-		if (access(tk->value[i], F_OK) != 0)
-			return (-1);
-		redirection_in(tk->value[i]);
+		while (tmp && tmp->type == _redirection && tmp->value[0][0] == '<')
+		{
+			while (tmp->value[i])
+				i++;
+			if (i > 1)
+				i--;
+			if (access(tmp->value[i], R_OK) != 0)
+			{
+				redirection_in("/dev/null");
+				perror_str(" ");
+			}
+			else
+				redirection_in(tmp->value[i]);
+			tmp_prev = tmp;
+			tmp = tmp->next;
+			head->token_count += 1;
+			i = 1;
+		}
+		if (tmp && tmp->type == _pipe && tmp->next && tmp->next->type == _cmd_grp && tmp->next->next && tmp->next->next->type == _pipe)
+			pids_addback(&head->pids, pipe_and_exec(head, tmp->next, NULL, 0));
+		if (tmp && tmp->next && tmp->next->next)
+			*tk = *tmp->next->next;
+		else
+			*tk = *tmp_prev;
+		head->token_count += 1;
 	}
 	if (tk->type == _cmd_grp)
 	{
 		tkn = tk->next;
 		tmp = tkn;
-		while (tmp->next && tmp->next->type == _redirection && tmp->type == _redirection && tmp->value[0][0] == '<')
+		i = 1;
+		while (tmp && tmp->type == _redirection && tmp->value[0][0] == '<')
 		{
+			while (tmp->value[i])
+				i++;
+			if (i > 1)
+				i--;
+			if (access(tmp->value[i], R_OK) != 0)
+			{
+				error = 1;
+				redirection_in("/dev/null");
+				perror_str(" ");
+			}
+			else
+				redirection_in(tmp->value[i]);
+			tmp_prev = tmp;
 			tmp = tmp->next;
 			head->token_count += 1;
+			i = 1;
 		}
-		i = 1;
-		while (tmp->value[i])
-			i++;
-		if (i > 1)
-			i--;
-		if (access(tmp->value[i], F_OK) != 0)
-			return (-1);
-		redirection_in(tmp->value[i]);
-		if (tmp->next && tmp->next->type == _pipe)
+		if (tmp && tmp->type == _pipe && tmp->next && tmp->next->type == _cmd_grp)
 			pids_addback(&head->pids, pipe_and_exec(head, tk, NULL, 0));
 		else
-			pids_addback(&head->pids, pipe_and_exec(head, tk, NULL, 1));
-		*tk = *tmp;
+		{
+			if (error)
+				head->last_status = EXIT_FAILURE;
+			else
+				pids_addback(&head->pids, pipe_and_exec(head, tk, NULL, 1));
+		}
+		if (tmp)
+			*tk = *tmp;
+		else
+			*tk = *tmp_prev;
 		head->token_count += 1;
 	}
 	return (1);

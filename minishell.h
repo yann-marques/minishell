@@ -169,6 +169,11 @@ int		check_if_builtins_parent(t_ms *head, t_token *token);
 
 //exit
 void 	error_exit(char *str);
+void	perror_exit(char *str);
+
+//error
+int		error_str(char *str);
+int		perror_str(char *str);
 
 t_ms	*send_head(t_ms *new_head);
 

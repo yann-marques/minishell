@@ -38,13 +38,10 @@ int	execute(t_ms *head, t_token *token)
 	char	**env;
 	char	*path;
 
+	/* if (chdir(token->value[0])) */
 	path = find_path(head, token);
 	if (!path)
-	{
-		//write(2, " command not found\n", 19);
-		perror(" ");
-		exit(EXIT_FAILURE);
-	}
+		error_exit(" command not found");
 	env = t_env_to_strtab(head->env);
 	if (!env)
 	{
@@ -55,8 +52,7 @@ int	execute(t_ms *head, t_token *token)
 	{
 		free(path);
 		strtab_clear(env);
-		perror(token->value[0]);
-		exit(EXIT_FAILURE);
+		error_exit(" command not found");
 	}
 	return (0);
 }

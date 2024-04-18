@@ -64,9 +64,7 @@ int	multi_commands(t_ms *head)
 		tkn = tk->next;
 		if (tk->type == _cmd_grp && is_tnext(tk, _pipe) && (is_tnext(tkn, _cmd_grp) || is_tnext(tkn, _pipe)))
 			pids_addback(&head->pids, pipe_and_exec(head, tk, path_doc, 0));
-		else if (tk->type == _redirection && tk->value[0][0] == '<')
-			do_redirection_in(head, tk);
-		else if (tk->type == _cmd_grp && is_tnext(tk, _redirection) && tkn->value[0][0] == '<')
+		else if ( (tk->type == _redirection || (tk->type == _cmd_grp && is_tnext(tk, _redirection)) ) && (tk->value[0][0] == '<' || (tkn && tkn->value[0][0] == '<')))
 			do_redirection_in(head, tk);
 		else if (tk->type == _cmd_grp && is_tnext(tk, _redirection) && tkn->value[0][0] == '>')
 			pids_addback(&head->pids, redirection_out(head, tk));
