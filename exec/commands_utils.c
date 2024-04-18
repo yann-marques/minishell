@@ -38,7 +38,16 @@ int	execute(t_ms *head, t_token *token)
 	char	**env;
 	char	*path;
 
-	/* if (chdir(token->value[0])) */
+
+	//bout de code temporaire
+	if (token->value[0][0] == '/' || (token->value[0][0] == '.' && token->value[0][1] == '/'))
+	{
+		if (access(token->value[0], F_OK) != 0)
+			perror_exit(token->value[0]);
+		else
+			error_exit(" Is a directory");
+	}
+	//fin du code temporaire
 	path = find_path(head, token);
 	if (!path)
 		error_exit(" command not found");
