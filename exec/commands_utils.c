@@ -33,6 +33,20 @@ char	*find_path(t_ms *head, t_token *token)
 	return (NULL);
 }
 
+int isFile(char *name)
+{
+    DIR* directory = opendir(name);
+
+    if(directory != NULL)
+    {
+    	closedir(directory);
+		return 0;
+    }
+    if(errno == ENOTDIR)
+		return 1;
+	return -1;
+}
+
 int	execute(t_ms *head, t_token *token)
 {
 	char	**env;
@@ -40,12 +54,18 @@ int	execute(t_ms *head, t_token *token)
 
 
 	//bout de code temporaire
+	if (token->value[0][0] == '$')
+		return (0);
 	if (token->value[0][0] == '/' || (token->value[0][0] == '.' && token->value[0][1] == '/'))
 	{
+		if (isFile(token->value[0]) == 0)
+			error_exit(" Is a directory");
 		if (access(token->value[0], F_OK) != 0)
 			perror_exit(token->value[0]);
-		else
-			error_exit(" Is a directory");
+		if (access(token->value[0], R_OK) != 0)
+			perror_exit(token->value[0]);
+		if (access(token->value[0], X_OK) != 0)
+			perror_exit(token->value[0]);
 	}
 	//fin du code temporaire
 	path = find_path(head, token);
