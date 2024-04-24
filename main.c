@@ -12,14 +12,19 @@ t_ms	*send_head(t_ms *new_head)
 	return (tmp);
 }
 
-t_ms	*init_head(t_env *env)
+t_ms	*init_head(char **envp)
 {
 	t_ms	*head;
 
 	head = malloc(sizeof(t_ms));
 	if (!head)
 		return (NULL);
-	head->env = env;
+	head->env = set_env(envp);
+	if (!head->env)
+	{
+		free(head);
+		return (NULL);
+	}
 	head->tokens = NULL;
 	head->pids = NULL;
 	return (head);
@@ -27,7 +32,6 @@ t_ms	*init_head(t_env *env)
 
 int	main(int ac, char **av, char **envp)
 {
-	t_env	*env;
 	t_ms	*head;
 
 	if (ac != 1)
@@ -36,21 +40,15 @@ int	main(int ac, char **av, char **envp)
 	head = send_head(NULL);
 	if (!head)
 	{
-		env = set_env(envp);
-		if (!env)
-			return (-1);
-		head = init_head(env);
+		head = init_head(envp);
 		if (!head)
 			return (-1);
 	}
 	sig_control(1);
 	while (1)
 	{
-		if (!head->tokens)
-		{
-			if (!lexer(head))
-				continue ;
-		}
+		if (!head->tokens && !lexer(head))
+			continue ;
 		// display_tokens(head->tokens);
 		command_manager(head);
 		tokens_clear(head->tokens);
