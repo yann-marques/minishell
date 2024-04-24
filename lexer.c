@@ -29,6 +29,71 @@ t_token	*set_tokens(char *str, t_ms *head)
 	return (tokens);
 }
 
+int	ft_strtab_len(char **tab)
+{
+	int	k;
+
+	k = 0;
+	while (tab && tab[k])
+		++k;
+	return (k);
+}
+
+int	join_tokens(t_token *token, t_token *extra)
+{
+	t_token	*tmp_token;
+	char	**tab;
+	int		k;
+	int		q;
+
+	k = ft_strtab_len(token->value) + ft_strtab_len(extra->next->value);
+	tab = malloc(sizeof(char *) * (k + 1));
+	if (!tab)
+		return (0);
+	k = -1;
+	while (token->value[++k])
+		tab[k] = token->value[k];
+	free(token->value);
+	q = -1;
+	while (extra->next->value[++q])
+		tab[k + q] = extra->next->value[q];
+	free(extra->next->value);
+	tab[k + q] = NULL;
+	token->value = tab;
+	tmp_token = extra->next;
+	extra->next = extra->next->next;
+	if (extra->next)
+		extra->next->prev = tmp_token->prev;
+	free(tmp_token);
+	return (1);
+}
+
+int	reset_cmd_grp(t_token *tokens)
+{
+	t_token	*tmp;
+	t_token	*tmp2;
+
+	tmp = tokens;
+	while (tmp)
+	{
+		if (tmp->type == _cmd_grp)
+		{
+			tmp2 = tmp;
+			while (tmp2 && tmp2->next && tmp2->next->type != _pipe)
+			{
+				if (tmp2->next->type == _cmd_grp)
+				{
+					if (!join_tokens(tmp, tmp2))
+						return (0);
+				}
+				tmp2 = tmp2->next;
+			}
+		}
+		tmp = tmp->next;
+	}
+	return (1);
+}
+
 int	lexer(t_ms *head)
 {
 	char	*line;
@@ -39,9 +104,10 @@ int	lexer(t_ms *head)
 	head->tokens = set_tokens(line, head);
 	if (!head->tokens)
 		return (0);
-	if (!del_quotes(head->tokens))
+	if (!del_quotes(head->tokens) || !reset_cmd_grp(head->tokens))
 	{
 		tokens_clear(head->tokens);
+		head->tokens = NULL;
 		return (0);
 	}
 	head->token_count = 0;
