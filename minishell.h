@@ -138,7 +138,8 @@ void	pids_clear(t_pids *pids);
 void	free_env(t_env *env);
 
 //EXEC: redirect utils
-int		redirection_out(t_ms *head, t_token *token);
+void	redirection_out(t_token *token);
+void	do_redirection_out(t_ms *head, t_token *tk);
 void	redirection_in(char *path);
 int		do_redirection_in(t_ms *head, t_token *token);
 char	*here_doc(t_ms *head, t_token *token);
@@ -167,12 +168,12 @@ int		builtin_child(t_ms *head, t_token *token);
 int		check_if_builtins_parent(t_ms *head, t_token *token);
 
 //exit
-void 	error_exit(char *str);
-void	perror_exit(char *str);
+void 	error_exit(char *str, int status);
+void	perror_exit(char *str, int status);
 
 //error
 int		error_str(char *str);
-int		perror_str(char *str);
+int		perror_str(char *str, int status);
 
 t_ms	*send_head(t_ms *new_head);
 

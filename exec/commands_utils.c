@@ -52,25 +52,20 @@ int	execute(t_ms *head, t_token *token)
 	char	**env;
 	char	*path;
 
-
-	//bout de code temporaire
-	if (token->value[0][0] == '$')
-		return (0);
 	if (token->value[0][0] == '/' || (token->value[0][0] == '.' && token->value[0][1] == '/'))
 	{
 		if (isFile(token->value[0]) == 0)
-			error_exit(" Is a directory");
+			error_exit(" Is a directory", 126);
 		if (access(token->value[0], F_OK) != 0)
-			perror_exit(token->value[0]);
+			perror_exit(token->value[0], 127);
 		if (access(token->value[0], R_OK) != 0)
-			perror_exit(token->value[0]);
+			perror_exit(token->value[0], 126);
 		if (access(token->value[0], X_OK) != 0)
-			perror_exit(token->value[0]);
+			perror_exit(token->value[0], 127);
 	}
-	//fin du code temporaire
 	path = find_path(head, token);
 	if (!path)
-		error_exit(" command not found");
+		error_exit(" command not found", 127);
 	env = t_env_to_strtab(head->env);
 	if (!env)
 	{
@@ -81,7 +76,7 @@ int	execute(t_ms *head, t_token *token)
 	{
 		free(path);
 		strtab_clear(env);
-		error_exit(" command not found");
+		error_exit(" command not found", 127);
 	}
 	return (0);
 }
@@ -105,7 +100,7 @@ int	pipe_and_exec(t_ms *head, t_token *token, char *path_doc, int last_command)
 		{
 			tmp_fd = open(path_doc, O_RDONLY, 0644);
 			if (tmp_fd == -1)
-				error_exit("Error with path_doc");
+				error_exit("Error with path_doc", -1);
 			dup2(tmp_fd, STDIN_FILENO);
 			unlink(path_doc);
 			close(tmp_fd);
