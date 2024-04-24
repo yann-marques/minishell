@@ -79,7 +79,7 @@ int	reset_cmd_grp(t_token *tokens)
 		if (tmp->type == _cmd_grp)
 		{
 			tmp2 = tmp;
-			while (tmp2 && tmp2->next && tmp2->next->type != _pipe)
+			while (tmp2 && tmp2->next && tmp2->type != _pipe)
 			{
 				if (tmp2->next->type == _cmd_grp)
 				{
