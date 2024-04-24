@@ -1,23 +1,21 @@
 #include "minishell.h"
 #include "gnl/get_next_line.h"
 
-int perror_str(char *str)
+int perror_str(char *str, int status)
 {
-	//char	*error_str;
-
 	if (str)
 	{
-/* 		error_str = ft_strjoin(str, "\n");
-		if (!error_str)
-		{
-			perror("");
-			return (EXIT_FAILURE);
-		} */
 		perror(str);
-		return (EXIT_FAILURE);
+		if (status != -1)
+			return (status);
+		else
+			return (EXIT_FAILURE);
 	}
 	perror("");
-	return (EXIT_FAILURE);
+	if (status != -1)
+		return (status);
+	else
+		return (EXIT_FAILURE);
 }
 
 int	error_str(char *str)

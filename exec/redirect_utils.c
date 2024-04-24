@@ -1,21 +1,18 @@
 #include "../minishell.h"
 #include "../gnl/get_next_line.h"
 
-int	redirection_out(t_ms *head, t_token *token)
+void	redirection_out(t_token *token)
 {
 	int		outfile;
 	char	buffer[4096];
 	ssize_t	bytes_read;
-	int		pid;
 
-	pid = 0;
-	if (token->next->type == _redirection)
-		outfile = open(token->next->value[1], O_CREAT | O_WRONLY | O_TRUNC, 0644);
-	if (token->next->type == _append)
-		outfile = open(token->next->value[1], O_CREAT | O_WRONLY | O_APPEND, 0644);
+	if (token->type == _redirection)
+		outfile = open(token->value[1], O_CREAT | O_WRONLY | O_TRUNC, 0644);
+	if (token->type == _append)
+		outfile = open(token->value[1], O_CREAT | O_WRONLY | O_APPEND, 0644);
 	if (!outfile)
-		error_exit("Error with the outfile");
-	pid = pipe_and_exec(head, token, NULL, 0);
+		error_exit("Error with the outfile", -1);
 	bytes_read = read(STDIN_FILENO, buffer, sizeof(buffer));
 	while (bytes_read > 0)
 	{
@@ -23,7 +20,6 @@ int	redirection_out(t_ms *head, t_token *token)
 		bytes_read = read(STDIN_FILENO, buffer, sizeof(buffer));
 	}
 	close(outfile);
-	return (pid);
 }
 
 void	redirection_in(char *path)
@@ -31,12 +27,61 @@ void	redirection_in(char *path)
 	int	infile;
 
 	if (!path)
-		error_exit("Error path redirection in NULL");
+		error_exit("Error path redirection in NULL", -1);
 	infile = open(path, O_RDONLY, 0644);
 	if (!infile)
-		error_exit("Error with infile");
+		error_exit("Error with infile", -1);
 	dup2(infile, STDIN_FILENO);
 	close(infile);
+}
+
+void	do_redirection_out(t_ms *head, t_token *tk)
+{
+	t_token *tmp;
+	t_token *tmp_prev;
+	int		i;
+
+	if (tk->type == _redirection)
+	{
+		tmp = tk;
+		i = 1;
+		while (tmp && tmp->type == _redirection)
+		{
+			while (tmp->value[i])
+				i++;
+			if (i > 1)
+				i--;
+			if (access(tmp->value[i], W_OK) != 0)
+				perror_exit(" ", -1);
+			tmp_prev = tmp;
+			tmp = tmp->next;
+			head->token_count += 1;
+			i = 1;
+		}
+		redirection_out(tmp_prev);
+	}
+	if (tk->type == _cmd_grp)
+	{
+		tmp = tk->next;
+		i = 1;
+		while (tmp && tmp->type == _redirection)
+		{
+			while (tmp->value[i])
+				i++;
+			if (i > 1)
+				i--;
+			if (access(tmp->value[i], W_OK) != 0)
+				perror_exit(" ", -1);
+			tmp_prev = tmp;
+			tmp = tmp->next;
+			head->token_count += 1;
+			i = 1;
+		}
+		pids_addback(&head->pids, pipe_and_exec(head, tk, NULL, 0));
+		redirection_out(tmp_prev);
+		*tk = *tmp_prev;
+		head->token_count += 1;
+	}
 }
 
 int	do_redirection_in(t_ms *head, t_token *tk)
@@ -61,7 +106,7 @@ int	do_redirection_in(t_ms *head, t_token *tk)
 			if (access(tmp->value[i], R_OK) != 0)
 			{
 				redirection_in("/dev/null");
-				perror_str(" ");
+				perror_str(" ", -1);
 			}
 			else
 				redirection_in(tmp->value[i]);
@@ -93,7 +138,7 @@ int	do_redirection_in(t_ms *head, t_token *tk)
 			{
 				error = 1;
 				redirection_in("/dev/null");
-				perror_str(" ");
+				perror_str(" ", -1);
 			}
 			else
 				redirection_in(tmp->value[i]);
@@ -103,19 +148,27 @@ int	do_redirection_in(t_ms *head, t_token *tk)
 			i = 1;
 		}
 		if (tmp && tmp->type == _pipe && tmp->next && tmp->next->type == _cmd_grp)
+		{
 			pids_addback(&head->pids, pipe_and_exec(head, tk, NULL, 0));
+			*tk = *tmp;
+			head->token_count += 1;
+		}
 		else
 		{
 			if (error)
+			{
+				*tk = *tmp_prev;
 				head->last_status = EXIT_FAILURE;
+			}
 			else
-				pids_addback(&head->pids, pipe_and_exec(head, tk, NULL, 1));
+			{
+				if (tmp && tmp->type == _redirection && (tmp->value[0][0] == '>' || (tmp->value[0][0] == '>' && tmp->value[0][1] == '>')))
+					pids_addback(&head->pids, pipe_and_exec(head, tk, NULL, 0));
+				else
+					pids_addback(&head->pids, pipe_and_exec(head, tk, NULL, 1));
+				*tk = *tmp_prev;
+			}
 		}
-		if (tmp)
-			*tk = *tmp;
-		else
-			*tk = *tmp_prev;
-		head->token_count += 1;
 	}
 	return (1);
 }
@@ -141,7 +194,7 @@ char	*here_doc(t_ms *head, t_token *token)
 	path_doc = get_random_tmp_path();
 	tmp_fd = open(path_doc, O_CREAT | O_TRUNC | O_WRONLY | O_APPEND, 0644);
 	if (tmp_fd == -1)
-		error_exit("Error with fileout");
+		error_exit("Error with fileout", -1);
 	write(STDOUT_FILENO, ">", 1);
 	line = get_next_line(0);
 	if (!line)

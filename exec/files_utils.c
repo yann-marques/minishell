@@ -57,7 +57,7 @@ int	do_needed_files(t_ms *head)
 			{
 				outfile = open(tmp->value[1], O_CREAT | O_WRONLY | O_APPEND, 0644);
 				if (!outfile)
-					return (-1);
+					perror_exit(" ", -1);
 				close(outfile);
 			}
 		}
