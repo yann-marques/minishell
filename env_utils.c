@@ -107,6 +107,14 @@ static void	add_or_replace(t_env *env, t_env *new)
 		free(tmp);
 		return ;
 	}
+	if (ft_strcmp(env->var, new->var) == 0)
+	{
+		free(env->value);
+		env->value = new->value;
+		free(new->var);
+		free(new);
+		return ;
+	}
 	new->next = env->next;
 	env->next = new;
 }

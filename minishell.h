@@ -108,9 +108,8 @@ int		pids_addback(t_pids **pids, int pid);
 //lexer
 t_ms	*lexer(t_env *env);
 char	*prompt(t_ms *head);
-t_token	*set_tokens(char *str);
 void	set_type(t_token *tokens);
-int		var_to_value(t_ms *head);
+char	**var_to_value(char **tab, t_ms *head);
 //lexer_utils
 int		del_quotes(t_token *tokens);
 int		tokens_addback(t_token **tokens, t_type type, char **value);

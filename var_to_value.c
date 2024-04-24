@@ -6,33 +6,32 @@ static char	*find_var(char *str, int i);
 static char	*ms_join_three(char *s1, char *s2, char *s3);
 static char	*malloc_join_three(char *s1, char *s2, char *s3);
 
-int	var_to_value(t_ms *head)
+char	**var_to_value(char **tab, t_ms *head)
 {
-	t_token	*tmp;
-	int		i;
-	int		k;
+	int	i;
+	int	k;
 
-	tmp = head->tokens;
-	while (tmp)
+	k = 0;
+	while (tab[k])
 	{
-		k = -1;
-		while (tmp->value[++k])
+		i = 0;
+		while (tab[k] && tab[k][i])
 		{
-			i = -1;
-			while (tmp->value[k][++i])
+			if (check_if_replace(tab[k], i))
 			{
-				if (!(tmp->value[k][i] != '$' ||	(tmp->value[k][i] == '$'
-						&& (tmp->value[k][i + 1] == ' '
-						|| tmp->value[k][i + 1] == '\''
-						|| tmp->value[k][i + 1] == '"'
-						|| !tmp->value[k][i + 1])))
-						&& !replace_var_call(head, tmp->value, k, i))
-					return (0);
+				if (!replace_var_call(head, tab, k, i))
+				{
+					strtab_clear(tab);
+					return (NULL);
+				}
+				if (tab[k] && ft_strlen_to(tab[k], '\0') < i)
+					break ;
 			}
+			++i;
 		}
-		tmp = tmp->next;
+		++k;
 	}
-	return (1);
+	return (tab);
 }
 
 static int	replace_var_call(t_ms *head, char **str, int k, int i)
@@ -41,8 +40,6 @@ static int	replace_var_call(t_ms *head, char **str, int k, int i)
 	char	*begin;
 	char	*end;
 
-	if (!check_if_replace(str[k], i))
-		return (1);
 	begin = find_var(str[k], i);
 	if (!begin)
 		return (0);
@@ -53,11 +50,15 @@ static int	replace_var_call(t_ms *head, char **str, int k, int i)
 		return (0);
 	if (i == 0)
 		i = -1;
-	begin = ft_strndup(str[k], i);
-	var = ms_join_three(begin, var, end);
+	var = ms_join_three(ft_strndup(str[k], i), var, end);
 	if (!var)
 		return (0);
 	free(str[k]);
+	// if (!var[0])
+	// {
+	// 	free(var);
+	// 	var = NULL;
+	// }
 	str[k] = var;
 	return (1);
 }
@@ -69,6 +70,9 @@ static int	check_if_replace(char *str, int i_var)
 
 	replace = 1;
 	i = 0;
+	if (str[i_var] != '$' || (str[i_var] == '$' && (str[i_var + 1] == ' '
+		|| str[i_var + 1] == '\'' || str[i_var + 1] == '"' || !str[i_var + 1])))
+		return (0);
 	while (str[i] && i != i_var)
 	{
 		if (str[i] == '\'' && ft_strchr(&str[i + 1], '\'') && ++i)
@@ -124,7 +128,6 @@ static char	*ms_join_three(char *s1, char *s2, char *s3)
 		dst[i + j] = s2[j];
 	while (s3 && s3[++k])
 		dst[i + j + k] = s3[k];
-	dst[i + j + k] = '\0';
 	free(s1);
 	free(s3);
 	return (dst);
@@ -134,7 +137,7 @@ static char	*malloc_join_three(char *s1, char *s2, char *s3)
 {
 	char	*dst;
 
-	dst = malloc(sizeof(char) * (1 + ft_strlen_to(s1, '\0')
+	dst = ft_calloc(sizeof(char), (1 + ft_strlen_to(s1, '\0')
 				+ ft_strlen_to(s2, '\0') + ft_strlen_to(s3, '\0')));
 	if (!dst || !s1 || !s3)
 	{
