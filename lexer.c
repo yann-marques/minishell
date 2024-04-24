@@ -29,44 +29,21 @@ t_token	*set_tokens(char *str, t_ms *head)
 	return (tokens);
 }
 
-t_ms	*init_head(t_env *env)
+int	lexer(t_ms *head)
 {
-	t_ms	*head;
-
-	head = malloc(sizeof(t_ms));
-	if (!head)
-		return (NULL);
-	head->env = env;
-	head->tokens = NULL;
-	head->pids = NULL;
-	return (head);
-}
-
-t_ms	*lexer(t_env *env)
-{
-	t_ms	*head;
 	char	*line;
 
-	head = init_head(env);
-	if (!head)
-		return (NULL);
 	line = prompt(head);
 	if (!line || !check_quotes(line))
-	{
-		free(head);
-		return (NULL);
-	}
+		return (0);
 	head->tokens = set_tokens(line, head);
 	if (!head->tokens)
-	{
-		free(head);
-		return (NULL);
-	}
+		return (0);
 	if (!del_quotes(head->tokens))
 	{
 		tokens_clear(head->tokens);
-		free(head);
-		return (NULL);
+		return (0);
 	}
-	return (head);
+	head->token_count = 0;
+	return (1);
 }

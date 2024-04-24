@@ -106,7 +106,7 @@ t_env	*env_new(char *env);
 void	put_env_var(t_env **env, t_env *new);
 int		pids_addback(t_pids **pids, int pid);
 //lexer
-t_ms	*lexer(t_env *env);
+int		lexer(t_ms *head);
 char	*prompt(t_ms *head);
 void	set_type(t_token *tokens);
 char	**var_to_value(char **tab, t_ms *head);

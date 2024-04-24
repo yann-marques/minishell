@@ -4,7 +4,6 @@ static int	replace_var_call(t_ms *head, char **str, int k, int i);
 static int	check_if_replace(char *str, int i_var);
 static char	*find_var(char *str, int i);
 static char	*ms_join_three(char *s1, char *s2, char *s3);
-static char	*malloc_join_three(char *s1, char *s2, char *s3);
 
 char	**var_to_value(char **tab, t_ms *head)
 {
@@ -19,7 +18,7 @@ char	**var_to_value(char **tab, t_ms *head)
 		{
 			if (check_if_replace(tab[k], i))
 			{
-				if (!replace_var_call(head, tab, k, i))
+				if (!replace_var_call(head, tab, k, i) || !tab[k][0])
 				{
 					strtab_clear(tab);
 					return (NULL);
@@ -54,11 +53,6 @@ static int	replace_var_call(t_ms *head, char **str, int k, int i)
 	if (!var)
 		return (0);
 	free(str[k]);
-	// if (!var[0])
-	// {
-	// 	free(var);
-	// 	var = NULL;
-	// }
 	str[k] = var;
 	return (1);
 }
@@ -112,30 +106,7 @@ static char	*find_var(char *str, int i)
 static char	*ms_join_three(char *s1, char *s2, char *s3)
 {
 	char	*dst;
-	int		i;
-	int		j;
-	int		k;
-
-	dst = malloc_join_three(s1, s2, s3);
-	if (!dst)
-		return (NULL);
-	i = -1;
-	j = -1;
-	k = -1;
-	while (s1 && s1[++i])
-		dst[i] = s1[i];
-	while (s2 && s2[++j])
-		dst[i + j] = s2[j];
-	while (s3 && s3[++k])
-		dst[i + j + k] = s3[k];
-	free(s1);
-	free(s3);
-	return (dst);
-}
-
-static char	*malloc_join_three(char *s1, char *s2, char *s3)
-{
-	char	*dst;
+	int i;
 
 	dst = ft_calloc(sizeof(char), (1 + ft_strlen_to(s1, '\0')
 				+ ft_strlen_to(s2, '\0') + ft_strlen_to(s3, '\0')));
@@ -147,7 +118,14 @@ static char	*malloc_join_three(char *s1, char *s2, char *s3)
 			free(s1);
 		if (s3)
 			free(s3);
-		return (0);
+		return (NULL);
 	}
+	ft_strlcpy(dst, s1, ft_strlen(s1) + 1);
+	if (s2)
+		ft_strlcpy(&dst[ft_strlen(dst)], s2, ft_strlen(s2) + 1);
+	ft_strlcpy(&dst[ft_strlen(dst)], s3, ft_strlen(s3) + 1);
+	(void)i;
+	free(s1);
+	free(s3);
 	return (dst);
 }
