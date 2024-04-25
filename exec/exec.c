@@ -115,18 +115,15 @@ int	multi_commands(t_ms *head)
 	t_token	*tk;
 
 	tk = get_n_token(head->tokens, head->token_count);
-	if (do_needed_files(head) == -1)
-		return (0);
-	//path_doc = NULL;
-	//if (do_here_doc(head, tk, path_doc))
-	//	return (0);
+	do_needed_files(head);
 	while (tk)
 	{
 		if (is_cmd_rdout(tk))
 		{
 			pids_addback(&head->pids, pipe_and_exec(head, tk, NULL, 0));
-			if (do_redirection_out(head, tk->next) == -1)
+			if (do_redirection_out(head, tk->next) == -42)
 			{
+				pids_addback(&head->pids, -42);
 				if (!set_tk_at_next_cmd(tk))
 					return (1);
 				else
@@ -134,11 +131,14 @@ int	multi_commands(t_ms *head)
 			}
 			if (!set_tk_at_next_cmd(tk))
 				return (1);
+			else
+				continue ;
 		}
 		if (is_cmd_rdin(tk))
 		{
-			if (do_redirection_in(head, tk->next) == -1)
+			if (do_redirection_in(head, tk->next) == -42)
 			{
+				pids_addback(&head->pids, -42);
 				if (!set_tk_at_next_cmd(tk))
 					return (1);
 				else
@@ -187,6 +187,8 @@ void	command_manager(t_ms *head)
 			if (WIFEXITED(status))
 				head->last_status = WEXITSTATUS(status);
 		}
+		if (tmp->pid == -42)
+			head->last_status = EXIT_FAILURE;
 		tmp = tmp->next;
 	}
 	pids_clear(head->pids);

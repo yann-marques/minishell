@@ -71,8 +71,8 @@ static int	get_next_sep(char *str, char *sep)
 		{
 			while (str[i] == ' ')
 				++i;
-			i += get_next_sep(&str[i], " ");
-			// i += get_next_sep(&str[i], sep); //fix pour patch un probleme de parsing:  cat <./test_files/infile_big ./test_files/infile
+			i += get_next_sep(&str[i], " |<>");
+			//i += get_next_sep(&str[i], sep); //fix pour patch un probleme de parsing:  cat <./test_files/infile_big ./test_files/infile
 		}
 		return (i);
 	}

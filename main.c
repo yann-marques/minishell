@@ -27,6 +27,8 @@ t_ms	*init_head(char **envp)
 	}
 	head->tokens = NULL;
 	head->pids = NULL;
+	head->last_status = 0;
+	head->error_file = 0;
 	return (head);
 }
 
@@ -49,7 +51,7 @@ int	main(int ac, char **av, char **envp)
 	{
 		if (!head->tokens && !lexer(head))
 			continue ;
-		display_tokens(head->tokens);
+		// display_tokens(head->tokens);
 		command_manager(head);
 		tokens_clear(head->tokens);
 		head->tokens = NULL;
