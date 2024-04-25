@@ -138,9 +138,9 @@ void	pids_clear(t_pids *pids);
 void	free_env(t_env *env);
 
 //EXEC: redirect utils
-void	redirection_out(t_token *token);
-void	do_redirection_out(t_ms *head, t_token *tk);
-void	redirection_in(char *path);
+void	redirection_out(int fd_out);
+int		do_redirection_out(t_ms *head, t_token *tk);
+int		redirection_in(t_token *token);
 int		do_redirection_in(t_ms *head, t_token *token);
 char	*here_doc(t_ms *head, t_token *token);
 

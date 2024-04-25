@@ -1,41 +1,44 @@
 #include "../minishell.h"
 #include "../gnl/get_next_line.h"
 
-int	is_tvnext(t_token *token, t_type type)
+int	is_rdin(t_token *tk)
 {
-	if (!token)
-		return (0);
-	if (!token->next)
-		return (0);
-	if (!token->next->value[1])
-		return (0);
-	if (token->next->type != type)
-		return (0);
-	return (1);
+	if (tk->type == _redirection && tk->value[0][0] == '<' && !tk->value[0][1])
+		return (1);
+	return (0);
 }
 
-int	is_tnext(t_token *token, t_type type)
+int	is_rdout(t_token *tk)
 {
-	if (!token)
-		return (0);
-	if (!token->next)
-		return (0);
-	if (token->next->type != type)
-		return (0);
-	return (1);
+	if (tk->type == _redirection && tk->value[0][0] == '>')
+		return (1);
+	if (tk->type == _append)
+		return (1);
+	return (0);
 }
-int	is_tprev(t_token *token, t_type type)
+int	is_cmd_rdout(t_token *tk)
 {
-	if (!token)
-		return (0);
-	if (!token->prev)
-		return (0);
-	if (token->prev->type != type)
-		return (0);
-	return (1);
+	if (tk->type == _cmd_grp && tk->next && is_rdout(tk->next))
+		return (1);
+	return (0);
 }
 
-int	do_here_doc(t_ms *head, t_token *token, char *path_doc)
+int	is_cmd_rdin(t_token *tk)
+{
+	if (tk->type == _cmd_grp && tk->next && is_rdin(tk->next))
+		return (1);
+	return (0);
+}
+
+int	is_cmd(t_token *tk)
+{
+	if (tk->type == _cmd_grp)
+		return (1);
+	return (0);
+}
+
+
+/* int	do_here_doc(t_ms *head, t_token *token, char *path_doc)
 {
 	if (token->type == _delimiter && token->value[1])
 	{
@@ -56,37 +59,109 @@ int	do_here_doc(t_ms *head, t_token *token, char *path_doc)
 		token = token->next->next->next;
 	}
 	return (0);
+} */
+
+int	have_next_pipe(t_token *token)
+{
+	t_token *tmp;
+
+	if (token->next)
+		tmp = token->next;
+	else
+		return (0);
+	while (tmp)
+	{
+		if (tmp->type == _pipe)
+			return (1);
+		tmp = tmp->next;
+	}
+	return (0);
+}
+
+int	set_tk_at_next_cmd(t_token *token)
+{
+	t_token *tmp;
+
+	if (!have_next_pipe(token))
+		return (0);
+	if (token->next)
+		tmp = token->next;
+	else
+		return (0);
+	while (tmp)
+	{
+		if (tmp->type == _cmd_grp)
+		{
+			*token = *tmp;
+			return (1);
+		}
+		tmp = tmp->next;
+	}
+	return (0);
+}
+
+int	next_redirect(t_token *tk)
+{
+	if (!tk->next)
+		return (0);
+	if (tk->next->type == _redirection || tk->next->type == _append)
+		return (1);
+	return (0);
 }
 
 int	multi_commands(t_ms *head)
 {
-	char	*path_doc;
+	//char	*path_doc;
 	t_token	*tk;
-	t_token	*tkn;
 
 	tk = get_n_token(head->tokens, head->token_count);
-	do_needed_files(head);
-	path_doc = NULL;
-	if (do_here_doc(head, tk, path_doc))
+	if (do_needed_files(head) == -1)
 		return (0);
+	//path_doc = NULL;
+	//if (do_here_doc(head, tk, path_doc))
+	//	return (0);
 	while (tk)
 	{
-		tkn = tk->next;
-		if (tk->type == _cmd_grp && is_tnext(tk, _pipe) && (is_tnext(tkn, _cmd_grp) || is_tnext(tkn, _pipe)))
-			pids_addback(&head->pids, pipe_and_exec(head, tk, path_doc, 0));
-		else if ( (tk->type == _redirection || (tk->type == _cmd_grp && is_tnext(tk, _redirection)) ) && (tk->value[0][0] == '<' || (tkn && tkn->value[0][0] == '<')))
+		if (is_cmd_rdout(tk))
+		{
+			pids_addback(&head->pids, pipe_and_exec(head, tk, NULL, 0));
+			if (do_redirection_out(head, tk->next) == -1)
+			{
+				if (!set_tk_at_next_cmd(tk))
+					return (1);
+				else
+					continue ;
+			}
+			if (!set_tk_at_next_cmd(tk))
+				return (1);
+		}
+		if (is_cmd_rdin(tk))
+		{
+			if (do_redirection_in(head, tk->next) == -1)
+			{
+				if (!set_tk_at_next_cmd(tk))
+					return (1);
+				else
+					continue ;
+			}
+			if (have_next_pipe(tk))
+				pids_addback(&head->pids, pipe_and_exec(head, tk, NULL, 0));
+			else
+				pids_addback(&head->pids, pipe_and_exec(head, tk, NULL, 1));
+			if (!set_tk_at_next_cmd(tk))
+				return (1);
+			else
+				continue ;
+		}
+		if (is_rdin(tk))
 			do_redirection_in(head, tk);
-		else if (tk->type == _redirection && tk->value[0][0] == '>')
+		if (is_rdout(tk))
 			do_redirection_out(head, tk);
-		else if (tk->type == _cmd_grp && is_tnext(tk, _redirection) && tkn->value[0][0] == '>')
-			do_redirection_out(head, tk);
-		else if (tk->type == _cmd_grp && is_tnext(tk, _append))
-			do_redirection_out(head, tk);
-		else if (tk->type == _cmd_grp)
-			pids_addback(&head->pids, pipe_and_exec(head, tk, path_doc, 1));
-		head->token_count += 1;
-		if (tk)
-			tk = tk->next;
+		if (is_cmd(tk) && have_next_pipe(tk))
+			pids_addback(&head->pids, pipe_and_exec(head, tk, NULL, 0));
+		if (is_cmd(tk) && !have_next_pipe(tk) && !next_redirect(tk))
+			pids_addback(&head->pids, pipe_and_exec(head, tk, NULL, 1));
+		tk = tk->next;
 	}
 	return (0);
 }

@@ -41,25 +41,25 @@ int	do_needed_files(t_ms *head)
 	tmp = head->tokens;
 	while (tmp)
 	{
-		if (tmp->type == _redirection)
+		if (tmp->type == _redirection && tmp->value[0][0] == '>')
 		{
-			if (tmp->value[0][0] == '>' && access(tmp->value[1], F_OK) != 0)
+			outfile = open(tmp->value[1], O_CREAT | O_WRONLY | O_TRUNC, 0644);
+			if (outfile == -1)
 			{
-				outfile = open(tmp->value[1], O_CREAT | O_WRONLY | O_TRUNC, 0644);
-				if (!outfile)
-					return (-1);
-				close(outfile);
+				head->last_status = EXIT_FAILURE;
+				return (perror_str(" ", -1));
 			}
+			close(outfile);
 		}
 		if (tmp->type == _append)
 		{
-			if (access(tmp->value[1], F_OK) != 0)
+			outfile = open(tmp->value[1], O_CREAT | O_WRONLY | O_APPEND, 0644);
+			if (outfile == -1)
 			{
-				outfile = open(tmp->value[1], O_CREAT | O_WRONLY | O_APPEND, 0644);
-				if (!outfile)
-					perror_exit(" ", -1);
-				close(outfile);
+				head->last_status = EXIT_FAILURE;
+				return (perror_str(" ", -1));
 			}
+			close(outfile);
 		}
 		tmp = tmp->next;
 	}

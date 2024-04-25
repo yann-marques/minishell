@@ -6,16 +6,10 @@ int perror_str(char *str, int status)
 	if (str)
 	{
 		perror(str);
-		if (status != -1)
-			return (status);
-		else
-			return (EXIT_FAILURE);
+		return (status);
 	}
 	perror("");
-	if (status != -1)
-		return (status);
-	else
-		return (EXIT_FAILURE);
+	return (status);
 }
 
 int	error_str(char *str)

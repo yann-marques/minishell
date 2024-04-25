@@ -1,174 +1,100 @@
 #include "../minishell.h"
 #include "../gnl/get_next_line.h"
 
-void	redirection_out(t_token *token)
+int	check_file_out(t_token *token)
 {
 	int		outfile;
-	char	buffer[4096];
-	ssize_t	bytes_read;
 
 	if (token->type == _redirection)
 		outfile = open(token->value[1], O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	if (token->type == _append)
 		outfile = open(token->value[1], O_CREAT | O_WRONLY | O_APPEND, 0644);
-	if (!outfile)
-		error_exit("Error with the outfile", -1);
+	if (outfile == -1)
+		return (-1);
+	return (outfile);
+}
+
+void	redirection_out(int fd_out)
+{
+	char	buffer[4096];
+	ssize_t	bytes_read;
+
 	bytes_read = read(STDIN_FILENO, buffer, sizeof(buffer));
 	while (bytes_read > 0)
 	{
-		write(outfile, buffer, bytes_read);
+		write(fd_out, buffer, bytes_read);
 		bytes_read = read(STDIN_FILENO, buffer, sizeof(buffer));
 	}
-	close(outfile);
+	close(fd_out);
 }
 
-void	redirection_in(char *path)
+int	redirection_in(t_token *token)
 {
 	int	infile;
 
-	if (!path)
-		error_exit("Error path redirection in NULL", -1);
-	infile = open(path, O_RDONLY, 0644);
-	if (!infile)
-		error_exit("Error with infile", -1);
+	if (!token->value[1])
+		return (-1);
+	infile = open(token->value[1], O_RDONLY, 0644);
+	if (infile == -1)
+	{
+		infile = open("/dev/null", O_RDONLY, 0644);
+		if (infile == -1)
+			perror_exit(" ", EXIT_FAILURE);
+		dup2(infile, STDIN_FILENO);
+		return (-1);
+	}
 	dup2(infile, STDIN_FILENO);
 	close(infile);
+	return (1);
 }
 
-void	do_redirection_out(t_ms *head, t_token *tk)
+int	do_redirection_out(t_ms *head, t_token *tk)
 {
 	t_token *tmp;
-	t_token *tmp_prev;
-	int		i;
+	int		fd_out;
 
-	if (tk->type == _redirection)
+	(void) head;
+	tmp = tk;
+	fd_out = -1;
+	while(tmp)
 	{
-		tmp = tk;
-		i = 1;
-		while (tmp && tmp->type == _redirection)
+		if ((tmp->type == _redirection && tmp->value[0][0] == '>') || tmp->type == _append)
 		{
-			while (tmp->value[i])
-				i++;
-			if (i > 1)
-				i--;
-			if (access(tmp->value[i], W_OK) != 0)
-				perror_exit(" ", -1);
-			tmp_prev = tmp;
-			tmp = tmp->next;
-			head->token_count += 1;
-			i = 1;
+			fd_out = check_file_out(tmp);
+			if (fd_out == -1)
+			{
+				head->last_status = EXIT_FAILURE;
+				return (perror_str(" ", -1));
+			}
 		}
-		redirection_out(tmp_prev);
+		else
+			break ;
+		tmp = tmp->next;
 	}
-	if (tk->type == _cmd_grp)
-	{
-		tmp = tk->next;
-		i = 1;
-		while (tmp && tmp->type == _redirection)
-		{
-			while (tmp->value[i])
-				i++;
-			if (i > 1)
-				i--;
-			if (access(tmp->value[i], W_OK) != 0)
-				perror_exit(" ", -1);
-			tmp_prev = tmp;
-			tmp = tmp->next;
-			head->token_count += 1;
-			i = 1;
-		}
-		pids_addback(&head->pids, pipe_and_exec(head, tk, NULL, 0));
-		redirection_out(tmp_prev);
-		*tk = *tmp_prev;
-		head->token_count += 1;
-	}
+	if (fd_out != -1)
+		redirection_out(fd_out);
+	return (1);
 }
 
 int	do_redirection_in(t_ms *head, t_token *tk)
 {
-	t_token	*tkn;
 	t_token *tmp;
-	t_token *tmp_prev;
-	int		error;
-	int		i;
 
-	error = 0;
-	if (tk->type == _redirection)
+	(void) head;
+	tmp = tk;
+	while(tmp)
 	{
-		tmp = tk;
-		i = 1;
-		while (tmp && tmp->type == _redirection && tmp->value[0][0] == '<')
+		if (tmp->type == _redirection && tmp->value[0][0] == '<')
 		{
-			while (tmp->value[i])
-				i++;
-			if (i > 1)
-				i--;
-			if (access(tmp->value[i], R_OK) != 0)
+			if (redirection_in(tmp) == -1)
 			{
-				redirection_in("/dev/null");
-				perror_str(" ", -1);
-			}
-			else
-				redirection_in(tmp->value[i]);
-			tmp_prev = tmp;
-			tmp = tmp->next;
-			head->token_count += 1;
-			i = 1;
-		}
-		if (tmp && tmp->type == _pipe && tmp->next && tmp->next->type == _cmd_grp && tmp->next->next && tmp->next->next->type == _pipe)
-			pids_addback(&head->pids, pipe_and_exec(head, tmp->next, NULL, 0));
-		if (tmp && tmp->next && tmp->next->next)
-			*tk = *tmp->next->next;
-		else
-			*tk = *tmp_prev;
-		head->token_count += 1;
-	}
-	if (tk->type == _cmd_grp)
-	{
-		tkn = tk->next;
-		tmp = tkn;
-		i = 1;
-		while (tmp && tmp->type == _redirection && tmp->value[0][0] == '<')
-		{
-			while (tmp->value[i])
-				i++;
-			if (i > 1)
-				i--;
-			if (access(tmp->value[i], R_OK) != 0)
-			{
-				error = 1;
-				redirection_in("/dev/null");
-				perror_str(" ", -1);
-			}
-			else
-				redirection_in(tmp->value[i]);
-			tmp_prev = tmp;
-			tmp = tmp->next;
-			head->token_count += 1;
-			i = 1;
-		}
-		if (tmp && tmp->type == _pipe && tmp->next && tmp->next->type == _cmd_grp)
-		{
-			pids_addback(&head->pids, pipe_and_exec(head, tk, NULL, 0));
-			*tk = *tmp;
-			head->token_count += 1;
-		}
-		else
-		{
-			if (error)
-			{
-				*tk = *tmp_prev;
 				head->last_status = EXIT_FAILURE;
-			}
-			else
-			{
-				if (tmp && tmp->type == _redirection && (tmp->value[0][0] == '>' || (tmp->value[0][0] == '>' && tmp->value[0][1] == '>')))
-					pids_addback(&head->pids, pipe_and_exec(head, tk, NULL, 0));
-				else
-					pids_addback(&head->pids, pipe_and_exec(head, tk, NULL, 1));
-				*tk = *tmp_prev;
+				return (perror_str(" ", -1));
 			}
 		}
+		else
+			break ;
+		tmp = tmp->next;
 	}
 	return (1);
 }
