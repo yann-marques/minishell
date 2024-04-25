@@ -28,7 +28,6 @@ t_ms	*init_head(char **envp)
 	head->tokens = NULL;
 	head->pids = NULL;
 	head->last_status = 0;
-	head->error_file = 0;
 	return (head);
 }
 
