@@ -37,17 +37,21 @@ int	do_needed_files(t_ms *head)
 {
 	int		outfile;
 	t_token	*tmp;
+	int		pipes;
 
 	tmp = head->tokens;
+	pipes = 0;
 	while (tmp)
 	{
+		if (tmp->type == _pipe)
+			pipes++;
 		if (tmp->type == _redirection && tmp->value[0][0] == '>' && !tmp->value[0][1])
 		{
 			outfile = open(tmp->value[1], O_CREAT | O_WRONLY | O_TRUNC, 0644);
 			if (outfile != -1)
 				close(outfile);
 			else
-				return (0);
+				return (pipes);
 		}
 		if (tmp->type == _redirection && tmp->value[0][0] == '<' && !tmp->value[0][1])
 		{
@@ -55,7 +59,7 @@ int	do_needed_files(t_ms *head)
 			if (outfile != -1)
 				close(outfile);
 			else
-				return (0);
+				return (pipes);
 		}
 		if (tmp->type == _append)
 		{
@@ -63,9 +67,9 @@ int	do_needed_files(t_ms *head)
 			if (outfile != -1)
 				close(outfile);
 			else
-				return (0);
+				return (pipes);
 		}
 		tmp = tmp->next;
 	}
-	return (1);
+	return (-1);
 }

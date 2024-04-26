@@ -62,7 +62,10 @@ int	do_redirection_out(t_ms *head, t_token *tk)
 		{
 			fd_out = check_file_out(tmp);
 			if (fd_out == -1)
-				return (perror_str(" ", -42));
+			{
+				pids_addback(&head->pids, -42);
+				return (perror_str(" ", -1));
+			}
 		}
 		else
 			break ;
@@ -84,7 +87,10 @@ int	do_redirection_in(t_ms *head, t_token *tk)
 		if (tmp->type == _redirection && tmp->value[0][0] == '<')
 		{
 			if (redirection_in(tmp) == -1)
-				return (perror_str(" ", -42));
+			{
+				pids_addback(&head->pids, -42);
+				return (perror_str(" ", -1));
+			}
 		}
 		else
 			break ;

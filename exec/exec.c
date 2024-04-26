@@ -78,6 +78,25 @@ int	have_next_pipe(t_token *token)
 	return (0);
 }
 
+int	have_next_redi(t_token *token)
+{
+	t_token *tmp;
+
+	if (token->next)
+		tmp = token->next;
+	else
+		return (0);
+	while (tmp)
+	{
+		if (tmp->type == _append)
+			return (1);
+		if (tmp->type == _redirection)
+			return (1);
+		tmp = tmp->next;
+	}
+	return (0);
+}
+
 int	set_tk_at_next_cmd(t_token *token)
 {
 	t_token *tmp;
@@ -109,26 +128,42 @@ int	next_redirect(t_token *tk)
 	return (0);
 }
 
+int	next_redirect_out(t_token *tk)
+{
+	if (!tk->next)
+		return (0);
+	if ((tk->next->type == _redirection && tk->next->value[0][0] == '>') || tk->next->type == _append)
+		return (1);
+	return (0);
+}
+
 int	multi_commands(t_ms *head)
 {
 	//char	*path_doc;
+	int		error_pipe;
+	int		pipe;
 	t_token	*tk;
 
 	tk = get_n_token(head->tokens, head->token_count);
-	do_needed_files(head);
+	error_pipe = do_needed_files(head);
+	pipe = 0;
 	while (tk)
 	{
+		if (tk->type == _pipe)
+			pipe++;
+		if (pipe == error_pipe)
+		{
+			if (tk->next)
+				tk = tk->next;
+			pids_addback(&head->pids, perror_str(" ", -42));
+			while(tk && tk->type != _pipe)
+				tk = tk->next;
+			continue ;
+		}
 		if (is_cmd_rdout(tk))
 		{
 			pids_addback(&head->pids, pipe_and_exec(head, tk, NULL, 0));
-			if (do_redirection_out(head, tk->next) == -42)
-			{
-				pids_addback(&head->pids, -42);
-				if (!set_tk_at_next_cmd(tk))
-					return (1);
-				else
-					continue ;
-			}
+			do_redirection_out(head, tk->next);
 			if (!set_tk_at_next_cmd(tk))
 				return (1);
 			else
@@ -136,27 +171,33 @@ int	multi_commands(t_ms *head)
 		}
 		if (is_cmd_rdin(tk))
 		{
-			if (do_redirection_in(head, tk->next) == -42)
-			{
-				pids_addback(&head->pids, -42);
-				if (!set_tk_at_next_cmd(tk))
-					return (1);
-				else
-					continue ;
-			}
-			if (have_next_pipe(tk))
+			do_redirection_in(head, tk->next);
+			if (have_next_pipe(tk) || next_redirect_out(tk->next))
 				pids_addback(&head->pids, pipe_and_exec(head, tk, NULL, 0));
 			else
 				pids_addback(&head->pids, pipe_and_exec(head, tk, NULL, 1));
-			if (!set_tk_at_next_cmd(tk))
-				return (1);
-			else
-				continue ;
+			if (tk->next)
+				tk = tk->next->next;
+			continue;
 		}
 		if (is_rdin(tk))
+		{
 			do_redirection_in(head, tk);
+			if (tk->next)
+			{
+				tk = tk->next;
+				continue ;
+			}
+		}
 		if (is_rdout(tk))
+		{
 			do_redirection_out(head, tk);
+			if (tk->next)
+			{
+				tk = tk->next;
+				continue ;
+			}
+		}
 		if (is_cmd(tk) && have_next_pipe(tk))
 			pids_addback(&head->pids, pipe_and_exec(head, tk, NULL, 0));
 		if (is_cmd(tk) && !have_next_pipe(tk) && !next_redirect(tk))
@@ -184,6 +225,8 @@ void	command_manager(t_ms *head)
 			if (g_sig_received)
 				kill(tmp->pid, g_sig_received);
 			waitpid(tmp->pid, &status, 0);
+			if (status == SIGPIPE)
+				perror_str(" Broken pipe", -1);
 			if (WIFEXITED(status))
 				head->last_status = WEXITSTATUS(status);
 		}
