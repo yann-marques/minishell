@@ -151,7 +151,9 @@ int		env_size(t_env *env);
 
 //EXEC: files utils
 char	*get_random_tmp_path(void);
-int		do_needed_files(t_ms *head);
+int		do_needed_files(t_token *token);
+int		is_file_error_in_pipe(t_token *token);
+t_token	*get_next_pipe(t_token *tk);
 
 //EXEC: exec.c
 int		multi_commands(t_ms *head);
@@ -176,5 +178,7 @@ int		error_str(char *str);
 int		perror_str(char *str, int status);
 
 t_ms	*send_head(t_ms *new_head);
+
+void	display_tokens(t_token *tokens);
 
 #endif

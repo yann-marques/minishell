@@ -85,13 +85,7 @@ int	do_redirection_in(t_ms *head, t_token *tk)
 	while(tmp)
 	{
 		if (tmp->type == _redirection && tmp->value[0][0] == '<')
-		{
-			if (redirection_in(tmp) == -1)
-			{
-				pids_addback(&head->pids, -42);
-				return (perror_str(" ", -1));
-			}
-		}
+			redirection_in(tmp);
 		else
 			break ;
 		tmp = tmp->next;
