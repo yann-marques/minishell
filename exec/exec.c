@@ -174,8 +174,7 @@ int	multi_commands(t_ms *head)
 		if (is_heredoc(tk))
 		{
 			path_doc = here_doc(head, tk);
-			if (tk->next)
-				tk = tk->next;
+			tk = tk->next;
 			continue ;
 		}
 		if (is_cmd_rdout(tk))
