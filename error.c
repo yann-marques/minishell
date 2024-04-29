@@ -51,19 +51,31 @@ int is_handle_eror(t_ms *head)
 			print_error_message_token(tmp);
 			return (1);
 		}
-		if (tmp->type == _pipe && tmp->next && tmp->next->type != _pipe)
+		if (tmp->type == _pipe && tmp->next && is_rdout(tmp->next))
 		{
-			tmp = tmp->next;
-			continue;
-			i++;
+			if (tmp->next->value[1] && tmp->next->value[1][0] != '>')
+			{
+				tmp = tmp->next;
+				continue;
+				i++;
+			}
+			head->last_status = 2;
+			print_error_message_token(tmp->next);
+			return (1);
 		}
-		if (!is_cmd(tmp) && tmp->next && !is_cmd(tmp->next))
+		if (is_rdin(tmp) && !tmp->value[1] && tmp->next)
+		{
+			head->last_status = 2;
+			print_error_message_token(tmp->next);
+			return (1);
+		}
+		if (is_rdin(tmp) && !tmp->value[1])
 		{
 			head->last_status = 2;
 			print_error_message_token(tmp);
 			return (1);
 		}
-		if (!is_cmd(tmp) && !tmp->next)
+		if (!is_cmd(tmp) && (!is_rdin(tmp) && !is_rdout(tmp)) && !tmp->next)
 		{
 			head->last_status = 2;
 			print_error_message_token(tmp);
