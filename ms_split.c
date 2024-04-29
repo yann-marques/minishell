@@ -64,14 +64,15 @@ static int	get_next_sep(char *str, char *sep)
 	i = 0;
 	if (ft_strchr(sep, str[i]))
 	{
-		++i;
+		if (str[++i] == '|')
+			return (i);
 		if (ft_strchr(sep, str[i]))
 			++i;
 		if (str[0] == '<' || str[0] == '>')
 		{
 			while (str[i] == ' ')
 				++i;
-			i += get_next_sep(&str[i], " |<>");
+			i += get_next_sep(&str[i], " <|>");
 			//i += get_next_sep(&str[i], sep); //fix pour patch un probleme de parsing:  cat <./test_files/infile_big ./test_files/infile
 		}
 		return (i);
