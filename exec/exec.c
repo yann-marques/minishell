@@ -1,61 +1,6 @@
 #include "../minishell.h"
 #include "../gnl/get_next_line.h"
 
-int	is_cmd(t_token *tk)
-{
-	if (tk->type == _cmd_grp)
-		return (1);
-	return (0);
-}
-int	is_rdin(t_token *tk)
-{
-	if (tk->value[0][1])
-		return (0);
-	if (tk->type == _redirection && tk->value[0][0] == '<')
-		return (1);
-	return (0);
-}
-
-int	is_rdout(t_token *tk)
-{
-	if (tk->value[0][2])
-		return (0);
-	if (tk->type == _redirection && tk->value[0][0] == '>')
-		return (1);
-	if (tk->type == _append)
-		return (1);
-	return (0);
-}
-int	is_cmd_rdout(t_token *tk)
-{
-	if (is_cmd(tk) && tk->next && is_rdout(tk->next))
-		return (1);
-	return (0);
-}
-
-int	is_cmd_rdin(t_token *tk)
-{
-	if (is_cmd(tk) && tk->next && is_rdin(tk->next))
-		return (1);
-	return (0);
-}
-
-int	is_heredoc(t_token *tk)
-{
-	if (tk->value[0][2])
-		return (0);
-	if (tk->type == _delimiter)
-		return (1);
-	return (0);
-}
-
-int	is_cmd_heredoc(t_token *tk)
-{
-	if (is_cmd(tk) && tk->next && is_heredoc(tk->next))
-		return (1);
-	return (0);
-}
-
 int	have_next_pipe(t_token *token)
 {
 	t_token *tmp;
@@ -138,7 +83,7 @@ int	multi_commands(t_ms *head)
 	t_token	*tk;
 	int		infile;
 
-	tk = get_n_token(head->tokens, head->token_count);
+	tk = head->tokens;
 	do_needed_files(tk);
 	path_doc = NULL;
 	while (tk)

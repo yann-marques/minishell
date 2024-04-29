@@ -50,8 +50,9 @@ int	main(int ac, char **av, char **envp)
 	{
 		if (!head->tokens && !lexer(head))
 			continue ;
-		// display_tokens(head->tokens);
-		command_manager(head);
+		display_tokens(head->tokens);
+		if (!is_handle_eror(head))
+			command_manager(head);
 		tokens_clear(head->tokens);
 		head->tokens = NULL;
 	}

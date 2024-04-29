@@ -137,6 +137,16 @@ void	tokens_clear(t_token *tokens);
 void	pids_clear(t_pids *pids);
 void	free_env(t_env *env);
 
+//IS TOKEN TYPES (BOOL FUNCTIONS)
+int		is_cmd(t_token *tk);
+int		is_rdin(t_token *tk);
+int		is_rdout(t_token *tk);
+int		is_heredoc(t_token *tk);
+
+int		is_cmd_rdout(t_token *tk);
+int		is_cmd_rdin(t_token *tk);
+int		is_cmd_heredoc(t_token *tk);
+
 //EXEC: redirect utils
 void	redirection_out(int fd_out);
 int		do_redirection_out(t_ms *head, t_token *tk);
@@ -176,6 +186,7 @@ void	perror_exit(char *str, int status);
 //error
 int		error_str(char *str);
 int		perror_str(char *str, int status);
+int		is_handle_eror(t_ms *head);
 
 t_ms	*send_head(t_ms *new_head);
 
