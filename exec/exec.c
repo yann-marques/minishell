@@ -81,13 +81,21 @@ int	multi_commands(t_ms *head)
 {
 	char	*path_doc;
 	t_token	*tk;
+	t_token	*tk_export;
 	int		infile;
 
 	tk = head->tokens;
 	do_needed_files(tk);
 	path_doc = NULL;
+	tk_export = NULL;
 	while (tk)
 	{
+		if (ft_strcmp(tk->value[0], "export") == 0 && tk->value[1])
+		{
+			tk_export = tk;
+			tk = tk->next;
+			continue ;
+		}
 		if (is_file_error_in_pipe(tk))
 		{
 			pids_addback(&head->pids, perror_str(" ", -42));
@@ -167,6 +175,8 @@ int	multi_commands(t_ms *head)
 			pids_addback(&head->pids, pipe_and_exec(head, tk, path_doc, 1));
 		tk = tk->next;
 	}
+	if (tk_export)
+		pids_addback(&head->pids, pipe_and_exec(head, tk_export, path_doc, 1));
 	return (0);
 }
 
