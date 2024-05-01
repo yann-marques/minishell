@@ -1,67 +1,77 @@
 #include "minishell.h"
 #include "gnl/get_next_line.h"
 
-int	print_error_message_token(t_ms *head, t_token *token)
+char *print_error_message_token(t_token *token)
 {
-	char	*error_line;
 	char	*token_name;
 	int		i;
 	t_token *tmp;
 
 
 	if (!token)
-		return (1);
+		return (NULL);
 	tmp = token;
 	i = 0;
 	while (tmp->value[i])
 		i++;
 	if (i != 0)
 		i--;
-	token_name = ft_strjoin(tmp->value[i], "'\n");
-	if (!token_name)
-		perror_exit("", -1);
+	token_name = tmp->value[0];
+	if (is_rdout(tmp) && !tmp->value[1] && tmp->next && is_rdout(tmp->next) && !tmp->next->value[1])
+		token_name = ">";
 	if (tmp->type == _delimiter && !tmp->value[1])
-		token_name = ft_strdup("newline'\n");
-	if ((is_rdin(tmp) || is_rdout(tmp)) && !tmp->value[1])
-		token_name = ft_strdup("newline'\n");
-	if ((is_rdin(tmp) || is_rdout(tmp)) && !tmp->value[1] && tmp->prev && tmp->prev->type == _redirection)
-		token_name = ft_strdup(">'\n");	
-	error_line = ft_strjoin(" syntax error near unexpected token `", token_name);
-	free(token_name);
-	if (!error_line)
-		perror_exit("", -1);
-	write (2, error_line, ft_strlen(error_line));
-	free(error_line);
-	head->last_status = 2;
-	return (1);
+		token_name = "newline";
+	if ((is_rdin(tmp) || is_rdout(tmp)) && !tmp->value[1] && !tmp->next && (!tmp->prev || tmp->prev->type == _pipe))
+		token_name = "newline";
+	if ((is_rdin(tmp) || is_rdout(tmp)) && !tmp->value[1] && tmp->next && tmp->next->type == _pipe)
+		token_name = "|";
+	if (is_rdin(tmp) && !tmp->value[1] && tmp->prev && !tmp->next)
+		token_name = "newline";
+	return (token_name);
 }
 
 int is_handle_eror(t_ms *head)
 {
 	t_token *tmp;
+	char	*token_name;
+	char	*error_line;
 	int		i;
 
 	if (!head->tokens)
 		return (1);
 	tmp = head->tokens;
-	while (tmp->next)
-		tmp = tmp->next;
 	i = 0;
+	token_name = NULL;
 	while(tmp)
 	{
-		printf("\n[%s]\n", tmp->value[0]);
 		if (is_heredoc(tmp) && !tmp->value[1])
-			return (print_error_message_token(head, tmp));
+			token_name = print_error_message_token(tmp);
 		if (is_heredoc(tmp))
-			return (0);
+			token_name = print_error_message_token(tmp);;
 		if (i == 0 && tmp->type == _pipe)
-			return (print_error_message_token(head, tmp));
+		{
+			token_name = "|";
+			break ;
+		}
+		if (tmp->type == _pipe && !tmp->next)
+			token_name = "|";
 		if ((is_rdin(tmp) || is_rdout(tmp)) && (!tmp->value[1] || tmp->value[1][0] == '>' || tmp->value[1][0] == '<'))
-			return (print_error_message_token(head, tmp));
-		tmp = tmp->prev;
+			token_name = print_error_message_token(tmp);
+		tmp = tmp->next;
 		i++;
 	}
-	return (0);
+	if (!token_name)
+		return (0);
+	token_name = ft_strjoin(" syntax error near unexpected token `", token_name);
+	if (!token_name)
+		error_exit(" ", -1);
+	error_line = ft_strjoin(token_name, "'\n");
+	if (!error_line)
+		error_exit(" ", -1);
+	write (2, error_line, ft_strlen(error_line));
+	head->last_status = 2;
+	free(error_line);
+	return (1);
 }
 
 
