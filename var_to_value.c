@@ -106,10 +106,9 @@ static char	*find_var(char *str, int i)
 static char	*ms_join_three(char *s1, char *s2, char *s3)
 {
 	char	*dst;
-	int i;
 
 	dst = ft_calloc(sizeof(char), (1 + ft_strlen_to(s1, '\0')
-				+ ft_strlen_to(s2, '\0') + ft_strlen_to(s3, '\0')));
+				+ ft_strlen_to(s2, '\0') + ft_strlen_to(s3, '\0') + 2));
 	if (!dst || !s1 || !s3)
 	{
 		if (dst)
@@ -122,9 +121,12 @@ static char	*ms_join_three(char *s1, char *s2, char *s3)
 	}
 	ft_strlcpy(dst, s1, ft_strlen(s1) + 1);
 	if (s2)
+	{
+		ft_strlcpy(&dst[ft_strlen(dst)], "\"", 2);
 		ft_strlcpy(&dst[ft_strlen(dst)], s2, ft_strlen(s2) + 1);
+		ft_strlcpy(&dst[ft_strlen(dst)], "\"", 2);
+	}
 	ft_strlcpy(&dst[ft_strlen(dst)], s3, ft_strlen(s3) + 1);
-	(void)i;
 	free(s1);
 	free(s3);
 	return (dst);
