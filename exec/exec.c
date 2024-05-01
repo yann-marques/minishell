@@ -101,6 +101,7 @@ int	multi_commands(t_ms *head)
 				if (infile == -1)
 					perror_exit(" ", EXIT_FAILURE);
 				dup2(infile, STDIN_FILENO);
+				close(infile);
 				tk = get_next_pipe(tk);
 			}
 			continue ;
@@ -187,9 +188,15 @@ void	command_manager(t_ms *head)
 			if (g_sig_received)
 				kill(tmp->pid, g_sig_received);
 			waitpid(tmp->pid, &status, 0);
-			if (status == SIGPIPE)
-				error_str(" Broken pipe\n");
-			if (WIFEXITED(status))
+			if (WIFSIGNALED(status))
+			{
+				if (WTERMSIG(status) == SIGPIPE)
+					error_str(" Broken pipe\n");
+				if (WTERMSIG(status) == SIGQUIT)
+					error_str(" Quit (Core dumped)\n");
+				head->last_status = WTERMSIG(status) + 128;
+			}
+			else if (WIFEXITED(status))
 				head->last_status = WEXITSTATUS(status);
 		}
 		if (tmp->pid == -42)

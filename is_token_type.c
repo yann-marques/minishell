@@ -17,8 +17,6 @@ int	is_rdin(t_token *tk)
 
 int	is_rdout(t_token *tk)
 {
-	if (tk->value[0][2])
-		return (0);
 	if (tk->type == _redirection && tk->value[0][0] == '>')
 		return (1);
 	if (tk->type == _append)

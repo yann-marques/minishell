@@ -65,7 +65,11 @@ int	execute(t_ms *head, t_token *token)
 	}
 	path = find_path(head, token);
 	if (!path)
+	{
+		write(1, token->value[0], ft_strlen(token->value[0]));
+		write(1, ":", 1);
 		error_exit(" command not found", 127);
+	}
 	env = t_env_to_strtab(head->env);
 	if (!env)
 	{
@@ -76,6 +80,7 @@ int	execute(t_ms *head, t_token *token)
 	{
 		free(path);
 		strtab_clear(env);
+		write(1, token->value[0], ft_strlen(token->value[0]));
 		error_exit(" command not found", 127);
 	}
 	return (0);

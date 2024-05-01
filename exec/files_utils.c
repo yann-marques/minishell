@@ -1,11 +1,14 @@
 #include "../minishell.h"
 #include "../gnl/get_next_line.h"
 
+static const char g_table[] = "abcdefhijklmnopqrstuvwxyz0123456789_";
+
 char	*get_random_tmp_path(void)
 {
 	int				fd;
 	ssize_t			num_bytes_read;
 	unsigned char	buffer[16];
+
 	char			*path_doc;
 
 	fd = open("/dev/random", O_RDONLY);
@@ -20,6 +23,10 @@ char	*get_random_tmp_path(void)
 		perror("Error reading from /dev/random");
 		close(fd);
 		exit(EXIT_FAILURE);
+	}
+	for (int i = 0; i < 16; i++)
+	{
+		buffer[i] = g_table[buffer[i] % 37];
 	}
 	close(fd);
 	path_doc = ft_strjoin("/tmp/ms_heredoc_", (char *) buffer);
