@@ -91,17 +91,9 @@ int	pipe_and_exec(t_ms *head, t_token *token, char *path_doc, int last_command)
 	int		pid;
 	int		tmp_fd;
 	int		fd[2];
-	int		fd_null;
 	
 	if (check_if_builtins_parent(head, token))
-	{
-		fd_null = open("/dev/null", O_RDONLY, 0644);
-		if (fd_null == -1)
-			perror_exit(" ", EXIT_FAILURE);
-		dup2(fd_null, STDIN_FILENO);
-		close(fd_null);
 		return (0);
-	}
 	if (pipe(fd) == -1)
 		return (-1);
 	pid = fork();

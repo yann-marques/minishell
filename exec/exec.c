@@ -83,17 +83,24 @@ int	multi_commands(t_ms *head)
 	t_token	*tk;
 	t_token	*tk_export;
 	int		infile;
+	int		fd_null;
 
 	tk = head->tokens;
 	do_needed_files(tk);
 	path_doc = NULL;
 	tk_export = NULL;
+	fd_null = 0;
 	while (tk)
 	{
 		if (ft_strcmp(tk->value[0], "export") == 0 && tk->value[1])
 		{
 			tk_export = tk;
 			tk = tk->next;
+			fd_null = open("/dev/null", O_RDONLY, 0644);
+			if (fd_null == -1)
+				perror_exit(" ", EXIT_FAILURE);
+			dup2(fd_null, STDIN_FILENO);
+			close(fd_null);
 			continue ;
 		}
 		if (is_file_error_in_pipe(tk))
