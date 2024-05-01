@@ -45,6 +45,11 @@ int	check_if_builtins_parent(t_ms *head, t_token *token)
 		head->last_status = ms_cd(token);
 		return (1);
 	}
+	if (ft_strcmp(token->value[0], "unset") == 0)
+	{
+		head->last_status = ms_unset(head->env, token);
+		return (1);
+	}
 	if (ft_strcmp(token->value[0], "export") == 0)
 	{
 		if (token->value[1])
