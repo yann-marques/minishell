@@ -35,6 +35,9 @@ int	check_echo_builtin(char **value)
 
 int	check_if_builtins_parent(t_ms *head, t_token *token)
 {
+	int	fd_null;
+
+	fd_null = 0;
 	if (ft_strcmp(token->value[0], "exit") == 0)
 	{
 		head->last_status = ms_exit(head, token);
@@ -45,19 +48,21 @@ int	check_if_builtins_parent(t_ms *head, t_token *token)
 		head->last_status = ms_cd(token);
 		return (1);
 	}
-	if (ft_strcmp(token->value[0], "unset") == 0)
+	if (ft_strcmp(token->value[0], "unset") == 0 && !token->next && !token->prev)
 	{
 		head->last_status = ms_unset(head->env, token);
 		return (1);
 	}
-	if (ft_strcmp(token->value[0], "export") == 0)
+	if (ft_strcmp(token->value[0], "export") == 0 && token->value[1])
 	{
-		if (token->value[1])
-		{
-			head->last_status = ms_export(head->env, token);
-			return (1);
-		}
+		head->last_status = ms_export(head->env, token);
+		return (1);
 	}
+	fd_null = open("/dev/null", O_RDONLY, 0644);
+	if (fd_null == -1)
+		perror_exit(" ", EXIT_FAILURE);
+	dup2(fd_null, STDIN_FILENO);
+	close(fd_null);
 	return (0);
 }
 
