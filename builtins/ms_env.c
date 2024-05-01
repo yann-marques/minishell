@@ -16,7 +16,7 @@ int	ms_env(t_env *env, char *begin)
 		{
 			printf("%s%s", begin, tmp->var);
 			if (tmp->value && tmp->value[0])
-				printf("=%s", tmp->value);
+				printf("=\"%s\"", tmp->value);
 			printf("\n");
 		}
 		tmp = tmp->next;
