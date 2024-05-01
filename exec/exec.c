@@ -152,7 +152,7 @@ int	multi_commands(t_ms *head)
 				continue ;
 			}
 		}
-		if (is_rdout(tk))
+		if (is_rdout(tk) && tk->prev)
 		{
 			do_redirection_out(head, tk);
 			if (tk->next)
@@ -188,15 +188,11 @@ void	command_manager(t_ms *head)
 			if (g_sig_received)
 				kill(tmp->pid, g_sig_received);
 			waitpid(tmp->pid, &status, 0);
-			if (WIFSIGNALED(status))
-			{
-				if (WTERMSIG(status) == SIGPIPE)
-					error_str(" Broken pipe\n");
-				if (WTERMSIG(status) == SIGQUIT)
-					error_str(" Quit (Core dumped)\n");
-				head->last_status = WTERMSIG(status) + 128;
-			}
-			else if (WIFEXITED(status))
+			if (WTERMSIG(status) == SIGQUIT)
+				error_str(" Quit (Core dumped)\n");
+			if (WTERMSIG(status) == SIGPIPE)
+				error_str(" Broken pipe\n");
+			if (WIFEXITED(status))
 				head->last_status = WEXITSTATUS(status);
 		}
 		if (tmp->pid == -42)
