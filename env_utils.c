@@ -53,6 +53,10 @@ t_env	*env_new(char *env)
 		free(new);
 		return (NULL);
 	}
+	new->next = NULL;
+	new->value = NULL;
+	if (!env[ft_strlen_to(env, '=')])
+		return (new);
 	new->value = ft_strndup(&env[ft_strlen_to(env, '=') + 1], 0);
 	if (!new->value)
 	{
@@ -60,7 +64,6 @@ t_env	*env_new(char *env)
 		free(new);
 		return (NULL);
 	}
-	new->next = NULL;
 	return (new);
 }
 
