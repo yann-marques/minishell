@@ -25,62 +25,52 @@ int	check_echo_builtin(char **value)
 		return (0);
 	if (!value[1])
 		return (1);
-	if (check_flag(value[1] ,'e') || check_flag(value[1] ,'E'))
+	if (check_flag(value[1], 'e') || check_flag(value[1], 'E'))
 		return (0);
-	if (check_flag(value[1] ,'n') && value[2]
-			&& (check_flag(value[2] ,'e') || check_flag(value[2] ,'E')))
+	if (check_flag(value[1], 'n') && value[2]
+		&& (check_flag(value[2], 'e') || check_flag(value[2], 'E')))
 		return (0);
 	return (1);
 }
 
 int	check_if_builtins_parent(t_ms *head, t_token *token)
 {
-	int	fd_null;
+	int	status;
 
-	fd_null = 0;
+	status = 0;
 	if (ft_strcmp(token->value[0], "exit") == 0)
-	{
-		head->last_status = ms_exit(head, token);
-		return (1);
-	}
-	if (ft_strcmp(token->value[0], "cd") == 0)
-	{
-		head->last_status = ms_cd(token);
-		return (1);
-	}
-	if (ft_strcmp(token->value[0], "unset") == 0 && !token->next && !token->prev)
-	{
-		head->last_status = ms_unset(head->env, token);
-		return (1);
-	}
-	if (ft_strcmp(token->value[0], "export") == 0 && token->value[1])
-	{
-		head->last_status = ms_export(head->env, token);
-		return (1);
-	}
-	fd_null = open("/dev/null", O_RDONLY, 0644);
-	if (fd_null == -1)
-		perror_exit(" ", EXIT_FAILURE);
-	dup2(fd_null, STDIN_FILENO);
-	close(fd_null);
-	return (0);
+		status = ms_exit(head, token);
+	else if (ft_strcmp(token->value[0], "cd") == 0)
+		status = ms_cd(token);
+	else if (ft_strcmp(token->value[0], "unset") == 0
+		&& !token->next && !token->prev)
+		status = ms_unset(head->env, token);
+	else if (ft_strcmp(token->value[0], "export") == 0
+		&& token->value[1] && !token->next && !token->prev)
+		status = ms_export(head->env, token);
+	else
+		return (0);
+	head->last_status = status;
+	rd_null();
+	return (1);
 }
 
 int	builtin_child(t_ms *head, t_token *token)
 {
 	int	status;
 
+	status = 0;
 	if (check_echo_builtin(token->value))
 		status = ms_echo_n(token);
 	else if (ft_strcmp(token->value[0], "cd") == 0)
 		status = ms_cd(token);
-	else if  (ft_strcmp(token->value[0], "pwd") == 0)
+	else if (ft_strcmp(token->value[0], "pwd") == 0)
 		status = ms_pwd();
-	else if  (ft_strcmp(token->value[0], "export") == 0)
+	else if (ft_strcmp(token->value[0], "export") == 0)
 		status = ms_export(head->env, token);
-	else if  (ft_strcmp(token->value[0], "unset") == 0)
+	else if (ft_strcmp(token->value[0], "unset") == 0)
 		status = ms_unset(head->env, token);
-	else if  (ft_strcmp(token->value[0], "env") == 0 && !token->value[1])
+	else if (ft_strcmp(token->value[0], "env") == 0 && !token->value[1])
 		status = ms_env(head->env, NULL);
 	else if (ft_strcmp(token->value[0], "exit") == 0)
 		status = ms_exit(head, token);

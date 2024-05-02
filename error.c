@@ -1,39 +1,55 @@
 #include "minishell.h"
 #include "gnl/get_next_line.h"
 
-char *print_error_message_token(t_token *token)
+char	*get_token_name(t_token *token)
 {
+	t_token	*tmp;
 	char	*token_name;
-	int		i;
-	t_token *tmp;
 
-
-	if (!token)
-		return (NULL);
 	tmp = token;
-	i = 0;
-	while (tmp->value[i])
-		i++;
-	if (i != 0)
-		i--;
 	token_name = tmp->value[0];
-	if (is_rdout(tmp) && !tmp->value[1] && tmp->next && is_rdout(tmp->next) && !tmp->next->value[1])
+	if (is_rdout(tmp) && !tmp->value[1] && tmp->next
+		&& is_rdout(tmp->next) && !tmp->next->value[1])
 		token_name = ">";
 	if (tmp->type == _delimiter && !tmp->value[1])
 		token_name = "newline";
-	if ((is_rdin(tmp) || is_rdout(tmp)) && !tmp->value[1] && !tmp->next && (!tmp->prev || tmp->prev->type == _pipe))
+	if ((is_rdin(tmp) || is_rdout(tmp)) && !tmp->value[1]
+		&& !tmp->next && (!tmp->prev || tmp->prev->type == _pipe))
 		token_name = "newline";
-	if ((is_rdin(tmp) || is_rdout(tmp)) && !tmp->value[1] && tmp->next && tmp->next->type == _pipe)
+	if ((is_rdin(tmp) || is_rdout(tmp)) && !tmp->value[1]
+		&& tmp->next && tmp->next->type == _pipe)
 		token_name = "|";
 	if (is_rdin(tmp) && !tmp->value[1] && tmp->prev && !tmp->next)
 		token_name = "newline";
 	return (token_name);
 }
 
-int is_handle_eror(t_ms *head)
+static void	do_case_error(t_token **tmp, char **token_name, int *i)
 {
-	t_token *tmp;
-	char	*token_name;
+	if (is_heredoc(*tmp) && !(*tmp)->value[1])
+		*token_name = get_token_name(*tmp);
+	if (is_heredoc(*tmp))
+		*token_name = get_token_name(*tmp);
+	if (*i == 0 && (*tmp)->type == _pipe)
+	{
+		*token_name = "|";
+		*tmp = NULL;
+		return ;
+	}
+	if ((*tmp)->type == _pipe && !(*tmp)->next)
+		*token_name = "|";
+	if ((is_rdin(*tmp) || is_rdout(*tmp)) && (!(*tmp)->value[1]
+			|| (*tmp)->value[1][0] == '>' || (*tmp)->value[1][0] == '<'))
+		*token_name = get_token_name(*tmp);
+	*tmp = (*tmp)->next;
+	*i = *i + 1;
+	return ;
+}
+
+int	is_handle_error(t_ms *head)
+{
+	t_token	*tmp;
+	char	*tk_name;
 	char	*error_line;
 	int		i;
 
@@ -41,31 +57,15 @@ int is_handle_eror(t_ms *head)
 		return (1);
 	tmp = head->tokens;
 	i = 0;
-	token_name = NULL;
-	while(tmp)
-	{
-		if (is_heredoc(tmp) && !tmp->value[1])
-			token_name = print_error_message_token(tmp);
-		if (is_heredoc(tmp))
-			token_name = print_error_message_token(tmp);;
-		if (i == 0 && tmp->type == _pipe)
-		{
-			token_name = "|";
-			break ;
-		}
-		if (tmp->type == _pipe && !tmp->next)
-			token_name = "|";
-		if ((is_rdin(tmp) || is_rdout(tmp)) && (!tmp->value[1] || tmp->value[1][0] == '>' || tmp->value[1][0] == '<'))
-			token_name = print_error_message_token(tmp);
-		tmp = tmp->next;
-		i++;
-	}
-	if (!token_name)
+	tk_name = NULL;
+	while (tmp)
+		do_case_error(&tmp, &tk_name, &i);
+	if (!tk_name)
 		return (0);
-	token_name = ft_strjoin(" syntax error near unexpected token `", token_name);
-	if (!token_name)
+	tk_name = ft_strjoin(" syntax error near unexpected token `", tk_name);
+	if (!tk_name)
 		error_exit(" ", -1);
-	error_line = ft_strjoin(token_name, "'\n");
+	error_line = ft_strjoin(tk_name, "'\n");
 	if (!error_line)
 		error_exit(" ", -1);
 	write (2, error_line, ft_strlen(error_line));
@@ -74,8 +74,7 @@ int is_handle_eror(t_ms *head)
 	return (1);
 }
 
-
-int perror_str(char *str, int status)
+int	perror_str(char *str, int status)
 {
 	if (str)
 	{

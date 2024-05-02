@@ -23,6 +23,7 @@ int	is_rdout(t_token *tk)
 		return (1);
 	return (0);
 }
+
 int	is_heredoc(t_token *tk)
 {
 	if (tk->value[0][2])

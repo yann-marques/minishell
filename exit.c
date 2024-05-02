@@ -1,7 +1,7 @@
 #include "minishell.h"
 #include "gnl/get_next_line.h"
 
-void perror_exit(char *str, int status)
+void	perror_exit(char *str, int status)
 {
 	if (str)
 	{
@@ -18,8 +18,7 @@ void perror_exit(char *str, int status)
 		exit(EXIT_FAILURE);
 }
 
-
-void error_exit(char *str, int status)
+void	error_exit(char *str, int status)
 {
 	char	*error_str;
 

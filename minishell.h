@@ -35,6 +35,8 @@
 #  define BUFFER_SIZE 100
 # endif
 
+typedef struct __dirstream	t_dir;
+
 typedef enum e_type
 {
 	_none,
@@ -137,22 +139,27 @@ void	tokens_clear(t_token *tokens);
 void	pids_clear(t_pids *pids);
 void	free_env(t_env *env);
 
-//IS TOKEN TYPES (BOOL FUNCTIONS)
+//is_token_type (BOOL FUNCTIONS)
 int		is_cmd(t_token *tk);
 int		is_rdin(t_token *tk);
 int		is_rdout(t_token *tk);
 int		is_heredoc(t_token *tk);
 
+//is_cmd_type_next (BOOL FUNCTIONS)
 int		is_cmd_rdout(t_token *tk);
 int		is_cmd_rdin(t_token *tk);
 int		is_cmd_heredoc(t_token *tk);
+int		next_redirect(t_token *tk);
+int		next_redirect_out(t_token *tk);
 
 //EXEC: redirect utils
 void	redirection_out(int fd_out);
 int		do_redirection_out(t_ms *head, t_token *tk);
 int		redirection_in(t_token *token);
 int		do_redirection_in(t_ms *head, t_token *token);
-char	*here_doc(t_ms *head, t_token *token);
+char	*here_doc(t_token *token);
+void	rd_null(void);
+int		check_file_out(t_token *token);
 
 //EXEC: parse utils
 char	**t_env_to_strtab(t_env *env);
@@ -163,30 +170,42 @@ int		env_size(t_env *env);
 char	*get_random_tmp_path(void);
 int		do_needed_files(t_token *token);
 int		is_file_error_in_pipe(t_token *token);
-t_token	*get_next_pipe(t_token *tk);
+int		is_file(char *name);
 
 //EXEC: exec.c
 int		multi_commands(t_ms *head);
 void	command_manager(t_ms *head);
+int		set_tk_at_next_cmd(t_token *token);
+
+//EXEC: do_exec.c
+int		do_pipe_error(t_ms *head, t_token **token);
+int		do_heredoc(t_ms *head, t_token **token, char **path_doc);
+int		do_cmd_and_rd(t_ms *head, t_token **tk, char *path_doc);
+int		do_rd(t_ms *head, t_token **tk);
 
 //EXEC: commands utils
 char	*find_path(t_ms *head, t_token *token);
 int		execute(t_ms *head, t_token *token);
-int		pipe_and_exec(t_ms *head, t_token *token, char *path_doc, int last_command);
+int		pipe_and_exec(t_ms *head, t_token *token,
+			char *path_doc, int last_command);
 
 //EXEC: builtins utils
 int		check_echo_builtin(char **value);
 int		builtin_child(t_ms *head, t_token *token);
 int		check_if_builtins_parent(t_ms *head, t_token *token);
 
+//EXEC: pipes utils
+t_token	*get_next_pipe(t_token *tk);
+int		have_next_pipe(t_token *token);
+
 //exit
-void 	error_exit(char *str, int status);
+void	error_exit(char *str, int status);
 void	perror_exit(char *str, int status);
 
 //error
 int		error_str(char *str);
 int		perror_str(char *str, int status);
-int		is_handle_eror(t_ms *head);
+int		is_handle_error(t_ms *head);
 
 t_ms	*send_head(t_ms *new_head);
 

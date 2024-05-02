@@ -51,11 +51,13 @@ static char	*make_prompt_line(char *username, char *pwd)
 	char	*prog_name_part;
 	char	*pwd_part;
 	char	*reset_part;
+	char	*p;
 
 	user_part = ft_strjoin("\001\033[1;32m\002", username);
 	if (!user_part)
 		return (NULL);
-	prog_name_part = ft_strjoin(user_part, "\001\033[1;0m\033[1;0m@\033[1;36m\002minishell\001\033[1;0m:\033[1;33m\002~");
+	p = "\1\033[1;0m\033[1;0m@\033[1;36minishell\2s\1\033[1;0m:\033[1;33m\2~";
+	prog_name_part = ft_strjoin(user_part, p);
 	free(user_part);
 	if (!prog_name_part)
 		return (NULL);
