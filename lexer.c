@@ -94,11 +94,34 @@ int	reset_cmd_grp(t_token *tokens)
 	return (1);
 }
 
-int	lexer(t_ms *head)
+static char	*line_error(char *prompt_line, t_ms *head)
 {
 	char	*line;
 
-	line = prompt(head);
+	line = readline(prompt_line);
+	if (!line)
+	{
+		free(prompt_line);
+		ms_exit(head, NULL);
+	}
+	if (!line[0])
+	{
+		free(line);
+		line = line_error(prompt_line, head);
+		return (line);
+	}
+	add_history(line);
+	free(prompt_line);
+	return (line);
+}
+
+int	lexer(t_ms *head)
+{
+	char	*line;
+	char	*prompt_line;
+
+	prompt_line = prompt(head);
+	line = line_error(prompt_line, head);
 	if (!line || !check_quotes(line))
 		return (0);
 	head->tokens = set_tokens(line, head);

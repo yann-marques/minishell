@@ -63,12 +63,14 @@ static int	check_if_replace(char *str, int i_var)
 	int	replace;
 
 	replace = 1;
-	i = 0;
+	i = -1;
 	if (str[i_var] != '$' || (str[i_var] == '$' && (str[i_var + 1] == ' '
 		|| str[i_var + 1] == '\'' || str[i_var + 1] == '"' || !str[i_var + 1])))
 		return (0);
-	while (str[i] && i != i_var)
+	while (str[++i] && i != i_var)
 	{
+		if (str[i] == '"' && quotes_jump(&str[i]) > i_var)
+			break ;
 		if (str[i] == '\'' && ft_strchr(&str[i + 1], '\'') && ++i)
 		{
 			replace = 0;
@@ -78,7 +80,6 @@ static int	check_if_replace(char *str, int i_var)
 		if (!str[i] || i == i_var)
 			break ;
 		replace = 1;
-		++i;
 	}
 	if (replace)
 		return (1);

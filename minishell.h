@@ -77,6 +77,8 @@ typedef struct s_ms
 	t_env	*env;
 	t_pids	*pids;
 	int		last_status;
+	char	*HOME;
+	char	*USER;
 }	t_ms;
 
 extern int	g_sig_received;
@@ -110,6 +112,7 @@ int		pids_addback(t_pids **pids, int pid);
 //lexer
 int		lexer(t_ms *head);
 char	*prompt(t_ms *head);
+char	*get_username(t_ms *head);
 void	set_type(t_token *tokens);
 char	**var_to_value(char **tab, t_ms *head);
 //lexer_utils

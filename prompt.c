@@ -1,8 +1,6 @@
 #include "minishell.h"
 
-static char	*line_error(char *line, t_ms *head);
 static char	*make_prompt_line(char *username, char *pwd);
-static char	*get_username(t_ms *head);
 
 char	*prompt(t_ms *head)
 {
@@ -14,34 +12,21 @@ char	*prompt(t_ms *head)
 	pwd = get_pwd(1);
 	if (!pwd)
 		return (NULL);
-	absolute = get_var_value(head, "HOME");
+	absolute = ft_strdup(get_var_value(head, "HOME"));
+	if (!absolute)
+		absolute = ft_strdup(head->HOME);
 	if (!absolute)
 	{
 		free(pwd);
 		return (NULL);
 	}
-	username = get_username(head);
-	absolute = make_prompt_line(username, &pwd[ft_strlen(absolute)]);
+	username = ft_strdup(get_username(head));
+	if (!username)
+		username = ft_strdup(head->USER);
+	line = make_prompt_line(username, &pwd[ft_strlen(absolute)]);
 	free(pwd);
-	if (!absolute)
-		return (NULL);
-	line = readline(absolute);
 	free(absolute);
-	line = line_error(line, head);
-	return (line);
-}
-
-static char	*line_error(char *line, t_ms *head)
-{
-	if (!line)
-		ms_exit(head, NULL);
-	if (!line[0])
-	{
-		free(line);
-		line = prompt(head);
-		return (line);
-	}
-	add_history(line);
+	free(username);
 	return (line);
 }
 
@@ -72,7 +57,7 @@ static char	*make_prompt_line(char *username, char *pwd)
 	return (reset_part);
 }
 
-static char	*get_username(t_ms *head)
+char	*get_username(t_ms *head)
 {
 	char	*username;
 

@@ -5,27 +5,30 @@ static char	*ft_strdup_noquotes(char *str);
 int	check_quotes(char *str)
 {
 	int	i;
+	int	error;
 
-	i = 0;
-	while (str[i])
+	i = -1;
+	error = 1;
+	while (str[++i] && error)
 	{
 		if (str[i] == '"' && ++i)
 		{
 			while (str[i] && str[i] != '"')
 				++i;
 			if (!str[i])
-				return (0);
+				error = 0;
 		}
 		else if (str[i] == '\'' && ++i)
 		{
 			while (str[i] && str[i] != '\'')
 				++i;
 			if (!str[i])
-				return (0);
+				error = 0;
 		}
-		++i;
 	}
-	return (1);
+	if (!error)
+		free(str);
+	return (error);
 }
 
 int	del_quotes(t_token *tokens)
