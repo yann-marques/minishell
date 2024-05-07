@@ -37,8 +37,6 @@ int	multi_commands(t_ms *head)
 			continue ;
 		if (do_heredoc(head, &tk, &path_doc))
 			continue ;
-		if (do_cmd_and_rd(head, &tk, path_doc) == -1)
-			return (1);
 		if (do_cmd_and_rd(head, &tk, path_doc))
 			continue ;
 		if (do_rd(head, &tk))
