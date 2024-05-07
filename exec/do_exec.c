@@ -58,9 +58,8 @@ int	do_cmd_and_rd(t_ms *head, t_token **tk, char *path_doc)
 		pids_addback(&head->pids, pipe_and_exec(head, *tk, path_doc, 0));
 		do_redirection_out(head, (*tk)->next);
 		if (!set_tk_at_next_cmd(*tk))
-			return (-1);
-		else
-			return (1);
+			*tk = NULL;
+		return (1);
 	}
 	if (is_cmd_rdin(*tk))
 	{
@@ -69,8 +68,10 @@ int	do_cmd_and_rd(t_ms *head, t_token **tk, char *path_doc)
 			pids_addback(&head->pids, pipe_and_exec(head, *tk, path_doc, 0));
 		else
 			pids_addback(&head->pids, pipe_and_exec(head, *tk, path_doc, 1));
-		if ((*tk)->next)
+		if ((*tk)->next->next)
 			*tk = (*tk)->next->next;
+		else
+			*tk = NULL;
 		return (1);
 	}
 	return (0);
