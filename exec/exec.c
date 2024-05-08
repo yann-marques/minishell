@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/05/08 16:05:47 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/08 18:05:21 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,32 @@ int	set_tk_at_next_cmd(t_token *token)
 	return (0);
 }
 
+void	move_rdout(t_token **tk)
+{
+	t_token *head;
+	t_token *rd_out;
+
+	head = *tk;
+	rd_out = NULL;
+	while (*tk)
+	{
+		if (is_rdout(*tk) && !(*tk)->prev)
+		{
+			rd_out = *tk;
+			head = (*tk)->next;
+		}
+		if ((!(*tk)->next || (*tk)->next->type == _pipe) && rd_out)
+		{
+			rd_out->prev = *tk;
+			rd_out->next = (*tk)->next;
+			(*tk)->next = rd_out;
+			*tk = (*tk)->next;
+		}
+		*tk = (*tk)->next;
+	}
+	*tk = head;
+}
+
 int	multi_commands(t_ms *head)
 {
 	char	*path_doc;
@@ -42,7 +68,7 @@ int	multi_commands(t_ms *head)
 
 	tk = head->tokens;
 	do_needed_files(tk);
-	display_tokens(tk);
+	move_rdout(&tk);
 	path_doc = NULL;
 	while (tk)
 	{
