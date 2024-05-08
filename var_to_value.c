@@ -1,10 +1,9 @@
 #include "minishell.h"
 
-char		**split_var(char **tab, int *k);
 int			replace_var_call(t_ms *head, char **str, int k, int i);
 int			check_if_replace(char *str, int i_var);
 static char	*find_var(char *str, int i);
-static char	*ms_join_three(char *s1, char *s2, char *s3);
+static char	*ms_join_three(char *s1, char *s2, char *s3, int free_var);
 
 char	**var_to_value(char **tab, t_ms *head)
 {
@@ -43,44 +42,6 @@ char	**var_to_value(char **tab, t_ms *head)
 	return (tab);
 }
 
-char	**split_var(char **tab, int *k)
-{
-	char	**new_tab;
-	char	**split_dst;
-	int		i;
-	int		j;
-
-	split_dst = ft_split(tab[*k], ' ');
-	if (!split_dst)
-		return (NULL);
-	new_tab = malloc(sizeof(char *) * (ft_strtab_len(tab) + ft_strtab_len(split_dst)));
-	if (!new_tab)
-	{
-		strtab_clear(split_dst);
-		return (NULL);
-	}
-	i = -1;
-	while (++i < *k)
-		new_tab[i] = tab[i];
-	j = -1;
-	while (split_dst[++j] && !split_dst[j][0])
-		free(split_dst[j]);
-	i = -1;
-	while (split_dst[++i + j])
-		new_tab[i + *k] = split_dst[i + j];
-	j = i + *k - 1;
-	free(split_dst);
-	free(tab[*k]);
-	while (tab[*k + 1])
-	{
-		new_tab[i + *k] = tab[*k + 1];
-		*k += 1;
-	}
-	new_tab[i + *k] = NULL;
-	*k = j;
-	return (new_tab);
-}
-
 int	replace_var_call(t_ms *head, char **str, int k, int i)
 {
 	char	*var;
@@ -97,7 +58,7 @@ int	replace_var_call(t_ms *head, char **str, int k, int i)
 		return (0);
 	if (i == 0)
 		i = -1;
-	var = ms_join_three(ft_strndup(str[k], i), var, end);
+	var = ms_join_three(ft_strndup(str[k], i), var, end, 0);
 	if (!var)
 		return (0);
 	free(str[k]);
@@ -150,27 +111,113 @@ static char	*find_var(char *str, int i)
 	return (var);
 }
 
-static char	*ms_join_three(char *s1, char *s2, char *s3)
+static int	isin_dblquotes(char *str, int i_target)
+{
+	int	i;
+	int	replace;
+
+	replace = 1;
+	i = 0;
+	while (str[i] && i < i_target)
+	{
+		replace = 1;
+		if (str[i] == '"' && quotes_jump(&str[i]) >= i_target)
+			return (0);
+		if (str[i] == '\'' && ft_strchr(&str[i + 1], '\'') && ++i)
+		{
+			replace = 0;
+			while (str[i] && str[i] != '\'' && i != i_target)
+				++i;
+		}
+		if (!str[i])
+			break ;
+		++i;
+	}
+	return (replace);
+}
+
+static char	*recreate_var(char *var, char *begin, int *free_var)
+{
+	char	*dst;
+	char	*tmp;
+	char	**tab;
+	int		k;
+
+	if (!begin)
+		return (NULL);
+	if (!var)
+		return (ft_strdup(""));
+	if (!isin_dblquotes(begin, ft_strlen(begin)))
+	{
+		if (free_var)
+			return (var);
+		return (ft_strdup(var));
+	}
+	*free_var = 1;
+	tab = ft_split(var, ' ');
+	if (!tab)
+		return (NULL);
+	k = 0;
+	while (tab[k])
+	{
+		if (tab[k + 1])
+			tmp = ms_join_three(ft_strdup("\""), ft_strdup(tab[k]), ft_strdup("\" "), 1);
+		else
+			tmp = ms_join_three(ft_strdup("\""), ft_strdup(tab[k]), ft_strdup("\""), 1);
+		if (!tmp)
+		{
+			strtab_clear(tab);
+			return (NULL);
+		}
+		free(tab[k]);
+		tab[k] = tmp;
+		++k;
+	}
+	k = 0;
+	tmp = tab[k];
+	while (tab[++k])
+	{
+		dst = ft_strjoin(tmp, tab[k]);
+		if (k > 1)
+			free(tmp);
+		if (!dst)
+		{
+			strtab_clear(tab);
+			return (NULL);
+		}
+		tmp = dst;
+	}
+	if (k == 1)
+		dst = ft_strdup(tab[0]);
+	strtab_clear(tab);
+	return (dst);
+}
+
+static char	*ms_join_three(char *s1, char *s2, char *s3, int free_var)
 {
 	char	*dst;
 
+	s2 = recreate_var(s2, s1, &free_var);
 	dst = ft_calloc(sizeof(char), (1 + ft_strlen_to(s1, '\0')
-				+ ft_strlen_to(s2, '\0') + ft_strlen_to(s3, '\0') + 2));
-	if (!dst || !s1 || !s3)
+				+ ft_strlen_to(s2, '\0') + ft_strlen_to(s3, '\0')));
+	if (!dst || !s1 || (free_var && !s2) || !s3)
 	{
 		if (dst)
 			free(dst);
 		if (s1)
 			free(s1);
+		if (s2 && free_var)
+			free(s2);
 		if (s3)
 			free(s3);
 		return (NULL);
 	}
 	ft_strlcpy(dst, s1, ft_strlen(s1) + 1);
-	if (s2)
-		ft_strlcpy(&dst[ft_strlen(dst)], s2, ft_strlen(s2) + 1);
-	ft_strlcpy(&dst[ft_strlen(dst)], s3, ft_strlen(s3) + 1);
 	free(s1);
+	ft_strlcpy(&dst[ft_strlen(dst)], s2, ft_strlen(s2) + 1);
+	if (free_var)
+		free(s2);
+	ft_strlcpy(&dst[ft_strlen(dst)], s3, ft_strlen(s3) + 1);
 	free(s3);
 	return (dst);
 }
