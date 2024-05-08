@@ -115,11 +115,13 @@ char	*prompt(t_ms *head);
 char	*get_username(t_ms *head);
 void	set_type(t_token *tokens);
 char	**var_to_value(char **tab, t_ms *head);
+int		check_if_replace(char *str, int i_var);
 //lexer_utils
 int		del_quotes(t_token *tokens);
 int		tokens_addback(t_token **tokens, t_type type, char **value);
 int		quotes_jump(char *str);
 int		check_quotes(char *str);
+int		ft_strtab_len(char **tab);
 //ms_split
 char	**ms_split(char *str, char *sep);
 //builtins

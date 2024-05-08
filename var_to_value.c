@@ -1,20 +1,21 @@
 #include "minishell.h"
 
-static int	replace_var_call(t_ms *head, char **str, int k, int i);
-static int	check_if_replace(char *str, int i_var);
+char		**split_var(char **tab, int *k);
+int			replace_var_call(t_ms *head, char **str, int k, int i);
+int			check_if_replace(char *str, int i_var);
 static char	*find_var(char *str, int i);
 static char	*ms_join_three(char *s1, char *s2, char *s3);
 
 char	**var_to_value(char **tab, t_ms *head)
 {
-	int	i;
-	int	k;
+	int		i;
+	int		k;
 
-	k = 0;
-	while (tab[k])
+	k = -1;
+	while (tab && tab[++k])
 	{
-		i = 0;
-		while (tab[k] && tab[k][i])
+		i = -1;
+		while (tab[k] && tab[k][++i])
 		{
 			if (check_if_replace(tab[k], i))
 			{
@@ -23,17 +24,64 @@ char	**var_to_value(char **tab, t_ms *head)
 					strtab_clear(tab);
 					return (NULL);
 				}
+				/* if ()
+				{
+					tmp = split_var(tab, &k);
+					if (!tmp)
+					{
+						strtab_clear(tab);
+						return (NULL);
+					}
+					free(tab);
+					tab = tmp;
+				} */
 				if (tab[k] && ft_strlen_to(tab[k], '\0') < i)
 					break ;
 			}
-			++i;
 		}
-		++k;
 	}
 	return (tab);
 }
 
-static int	replace_var_call(t_ms *head, char **str, int k, int i)
+char	**split_var(char **tab, int *k)
+{
+	char	**new_tab;
+	char	**split_dst;
+	int		i;
+	int		j;
+
+	split_dst = ft_split(tab[*k], ' ');
+	if (!split_dst)
+		return (NULL);
+	new_tab = malloc(sizeof(char *) * (ft_strtab_len(tab) + ft_strtab_len(split_dst)));
+	if (!new_tab)
+	{
+		strtab_clear(split_dst);
+		return (NULL);
+	}
+	i = -1;
+	while (++i < *k)
+		new_tab[i] = tab[i];
+	j = -1;
+	while (split_dst[++j] && !split_dst[j][0])
+		free(split_dst[j]);
+	i = -1;
+	while (split_dst[++i + j])
+		new_tab[i + *k] = split_dst[i + j];
+	j = i + *k - 1;
+	free(split_dst);
+	free(tab[*k]);
+	while (tab[*k + 1])
+	{
+		new_tab[i + *k] = tab[*k + 1];
+		*k += 1;
+	}
+	new_tab[i + *k] = NULL;
+	*k = j;
+	return (new_tab);
+}
+
+int	replace_var_call(t_ms *head, char **str, int k, int i)
 {
 	char	*var;
 	char	*begin;
@@ -57,7 +105,7 @@ static int	replace_var_call(t_ms *head, char **str, int k, int i)
 	return (1);
 }
 
-static int	check_if_replace(char *str, int i_var)
+int	check_if_replace(char *str, int i_var)
 {
 	int	i;
 	int	replace;
@@ -67,8 +115,9 @@ static int	check_if_replace(char *str, int i_var)
 	if (str[i_var] != '$' || (str[i_var] == '$' && (str[i_var + 1] == ' '
 		|| str[i_var + 1] == '\'' || str[i_var + 1] == '"' || !str[i_var + 1])))
 		return (0);
-	while (str[++i] && i != i_var)
+	while (str[++i] && i < i_var)
 	{
+		replace = 1;
 		if (str[i] == '"' && quotes_jump(&str[i]) > i_var)
 			break ;
 		if (str[i] == '\'' && ft_strchr(&str[i + 1], '\'') && ++i)
@@ -77,13 +126,10 @@ static int	check_if_replace(char *str, int i_var)
 			while (str[i] && str[i] != '\'' && i != i_var)
 				++i;
 		}
-		if (!str[i] || i == i_var)
+		if (!str[i])
 			break ;
-		replace = 1;
 	}
-	if (replace)
-		return (1);
-	return (0);
+	return (replace);
 }
 
 static char	*find_var(char *str, int i)
