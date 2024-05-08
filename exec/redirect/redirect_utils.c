@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   redirect_utils.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
+/*   Updated: 2024/05/08 16:18:58 by ymarques         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../minishell.h"
 #include "../../gnl/get_next_line.h"
 
@@ -48,10 +60,7 @@ int	redirection_in(t_token *token)
 	infile = open(token->value[1], O_RDONLY, 0644);
 	if (infile == -1)
 	{
-		infile = open("/dev/null", O_RDONLY, 0644);
-		if (infile == -1)
-			perror_exit(" ", EXIT_FAILURE);
-		dup2(infile, STDIN_FILENO);
+		rd_null();
 		return (-1);
 	}
 	dup2(infile, STDIN_FILENO);

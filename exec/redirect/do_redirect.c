@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   do_redirect.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
+/*   Updated: 2024/05/08 16:30:37 by ymarques         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../minishell.h"
 #include "../../gnl/get_next_line.h"
 
@@ -17,8 +29,8 @@ int	do_redirection_out(t_ms *head, t_token *tk)
 			fd_out = check_file_out(tmp);
 			if (fd_out == -1)
 			{
-				pids_addback(&head->pids, -42);
-				return (perror_str(" ", -1));
+				error_str(tk->value[0]);
+				return(perror_str(" ", -1));
 			}
 		}
 		else

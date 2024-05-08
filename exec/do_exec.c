@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   do_exec.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
+/*   Updated: 2024/05/08 16:34:45 by ymarques         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
 #include "../gnl/get_next_line.h"
 
@@ -8,7 +20,9 @@ int	do_pipe_error(t_ms *head, t_token **token)
 	tk = *token;
 	if (is_file_error_in_pipe(tk))
 	{
-		pids_addback(&head->pids, perror_str(" ", -42));
+		pids_addback(&head->pids, -42);
+		error_str(tk->value[1]);
+		perror_str(" ", -1);
 		if (tk->type == _pipe)
 			tk = tk->next;
 		while (tk && tk->type != _pipe)
@@ -88,13 +102,16 @@ int	do_rd(t_ms *head, t_token **tk)
 			return (1);
 		}
 	}
-	if (is_rdout(*tk) && (*tk)->prev)
+	if (is_rdout(*tk))
 	{
-		do_redirection_out(head, *tk);
-		if ((*tk)->next)
+		if ((*tk)->prev)
 		{
-			*tk = (*tk)->next;
-			return (1);
+			do_redirection_out(head, *tk);
+			if ((*tk)->next)
+			{
+				*tk = (*tk)->next;
+				return (1);
+			}
 		}
 	}
 	return (0);
