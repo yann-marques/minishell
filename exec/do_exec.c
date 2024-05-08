@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   do_exec.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
+/*   Updated: 2024/05/08 16:06:09 by ymarques         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
 #include "../gnl/get_next_line.h"
 
@@ -88,13 +100,16 @@ int	do_rd(t_ms *head, t_token **tk)
 			return (1);
 		}
 	}
-	if (is_rdout(*tk) && (*tk)->prev)
+	if (is_rdout(*tk))
 	{
-		do_redirection_out(head, *tk);
-		if ((*tk)->next)
+		if ((*tk)->prev)
 		{
-			*tk = (*tk)->next;
-			return (1);
+			do_redirection_out(head, *tk);
+			if ((*tk)->next)
+			{
+				*tk = (*tk)->next;
+				return (1);
+			}
 		}
 	}
 	return (0);

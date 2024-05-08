@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exec.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
+/*   Updated: 2024/05/08 16:05:47 by ymarques         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
 #include "../gnl/get_next_line.h"
 
@@ -30,6 +42,7 @@ int	multi_commands(t_ms *head)
 
 	tk = head->tokens;
 	do_needed_files(tk);
+	display_tokens(tk);
 	path_doc = NULL;
 	while (tk)
 	{
