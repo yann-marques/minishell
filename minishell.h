@@ -77,8 +77,8 @@ typedef struct s_ms
 	t_env	*env;
 	t_pids	*pids;
 	int		last_status;
-	char	*HOME;
-	char	*USER;
+	char	*home;
+	char	*user;
 }	t_ms;
 
 extern int	g_sig_received;

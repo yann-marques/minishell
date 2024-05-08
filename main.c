@@ -20,16 +20,16 @@ t_ms	*init_head(char **envp)
 	if (!head)
 		return (NULL);
 	head->env = set_env(envp);
-	head->HOME = ft_strdup(get_var_value(head, "HOME"));
-	head->USER = ft_strdup(get_username(head));
-	if (!head->env || !head->HOME || !head->USER)
+	head->home = ft_strdup(get_var_value(head, "HOME"));
+	head->user = ft_strdup(get_username(head));
+	if (!head->env || !head->home || !head->user)
 	{
 		if (head->env)
 			free_env(head->env);
-		if (head->HOME)
-			free(head->HOME);
-		if (head->USER)
-			free(head->USER);
+		if (head->home)
+			free(head->home);
+		if (head->user)
+			free(head->user);
 		free(head);
 		return (NULL);
 	}

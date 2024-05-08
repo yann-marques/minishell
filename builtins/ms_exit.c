@@ -9,8 +9,8 @@ int	ms_exit(t_ms *head, t_token *token)
 		free_env(head->env);
 		if (head->pids)
 			pids_clear(head->pids);
-		free(head->HOME);
-		free(head->USER);
+		free(head->home);
+		free(head->user);
 	}
 	printf("exit\n");
 	if (token && token->value[1])

@@ -14,7 +14,7 @@ char	*prompt(t_ms *head)
 		return (NULL);
 	absolute = ft_strdup(get_var_value(head, "HOME"));
 	if (!absolute)
-		absolute = ft_strdup(head->HOME);
+		absolute = ft_strdup(head->home);
 	if (!absolute)
 	{
 		free(pwd);
@@ -22,7 +22,7 @@ char	*prompt(t_ms *head)
 	}
 	username = ft_strdup(get_username(head));
 	if (!username)
-		username = ft_strdup(head->USER);
+		username = ft_strdup(head->user);
 	line = make_prompt_line(username, &pwd[ft_strlen(absolute)]);
 	free(pwd);
 	free(absolute);
@@ -41,7 +41,7 @@ static char	*make_prompt_line(char *username, char *pwd)
 	user_part = ft_strjoin("\001\033[1;32m\002", username);
 	if (!user_part)
 		return (NULL);
-	p = "\1\033[1;0m\033[1;0m@\033[1;36minishell\2s\1\033[1;0m:\033[1;33m\2~";
+	p = "\1\033[1;0m\033[1;0m@\033[1;36mminishell\2s\1\033[1;0m:\033[1;33m\2~";
 	prog_name_part = ft_strjoin(user_part, p);
 	free(user_part);
 	if (!prog_name_part)
