@@ -1,11 +1,10 @@
 #include "../minishell.h"
 
-static int	check_env_var(char *str);
+static int	add_var(t_env *env, t_token *token);
 
 int	ms_export(t_env	*env, t_token *token)
 {
 	t_env	*tmp;
-	int		i;
 
 	if (!token->value[1] && token->type != _env_var)
 	{
@@ -20,6 +19,16 @@ int	ms_export(t_env	*env, t_token *token)
 		put_env_var(&env, tmp);
 		return (EXIT_SUCCESS);
 	}
+	return (add_var(env, token));
+}
+
+static int	check_env_var(char *str);
+
+static int	add_var(t_env *env, t_token *token)
+{
+	t_env	*tmp;
+	int		i;
+
 	i = 1;
 	while (token->value[i] && check_env_var(token->value[i]))
 	{

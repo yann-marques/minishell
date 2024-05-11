@@ -1,6 +1,7 @@
 #include "minishell.h"
 
 static char	*make_prompt_line(char *username, char *pwd);
+static char	*get_username(t_ms *head);
 
 char	*prompt(t_ms *head)
 {
@@ -20,13 +21,31 @@ char	*prompt(t_ms *head)
 		free(pwd);
 		return (NULL);
 	}
-	username = ft_strdup(get_username(head));
-	if (!username)
-		username = ft_strdup(head->user);
+	username = get_username(head);
 	line = make_prompt_line(username, &pwd[ft_strlen(absolute)]);
 	free(pwd);
 	free(absolute);
-	free(username);
+	return (line);
+}
+
+char	*line_error(char *prompt_line, t_ms *head)
+{
+	char	*line;
+
+	line = readline(prompt_line);
+	if (!line)
+	{
+		free(prompt_line);
+		ms_exit(head, NULL);
+	}
+	if (!line[0])
+	{
+		free(line);
+		line = line_error(prompt_line, head);
+		return (line);
+	}
+	add_history(line);
+	free(prompt_line);
 	return (line);
 }
 
@@ -57,7 +76,7 @@ static char	*make_prompt_line(char *username, char *pwd)
 	return (reset_part);
 }
 
-char	*get_username(t_ms *head)
+static char	*get_username(t_ms *head)
 {
 	char	*username;
 

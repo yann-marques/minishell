@@ -22,18 +22,14 @@ char	*ft_strndup(char *str, int n)
 	return (dst);
 }
 
-char	*ft_strchr(char *str, char c)
+int	ft_strtab_len(char **tab)
 {
-	int	i;
+	int	k;
 
-	i = 0;
-	while (str && str[i])
-	{
-		if (str[i] == c)
-			return (&str[i]);
-		++i;
-	}
-	return (NULL);
+	k = 0;
+	while (tab && tab[k])
+		++k;
+	return (k);
 }
 
 int	ft_strlen_to(char *str, char c)
@@ -60,4 +56,18 @@ int	ft_strcmp(char *s1, char *s2)
 	if (s1[i] != s2[i])
 		return (s1[i] - s2[i]);
 	return (0);
+}
+
+int	quotes_jump(char *str)
+{
+	int		i;
+	char	c;
+
+	if (str[0] != '\'' && str[0] != '"')
+		return (0);
+	c = str[0];
+	i = 1;
+	while (str[i] && str[i] != c)
+		++i;
+	return (i);
 }

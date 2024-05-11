@@ -21,15 +21,12 @@ t_ms	*init_head(char **envp)
 		return (NULL);
 	head->env = set_env(envp);
 	head->home = ft_strdup(get_var_value(head, "HOME"));
-	head->user = ft_strdup(get_username(head));
-	if (!head->env || !head->home || !head->user)
+	if (!head->env || !head->home)
 	{
 		if (head->env)
 			free_env(head->env);
 		if (head->home)
 			free(head->home);
-		if (head->user)
-			free(head->user);
 		free(head);
 		return (NULL);
 	}
@@ -48,17 +45,15 @@ int	main(int ac, char **av, char **envp)
 	(void)av;
 	head = send_head(NULL);
 	if (!head)
-	{
 		head = init_head(envp);
-		if (!head)
-			return (-1);
-	}
+	if (!head)
+		return (-1);
 	sig_control(1);
 	while (1)
 	{
 		if (!head->tokens && !lexer(head))
 			continue ;
-		display_tokens(head->tokens);
+		// display_tokens(head->tokens);
 		if (!is_handle_error(head))
 			command_manager(head);
 		tokens_clear(head->tokens);

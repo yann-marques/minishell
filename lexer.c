@@ -29,16 +29,6 @@ t_token	*set_tokens(char *str, t_ms *head)
 	return (tokens);
 }
 
-int	ft_strtab_len(char **tab)
-{
-	int	k;
-
-	k = 0;
-	while (tab && tab[k])
-		++k;
-	return (k);
-}
-
 int	join_tokens(t_token *token, t_token *extra)
 {
 	t_token	*tmp_token;
@@ -92,27 +82,6 @@ int	reset_cmd_grp(t_token *tokens)
 		tmp = tmp->next;
 	}
 	return (1);
-}
-
-static char	*line_error(char *prompt_line, t_ms *head)
-{
-	char	*line;
-
-	line = readline(prompt_line);
-	if (!line)
-	{
-		free(prompt_line);
-		ms_exit(head, NULL);
-	}
-	if (!line[0])
-	{
-		free(line);
-		line = line_error(prompt_line, head);
-		return (line);
-	}
-	add_history(line);
-	free(prompt_line);
-	return (line);
 }
 
 int	lexer(t_ms *head)
