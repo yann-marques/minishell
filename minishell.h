@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/05/13 17:10:26 by yanolive          #+#    #+#             */
+/*   Updated: 2024/05/13 17:20:32 by yanolive         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
@@ -21,6 +33,8 @@
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 100
 # endif
+
+extern int					g_sig_received;
 
 typedef struct __dirstream	t_dir;
 
@@ -66,8 +80,6 @@ typedef struct s_ms
 	int		last_status;
 	char	*home;
 }	t_ms;
-
-extern int	g_sig_received;
 
 //libft_fonctions
 char	**ft_split(char const *s, char c);

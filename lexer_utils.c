@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   lexer_utils.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/05/13 17:15:04 by yanolive          #+#    #+#             */
+/*   Updated: 2024/05/13 17:15:16 by yanolive         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 int	check_quotes(char *str)
@@ -74,7 +86,7 @@ static char	*ft_strdup_noquotes(char *str)
 	while (str[++i + j])
 	{
 		if ((str[i + j] == '\'' || str[i + j] == '"')
-				&& ft_strchr(&str[i + j + 1], str[i + j]))
+			&& ft_strchr(&str[i + j + 1], str[i + j]))
 		{
 			c = str[i-- + j++];
 			while (str[++i + j] && str[i + j] != c)

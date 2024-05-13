@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   do_redirect.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/05/08 16:30:37 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/13 17:15:44 by yanolive         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int	do_redirection_out(t_ms *head, t_token *tk)
 			if (fd_out == -1)
 			{
 				error_str(tk->value[0]);
-				return(perror_str(" ", -1));
+				return (perror_str(" ", -1));
 			}
 		}
 		else

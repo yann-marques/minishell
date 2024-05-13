@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   is_token_type.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/05/08 16:07:09 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/13 17:12:13 by yanolive         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ int	is_cmd(t_token *tk)
 		return (1);
 	return (0);
 }
+
 int	is_rdin(t_token *tk)
 {
 	if (tk->value[0][1])
