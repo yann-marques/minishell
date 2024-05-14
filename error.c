@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/05/08 16:07:28 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/10 14:44:08 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,9 +38,7 @@ char	*get_token_name(t_token *token)
 
 static void	do_case_error(t_token **tmp, char **token_name, int *i)
 {
-	if (is_heredoc(*tmp) && !(*tmp)->value[1])
-		*token_name = get_token_name(*tmp);
-	if (is_heredoc(*tmp))
+	if ((*tmp)->type == _delimiter && !(*tmp)->value[1])
 		*token_name = get_token_name(*tmp);
 	if (*i == 0 && (*tmp)->type == _pipe)
 	{

@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/05/08 16:07:09 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/10 14:37:09 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,9 +38,9 @@ int	is_rdout(t_token *tk)
 
 int	is_heredoc(t_token *tk)
 {
-	if (tk->value[0][2])
+	if (!tk)
 		return (0);
-	if (tk->type == _delimiter)
+	if (tk->type == _delimiter && tk->value[1])
 		return (1);
 	return (0);
 }
