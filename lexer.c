@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   lexer.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/05/13 17:10:10 by yanolive          #+#    #+#             */
+/*   Updated: 2024/05/13 17:10:11 by yanolive         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 t_token	*set_tokens(char *str, t_ms *head)
@@ -27,16 +39,6 @@ t_token	*set_tokens(char *str, t_ms *head)
 	strtab_clear(tab);
 	set_type(tokens);
 	return (tokens);
-}
-
-int	ft_strtab_len(char **tab)
-{
-	int	k;
-
-	k = 0;
-	while (tab && tab[k])
-		++k;
-	return (k);
 }
 
 int	join_tokens(t_token *token, t_token *extra)
@@ -92,27 +94,6 @@ int	reset_cmd_grp(t_token *tokens)
 		tmp = tmp->next;
 	}
 	return (1);
-}
-
-static char	*line_error(char *prompt_line, t_ms *head)
-{
-	char	*line;
-
-	line = readline(prompt_line);
-	if (!line)
-	{
-		free(prompt_line);
-		ms_exit(head, NULL);
-	}
-	if (!line[0])
-	{
-		free(line);
-		line = line_error(prompt_line, head);
-		return (line);
-	}
-	add_history(line);
-	free(prompt_line);
-	return (line);
 }
 
 int	lexer(t_ms *head)

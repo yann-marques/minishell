@@ -3,10 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2024/05/10 14:24:46 by ymarques         ###   ########.fr       */
+=======
+/*   Updated: 2024/05/13 17:15:33 by yanolive         ###   ########.fr       */
+>>>>>>> 2e93b9ad366999dee42bd57c6cf73ac4b34ced19
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +41,8 @@ int	set_tk_at_next_cmd(t_token *token)
 
 void	move_rdout(t_token **tk)
 {
-	t_token *head;
-	t_token *rd_out;
+	t_token	*head;
+	t_token	*rd_out;
 
 	head = *tk;
 	rd_out = NULL;

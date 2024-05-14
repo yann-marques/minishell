@@ -1,6 +1,16 @@
-#include "minishell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   lexer_utils.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/05/13 17:15:04 by yanolive          #+#    #+#             */
+/*   Updated: 2024/05/13 17:15:16 by yanolive         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-static char	*ft_strdup_noquotes(char *str);
+#include "minishell.h"
 
 int	check_quotes(char *str)
 {
@@ -30,6 +40,8 @@ int	check_quotes(char *str)
 		free(str);
 	return (error);
 }
+
+static char	*ft_strdup_noquotes(char *str);
 
 int	del_quotes(t_token *tokens)
 {
@@ -66,29 +78,25 @@ static char	*ft_strdup_noquotes(char *str)
 	int		i;
 	int		j;
 
-	dst = malloc(sizeof(char) * (ft_strlen_to(str, '\0') + 1));
+	dst = calloc(sizeof(char), (ft_strlen_to(str, '\0') + 1));
 	if (!dst)
 		return (NULL);
-	i = 0;
+	i = -1;
 	j = 0;
-	while (str[i + j])
+	while (str[++i + j])
 	{
 		if ((str[i + j] == '\'' || str[i + j] == '"')
-				&& ft_strchr(&str[i + j + 1], str[i + j]))
+			&& ft_strchr(&str[i + j + 1], str[i + j]))
 		{
 			c = str[i-- + j++];
 			while (str[++i + j] && str[i + j] != c)
 				dst[i] = str[i + j];
-			if (str[i + j] == c)
+			if (str[i-- + j] == c)
 				++j;
+			continue ;
 		}
-		else
-		{
-			dst[i] = str[i + j];
-			++i;
-		}
+		dst[i] = str[i + j];
 	}
-	dst[i] = '\0';
 	return (dst);
 }
 
@@ -133,18 +141,4 @@ int	pids_addback(t_pids **pids, int pid)
 	else
 		tmp->next = new;
 	return (0);
-}
-
-int	quotes_jump(char *str)
-{
-	int		i;
-	char	c;
-
-	if (str[0] != '\'' && str[0] != '"')
-		return (0);
-	c = str[0];
-	i = 1;
-	while (str[i] && str[i] != c)
-		++i;
-	return (i);
 }

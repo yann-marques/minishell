@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ms_exit.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/05/13 17:16:06 by yanolive          #+#    #+#             */
+/*   Updated: 2024/05/13 17:16:07 by yanolive         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
 
 static int	exit_with_token(t_ms *head, t_token *token);
@@ -10,7 +22,6 @@ int	ms_exit(t_ms *head, t_token *token)
 		if (head->pids)
 			pids_clear(head->pids);
 		free(head->home);
-		free(head->user);
 	}
 	printf("exit\n");
 	if (token && token->value[1])

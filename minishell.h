@@ -1,39 +1,40 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/05/13 17:10:26 by yanolive          #+#    #+#             */
+/*   Updated: 2024/05/13 17:20:32 by yanolive         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-// Not interpret : " \ ;
-
-// Pour readline, rl_clear_history, rl_on_new_line, rl_replace_line, rl_redisplay, add_history
 # include <readline/readline.h>
 # include <readline/history.h>
-// Pour printf, perror
 # include <stdio.h>
-// Pour malloc, free, exit
 # include <stdlib.h>
-// Pour write, access, open, read, close, fork, wait, waitpid, wait3, wait4, isatty, ttyname, ttyslot, ioctl
 # include <unistd.h>
 # include <fcntl.h>
 # include <sys/types.h>
 # include <sys/wait.h>
-// Pour signal, sigaction, sigemptyset, sigaddset, kill
 # include <signal.h>
-// Pour getcwd, chdir, stat, lstat, fstat, unlink, execve
 # include <sys/stat.h>
-// Pour dup, dup2, pipe
 # include <unistd.h>
-// Pour opendir, readdir, closedir
 # include <dirent.h>
-// Pour strerror, errno
 # include <string.h>
 # include <errno.h>
-// Pour getenv, tcsetattr, tcgetattr, tgetent, tgetflag, tgetnum, tgetstr, tgoto, tputs
-// # include <term.h> // probleme avec sa !
 # include <termios.h>
 # include <curses.h>
 
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 100
 # endif
+
+extern int					g_sig_received;
 
 typedef struct __dirstream	t_dir;
 
@@ -78,10 +79,7 @@ typedef struct s_ms
 	t_pids	*pids;
 	int		last_status;
 	char	*home;
-	char	*user;
 }	t_ms;
-
-extern int	g_sig_received;
 
 //libft_fonctions
 char	**ft_split(char const *s, char c);
@@ -112,10 +110,10 @@ int		pids_addback(t_pids **pids, int pid);
 //lexer
 int		lexer(t_ms *head);
 char	*prompt(t_ms *head);
-char	*get_username(t_ms *head);
+char	*line_error(char *prompt_line, t_ms *head);
 void	set_type(t_token *tokens);
 char	**var_to_value(char **tab, t_ms *head);
-int		check_if_replace(char *str, int i_var);
+char	*ms_join_three(char *s1, char *s2, char *s3, int free_var);
 //lexer_utils
 int		del_quotes(t_token *tokens);
 int		tokens_addback(t_token **tokens, t_type type, char **value);

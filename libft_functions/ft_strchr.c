@@ -1,28 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ms_cd.c                                            :+:      :+:    :+:   */
+/*   ft_strchr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/13 17:15:59 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/13 17:16:00 by yanolive         ###   ########.fr       */
+/*   Created: 2024/05/13 17:15:54 by yanolive          #+#    #+#             */
+/*   Updated: 2024/05/13 17:15:55 by yanolive         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	ms_cd(t_token *token)
+char	*ft_strchr(char *str, char c)
 {
-	if (token->value[2])
+	int	i;
+
+	i = 0;
+	while (str && str[i])
 	{
-		write(2, " too many arguments", 19);
-		return (EXIT_FAILURE);
+		if (str[i] == c)
+			return (&str[i]);
+		++i;
 	}
-	if (chdir(token->value[1]) == -1)
-	{
-		error_str(token->value[1]);
-		return (perror_str(" ", EXIT_FAILURE));
-	}
-	return (EXIT_SUCCESS);
+	return (NULL);
 }
