@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/05/08 16:06:24 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/14 09:52:50 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ int	check_if_builtins_parent(t_ms *head, t_token *token)
 	int	status;
 
 	status = 0;
-	if (ft_strcmp(token->value[0], "exit") == 0)
+	if (ft_strcmp(token->value[0], "exit") == 0 && !token->next && !token->prev)
 		status = ms_exit(head, token);
 	else if (ft_strcmp(token->value[0], "cd") == 0)
 		status = ms_cd(token);

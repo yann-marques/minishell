@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/05/10 15:00:59 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/14 10:13:31 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ int	do_heredoc(t_ms *head, t_token **token, char **path_doc)
 	if (is_cmd_heredoc(tk))
 	{
 		*path_doc = here_doc(tk->next);
-		if (have_next_pipe(tk))
+		if (have_next_pipe(tk) || next_redirect_out(tk->next))
 			pids_addback(&head->pids, pipe_and_exec(head, tk, *path_doc, 0));
 		else
 			pids_addback(&head->pids, pipe_and_exec(head, tk, *path_doc, 1));
@@ -104,7 +104,7 @@ int	do_rd(t_ms *head, t_token **tk)
 	}
 	if (is_rdout(*tk))
 	{
-		if ((*tk)->prev)
+		if ((*tk)->prev && ((*tk)->prev->type == _cmd_grp || is_cmd_rdin((*tk)->prev->prev) || is_cmd_heredoc((*tk)->prev->prev)))
 		{
 			do_redirection_out(head, *tk);
 			if ((*tk)->next)
