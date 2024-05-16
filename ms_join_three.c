@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_join_three.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:12:42 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/13 17:12:43 by yanolive         ###   ########.fr       */
+/*   Updated: 2024/05/14 14:42:19 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,6 @@ char	*ms_join_three(char *s1, char *s2, char *s3, int free_var)
 	return (dst);
 }
 
-static int	isin_dblquotes(char *str, int i_target);
 static char	**add_dblquotes(char **tab);
 static char	*strtab_to_str(char **tab);
 
@@ -76,7 +75,7 @@ static char	*recreate_var(char *var, char *begin, int *free_var)
 	return (dst);
 }
 
-static int	isin_dblquotes(char *str, int i_target)
+int	isin_dblquotes(char *str, int i_target)
 {
 	int	i;
 	int	replace;

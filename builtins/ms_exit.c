@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_exit.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:16:06 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/13 17:16:07 by yanolive         ###   ########.fr       */
+/*   Updated: 2024/05/14 15:17:40 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ int	ms_exit(t_ms *head, t_token *token)
 		return (exit_with_token(head, token));
 	if (head->tokens)
 		tokens_clear(head->tokens);
+	close(head->original_stdint);
 	free(head);
 	exit(0);
 }
@@ -45,18 +46,17 @@ static int	exit_with_token(t_ms *head, t_token *token)
 	{
 		if (head->tokens)
 			tokens_clear(head->tokens);
-		free(head);
 		write(2, " numeric argument required", 26);
+		close(head->original_stdint);
+		free(head);
 		exit(2);
 	}
-	else if (token->value[2])
-	{
-		write(2, " too many arguments", 19);
+	else if (token->value[2] && write(2, " too many arguments", 19))
 		return (EXIT_FAILURE);
-	}
 	i = ft_atoi(token->value[1]);
 	if (head->tokens)
 		tokens_clear(head->tokens);
+	close(head->original_stdint);
 	free(head);
 	exit(i);
 }

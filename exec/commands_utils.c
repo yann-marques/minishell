@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/05/08 16:06:15 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/15 12:16:19 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,17 +54,18 @@ int	execute(t_ms *head, t_token *token)
 	return (0);
 }
 
-static void	redirect_if_heredoc(char *path_doc)
+static void	redirect_if_heredoc(char **path_doc)
 {
 	int	tmp_fd;
 
-	if (path_doc && access(path_doc, F_OK) == 0)
+	if (*path_doc && access(*path_doc, F_OK) == 0)
 	{
-		tmp_fd = open(path_doc, O_RDONLY, 0644);
+		tmp_fd = open(*path_doc, O_RDONLY, 0644);
 		if (tmp_fd == -1)
 			error_exit("Error with path_doc", -1);
 		dup2(tmp_fd, STDIN_FILENO);
-		unlink(path_doc);
+		unlink(*path_doc);
+		*path_doc = NULL;
 		close(tmp_fd);
 	}
 }
@@ -91,7 +92,7 @@ static void	redirect_if_lastcommand(int pid, int *fd, int last_command)
 	}
 }
 
-int	pipe_and_exec(t_ms *head, t_token *token, char *path_doc, int last_command)
+int	pipe_and_exec(t_ms *head, t_token *token, char **path_doc, int last_command)
 {
 	int		pid;
 	int		fd[2];

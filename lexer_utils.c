@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:15:04 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/13 17:15:16 by yanolive         ###   ########.fr       */
+/*   Updated: 2024/05/15 13:10:52 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,6 @@ int	check_quotes(char *str)
 	return (error);
 }
 
-static char	*ft_strdup_noquotes(char *str);
-
 int	del_quotes(t_token *tokens)
 {
 	t_token	*t_tmp;
@@ -55,8 +53,9 @@ int	del_quotes(t_token *tokens)
 		k = 0;
 		while (t_tmp->value[k])
 		{
-			if (ft_strchr(t_tmp->value[k], '\'')
-				|| ft_strchr(t_tmp->value[k], '"'))
+			if ((ft_strchr(t_tmp->value[k], '\'')
+					|| ft_strchr(t_tmp->value[k], '"'))
+				&& t_tmp->type != _delimiter)
 			{
 				s_tmp = ft_strdup_noquotes(t_tmp->value[k]);
 				if (!s_tmp)
@@ -71,7 +70,7 @@ int	del_quotes(t_token *tokens)
 	return (1);
 }
 
-static char	*ft_strdup_noquotes(char *str)
+char	*ft_strdup_noquotes(char *str)
 {
 	char	*dst;
 	char	c;

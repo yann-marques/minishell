@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   prompt.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:15:21 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/13 17:15:22 by yanolive         ###   ########.fr       */
+/*   Updated: 2024/05/16 11:49:24 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ static char	*make_prompt_line(char *username, char *pwd)
 	user_part = ft_strjoin("\001\033[1;32m\002", username);
 	if (!user_part)
 		return (NULL);
-	p = "\1\033[1;0m\033[1;0m@\033[1;36mminishell\2s\1\033[1;0m:\033[1;33m\2~";
+	p = "\1\033[1;0m\033[1;0m@\033[1;36mminishell\2\1\033[1;0m:\033[1;33m\2~";
 	prog_name_part = ft_strjoin(user_part, p);
 	free(user_part);
 	if (!prog_name_part)

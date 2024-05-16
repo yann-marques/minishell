@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/05/14 09:30:55 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/16 13:09:31 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,35 +35,6 @@ int	set_tk_at_next_cmd(t_token *token)
 	return (0);
 }
 
-void	move_rdout(t_token **tk)
-{
-	t_token	*head;
-	t_token	*rd_out;
-
-	head = *tk;
-	rd_out = NULL;
-	while (*tk)
-	{
-		if (is_rdout(*tk) && !(*tk)->prev)
-		{
-			rd_out = *tk;
-			head = (*tk)->next;
-		}
-		if ((!(*tk)->next || (*tk)->next->type == _pipe) && rd_out && rd_out != *tk)
-		{
-			rd_out->prev = *tk;
-			if ((*tk)->next)
-				rd_out->next = (*tk)->next;
-			else
-				rd_out->next = NULL;
-			(*tk)->next = rd_out;
-			*tk = rd_out;
-		}
-		*tk = (*tk)->next;
-	}
-	*tk = head;
-}
-
 int	multi_commands(t_ms *head)
 {
 	char	*path_doc;
@@ -79,14 +50,14 @@ int	multi_commands(t_ms *head)
 			continue ;
 		if (do_heredoc(head, &tk, &path_doc))
 			continue ;
-		if (do_cmd_and_rd(head, &tk, path_doc))
+		if (do_cmd_and_rd(head, &tk, &path_doc))
 			continue ;
 		if (do_rd(head, &tk))
 			continue ;
 		if (is_cmd(tk) && have_next_pipe(tk))
-			pids_addback(&head->pids, pipe_and_exec(head, tk, path_doc, 0));
+			pids_addback(&head->pids, pipe_and_exec(head, tk, &path_doc, 0));
 		if (is_cmd(tk) && !have_next_pipe(tk) && !next_redirect(tk))
-			pids_addback(&head->pids, pipe_and_exec(head, tk, path_doc, 1));
+			pids_addback(&head->pids, pipe_and_exec(head, tk, &path_doc, 1));
 		tk = tk->next;
 	}
 	return (0);
@@ -119,6 +90,7 @@ void	command_manager(t_ms *head)
 	t_pids	*pids;
 
 	original_stdint = dup(STDIN_FILENO);
+	head->original_stdint = original_stdint;
 	sig_control(0);
 	multi_commands(head);
 	pids = head->pids;

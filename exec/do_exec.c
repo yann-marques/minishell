@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/05/14 10:13:31 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/16 11:46:57 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@ int	do_pipe_error(t_ms *head, t_token **token)
 	if (is_file_error_in_pipe(tk))
 	{
 		pids_addback(&head->pids, -42);
-		error_str(tk->value[1]);
 		perror_str(" ", -1);
 		if (tk->type == _pipe)
 			tk = tk->next;
@@ -45,11 +44,12 @@ int	do_heredoc(t_ms *head, t_token **token, char **path_doc)
 	tk = *token;
 	if (is_cmd_heredoc(tk))
 	{
-		*path_doc = here_doc(tk->next);
+		*path_doc = here_doc(head, tk->next);
 		if (have_next_pipe(tk) || next_redirect_out(tk->next))
-			pids_addback(&head->pids, pipe_and_exec(head, tk, *path_doc, 0));
+			pids_addback(&head->pids, pipe_and_exec(head, tk, path_doc, 0));
 		else
-			pids_addback(&head->pids, pipe_and_exec(head, tk, *path_doc, 1));
+			pids_addback(&head->pids, pipe_and_exec(head, tk, path_doc, 1));
+		*path_doc = NULL;
 		if (tk->next)
 			tk = tk->next->next;
 		*token = tk;
@@ -57,7 +57,7 @@ int	do_heredoc(t_ms *head, t_token **token, char **path_doc)
 	}
 	if (is_heredoc(tk))
 	{
-		*path_doc = here_doc(tk);
+		*path_doc = here_doc(head, tk);
 		tk = tk->next;
 		*token = tk;
 		return (1);
@@ -65,7 +65,7 @@ int	do_heredoc(t_ms *head, t_token **token, char **path_doc)
 	return (0);
 }
 
-int	do_cmd_and_rd(t_ms *head, t_token **tk, char *path_doc)
+int	do_cmd_and_rd(t_ms *head, t_token **tk, char **path_doc)
 {
 	if (is_cmd_rdout(*tk))
 	{
@@ -104,7 +104,9 @@ int	do_rd(t_ms *head, t_token **tk)
 	}
 	if (is_rdout(*tk))
 	{
-		if ((*tk)->prev && ((*tk)->prev->type == _cmd_grp || is_cmd_rdin((*tk)->prev->prev) || is_cmd_heredoc((*tk)->prev->prev)))
+		if ((*tk)->prev && ((*tk)->prev->type == _cmd_grp
+				|| is_cmd_rdin((*tk)->prev->prev)
+				|| is_cmd_heredoc((*tk)->prev->prev)))
 		{
 			do_redirection_out(head, *tk);
 			if ((*tk)->next)

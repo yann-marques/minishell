@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:10:26 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/14 09:36:01 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/16 13:10:29 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,12 @@ typedef struct s_env
 	struct s_env	*next;
 }	t_env;
 
+typedef struct s_heredoc
+{
+	char				*line;
+	struct s_heredoc	*next;
+}	t_heredoc;
+
 typedef struct s_ms
 {
 	t_token	*tokens;
@@ -79,6 +85,7 @@ typedef struct s_ms
 	t_pids	*pids;
 	int		last_status;
 	char	*home;
+	int		original_stdint;
 }	t_ms;
 
 //libft_fonctions
@@ -114,12 +121,14 @@ char	*line_error(char *prompt_line, t_ms *head);
 void	set_type(t_token *tokens);
 char	**var_to_value(char **tab, t_ms *head);
 char	*ms_join_three(char *s1, char *s2, char *s3, int free_var);
+int		isin_dblquotes(char *str, int i_target);
 //lexer_utils
 int		del_quotes(t_token *tokens);
 int		tokens_addback(t_token **tokens, t_type type, char **value);
 int		quotes_jump(char *str);
 int		check_quotes(char *str);
 int		ft_strtab_len(char **tab);
+char	*ft_strdup_noquotes(char *str);
 //ms_split
 char	**ms_split(char *str, char *sep);
 //builtins
@@ -160,14 +169,18 @@ void	redirection_out(int fd_out);
 int		do_redirection_out(t_ms *head, t_token *tk);
 int		redirection_in(t_token *token);
 int		do_redirection_in(t_ms *head, t_token *token);
-char	*here_doc(t_token *token);
+char	*here_doc(t_ms *head, t_token *token);
+int		heredoc_addback(t_heredoc **here_doc, char *line);
 void	rd_null(void);
 int		check_file_out(t_token *token);
+void	move_rdout(t_token **tk);
 
 //EXEC: parse utils
 char	**t_env_to_strtab(t_env *env);
 t_token	*get_n_token(t_token *tokens, int count);
 int		env_size(t_env *env);
+int		heredoc_size(t_heredoc *here_doc);
+char	**t_heredoc_to_strtab(t_heredoc *tab);
 
 //EXEC: files utils
 char	*get_random_tmp_path(void);
@@ -183,14 +196,14 @@ int		set_tk_at_next_cmd(t_token *token);
 //EXEC: do_exec.c
 int		do_pipe_error(t_ms *head, t_token **token);
 int		do_heredoc(t_ms *head, t_token **token, char **path_doc);
-int		do_cmd_and_rd(t_ms *head, t_token **tk, char *path_doc);
+int		do_cmd_and_rd(t_ms *head, t_token **tk, char **path_doc);
 int		do_rd(t_ms *head, t_token **tk);
 
 //EXEC: commands utils
 char	*find_path(t_ms *head, t_token *token);
 int		execute(t_ms *head, t_token *token);
 int		pipe_and_exec(t_ms *head, t_token *token,
-			char *path_doc, int last_command);
+			char **path_doc, int last_command);
 
 //EXEC: builtins utils
 int		check_echo_builtin(char **value);

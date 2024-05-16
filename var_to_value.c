@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   var_to_value.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:13:19 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/13 17:14:42 by yanolive         ###   ########.fr       */
+/*   Updated: 2024/05/14 15:00:59 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,6 +107,8 @@ static char	*find_var(char *str, int i)
 		tmp = ft_strlen_to(&str[i + 1], '"');
 	if (tmp > ft_strlen_to(&str[i + 1], '\''))
 		tmp = ft_strlen_to(&str[i + 1], '\'');
+	if (tmp > ft_strlen_to(&str[i + 1], '\n'))
+		tmp = ft_strlen_to(&str[i + 1], '\n');
 	if (str[i + 1] == '?')
 		tmp = 1;
 	var = ft_strndup(&str[i + 1], tmp);

@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:12:25 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/14 09:24:06 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/15 13:27:22 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,6 @@ int	main(int ac, char **av, char **envp)
 	{
 		if (!head->tokens && !lexer(head))
 			continue ;
-		// display_tokens(head->tokens);
 		if (!is_handle_error(head))
 			command_manager(head);
 		tokens_clear(head->tokens);

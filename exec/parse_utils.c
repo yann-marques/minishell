@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/05/08 16:05:56 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/15 13:08:01 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,23 @@ int	env_size(t_env *env)
 	count = 0;
 	while (tmp)
 	{
+		count++;
 		tmp = tmp->next;
-		++count;
+	}
+	return (count);
+}
+
+int	heredoc_size(t_heredoc *here_doc)
+{
+	t_heredoc	*tmp;
+	int			count;
+
+	tmp = here_doc;
+	count = 0;
+	while (tmp)
+	{
+		count++;
+		tmp = tmp->next;
 	}
 	return (count);
 }
@@ -46,15 +61,37 @@ char	**t_env_to_strtab(t_env *env)
 		envp[k] = ft_strjoin(tmp, tmp_env->value);
 		if (tmp)
 			free(tmp);
-		if (!envp[k])
+		if (!envp[k++])
 		{
 			strtab_clear(envp);
 			return (NULL);
 		}
-		++k;
 		tmp_env = tmp_env->next;
 	}
+	envp[k] = NULL;
 	return (envp);
+}
+
+char	**t_heredoc_to_strtab(t_heredoc *tab)
+{
+	char		**heredoc;
+	t_heredoc	*tmp;
+	int			k;
+
+	heredoc = malloc(sizeof(char *) * (heredoc_size(tab) + 1));
+	if (!heredoc)
+		return (NULL);
+	k = 0;
+	while (tab)
+	{
+		heredoc[k] = tab->line;
+		++k;
+		tmp = tab;
+		tab = tab->next;
+		free(tmp);
+	}
+	heredoc[k] = NULL;
+	return (heredoc);
 }
 
 t_token	*get_n_token(t_token *tokens, int count)
