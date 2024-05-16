@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/05/08 16:06:48 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/16 15:54:53 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,12 @@ static const char	*fill_buffer(char *buffer)
 
 	i = 0;
 	g_table = "abcdefghijklmnopqrstuvwxyz0123456789_";
-	while (i < 16)
+	while (i < 15)
 	{
-		buffer[i] = g_table[buffer[i] % 37];
+		buffer[i] = g_table[(unsigned int)(buffer[i]) % 36];
 		i++;
 	}
+	buffer[i] = '\0';
 	return (buffer);
 }
 

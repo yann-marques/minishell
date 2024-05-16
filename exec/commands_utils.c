@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/05/15 12:16:19 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/16 15:33:14 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,9 @@ static void	redirect_if_heredoc(char **path_doc)
 {
 	int	tmp_fd;
 
-	if (*path_doc && access(*path_doc, F_OK) == 0)
+	if (!path_doc || !(*path_doc))
+		return ;
+	if (access(*path_doc, F_OK) == 0)
 	{
 		tmp_fd = open(*path_doc, O_RDONLY, 0644);
 		if (tmp_fd == -1)
