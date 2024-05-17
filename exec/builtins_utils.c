@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/05/15 12:21:09 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/17 12:04:04 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ int	check_if_builtins_parent(t_ms *head, t_token *token)
 		status = ms_exit(head, token);
 	else if (ft_strcmp(token->value[0], "cd") == 0 && !token->next
 		&& !token->prev)
-		status = ms_cd(token);
+		status = ms_cd(head, token);
 	else if (ft_strcmp(token->value[0], "unset") == 0
 		&& !token->next && !token->prev)
 		status = ms_unset(head->env, token);
@@ -77,7 +77,7 @@ int	builtin_child(t_ms *head, t_token *token)
 	if (check_echo_builtin(token->value))
 		status = ms_echo_n(token);
 	else if (ft_strcmp(token->value[0], "cd") == 0)
-		status = ms_cd(token);
+		status = ms_cd(head, token);
 	else if (ft_strcmp(token->value[0], "pwd") == 0)
 		status = ms_pwd();
 	else if (ft_strcmp(token->value[0], "export") == 0)

@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:10:26 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/16 13:10:29 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/17 12:04:02 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,7 +132,7 @@ char	*ft_strdup_noquotes(char *str);
 //ms_split
 char	**ms_split(char *str, char *sep);
 //builtins
-int		ms_cd(t_token *token);
+int		ms_cd(t_ms *head, t_token *token);
 int		ms_echo_n(t_token *token);
 int		ms_env(t_env *env, char *begin);
 int		ms_exit(t_ms *head, t_token *token);
