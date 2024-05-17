@@ -6,7 +6,7 @@
 /*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:12:42 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/17 14:17:17 by yanolive         ###   ########.fr       */
+/*   Updated: 2024/05/17 16:05:42 by yanolive         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,8 @@ static char	*recreate_var(char *var, char *begin, int *free_var)
 
 	if (!begin)
 		return (NULL);
-	if (!isin_dblquotes(begin, ft_strlen(begin)) || (var && !ft_strchr(var, ' ')))
+	if (!isin_dblquotes(begin, ft_strlen(begin))
+		|| (var && !ft_strchr(var, ' ')))
 	{
 		if (free_var)
 			return (var);
@@ -63,11 +64,7 @@ static char	*recreate_var(char *var, char *begin, int *free_var)
 	if (!var)
 		return (ft_strdup(""));
 	tab = ft_split(var, ' ');
-	if (!tab)
-		return (NULL);
 	tab = add_dblquotes(tab);
-	if (!tab)
-		return (NULL);
 	dst = strtab_to_str(tab);
 	if (!dst)
 		return (NULL);
@@ -105,6 +102,8 @@ static char	**add_dblquotes(char **tab)
 	char	*tmp;
 	int		k;
 
+	if (!tab)
+		return (NULL);
 	k = 0;
 	while (tab[k])
 	{
@@ -129,6 +128,8 @@ static char	*strtab_to_str(char **tab)
 	char	*dst;
 	int		k;
 
+	if (!tab)
+		return (NULL);
 	if (!tab[0])
 		return (ft_strdup(""));
 	if (!tab[1])
