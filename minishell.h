@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:10:26 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/17 12:04:02 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/17 13:13:53 by yanolive         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -224,7 +224,5 @@ int		perror_str(char *str, int status);
 int		is_handle_error(t_ms *head);
 
 t_ms	*send_head(t_ms *new_head);
-
-void	display_tokens(t_token *tokens);
 
 #endif

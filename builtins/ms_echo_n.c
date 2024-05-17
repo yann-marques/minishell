@@ -6,7 +6,7 @@
 /*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:16:25 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/13 17:16:26 by yanolive         ###   ########.fr       */
+/*   Updated: 2024/05/17 13:40:05 by yanolive         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ static int	check_flag(char *str, char flag)
 	int	i;
 
 	i = 0;
-	if (str[i++] != '-')
+	if (!str || str[i++] != '-')
 		return (0);
 	if (str[i++] != flag)
 		return (0);

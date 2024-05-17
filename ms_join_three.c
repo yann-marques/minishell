@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_join_three.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:12:42 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/14 14:42:19 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/17 14:17:17 by yanolive         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,15 +53,15 @@ static char	*recreate_var(char *var, char *begin, int *free_var)
 
 	if (!begin)
 		return (NULL);
-	if (!var)
-		return (ft_strdup(""));
-	if (!isin_dblquotes(begin, ft_strlen(begin)))
+	if (!isin_dblquotes(begin, ft_strlen(begin)) || (var && !ft_strchr(var, ' ')))
 	{
 		if (free_var)
 			return (var);
 		return (ft_strdup(var));
 	}
 	*free_var = 1;
+	if (!var)
+		return (ft_strdup(""));
 	tab = ft_split(var, ' ');
 	if (!tab)
 		return (NULL);
@@ -129,6 +129,8 @@ static char	*strtab_to_str(char **tab)
 	char	*dst;
 	int		k;
 
+	if (!tab[0])
+		return (ft_strdup(""));
 	if (!tab[1])
 		return (ft_strdup(tab[0]));
 	k = 0;

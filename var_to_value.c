@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   var_to_value.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:13:19 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/14 15:00:59 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/17 14:01:33 by yanolive         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ char	**var_to_value(char **tab, t_ms *head)
 					strtab_clear(tab);
 					return (NULL);
 				}
-				if (tab[k] && ft_strlen_to(tab[k], '\0') < i)
+				if (!tab[k] || ft_strlen_to(tab[k], '\0') <= i)
 					break ;
 			}
 			++i;
@@ -78,10 +78,14 @@ static int	replace_var_call(t_ms *head, char **str, int k, int i)
 	char	*var;
 	char	*begin;
 	char	*end;
+	int		free_var;
 
 	begin = find_var(str[k], i);
 	if (!begin)
 		return (0);
+	free_var = 0;
+	if (begin[0] == '?')
+		free_var = 1;
 	var = get_var_value(head, begin);
 	end = ft_strndup(&str[k][i + ft_strlen_to(begin, '\0') + 1], 0);
 	free(begin);
@@ -89,7 +93,7 @@ static int	replace_var_call(t_ms *head, char **str, int k, int i)
 		return (0);
 	if (i == 0)
 		i = -1;
-	var = ms_join_three(ft_strndup(str[k], i), var, end, 0);
+	var = ms_join_three(ft_strndup(str[k], i), var, end, free_var);
 	if (!var)
 		return (0);
 	free(str[k]);
