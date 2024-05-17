@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/05/17 15:29:48 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/17 15:36:51 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ void	fill_heredoc(char *line, char *lim, t_ms *head, int fd)
 		error_exit(" Error: removing double quotes on limiter", EXIT_FAILURE);
 	while (line && ft_strncmp(line, lim_nq, ft_strlen(lim_nq) + 1) != 0)
 	{
-		write(STDOUT_FILENO, ">", 1);
+		write(STDOUT_FILENO, "> ", 2);
 		heredoc_addback(&heredoc, line);
 		line = get_next_line(STDIN_FILENO);
 	}
@@ -109,7 +109,7 @@ char	*here_doc(t_ms *head, t_token *token)
 	tmp_fd = open(path_doc, O_CREAT | O_TRUNC | O_WRONLY | O_APPEND, 0644);
 	if (tmp_fd == -1)
 		error_exit("Error with fileout", -1);
-	write(STDOUT_FILENO, ">", 1);
+	write(STDOUT_FILENO, "> ", 2);
 	line = get_next_line(0);
 	if (!line)
 	{
