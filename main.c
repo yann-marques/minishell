@@ -6,23 +6,13 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:12:25 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/15 13:27:22 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/17 14:56:10 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 void	display_tokens(t_token *tokens);
-
-t_ms	*send_head(t_ms *new_head)
-{
-	static t_ms	*head = NULL;
-	t_ms		*tmp;
-
-	tmp = head;
-	head = new_head;
-	return (tmp);
-}
 
 t_ms	*init_head(char **envp)
 {
@@ -55,9 +45,7 @@ int	main(int ac, char **av, char **envp)
 	if (ac != 1)
 		return (-1);
 	(void)av;
-	head = send_head(NULL);
-	if (!head)
-		head = init_head(envp);
+	head = init_head(envp);
 	if (!head)
 		return (-1);
 	sig_control(1);
@@ -112,8 +100,4 @@ void	display_tokens(t_token *tokens)
 		}
 		tmp = tmp->next;
 	}
-	printf("\n");
-	printf("Execution part:\n");
-	printf("---------------\n");
-	printf("\n");
 }

@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/05/16 15:08:37 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/17 15:29:48 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,11 +44,12 @@ int	heredoc_addback(t_heredoc **here_doc, char *line)
 	return (0);
 }
 
-void	expand_if_no_double_quote(char *lim, char **tab, t_ms *head)
+void	expand_if_no_double_quote(char *lim, char **tab, t_ms *head, int *k)
 {
 	char	*line_without_dq;
 	int		i;
 
+	*k = -1;
 	i = 0;
 	if (isin_dblquotes(lim, 1))
 	{
@@ -80,16 +81,17 @@ void	fill_heredoc(char *line, char *lim, t_ms *head, int fd)
 		error_exit(" Error: removing double quotes on limiter", EXIT_FAILURE);
 	while (line && ft_strncmp(line, lim_nq, ft_strlen(lim_nq) + 1) != 0)
 	{
-		write(STDOUT_FILENO, "> ", 2);
+		write(STDOUT_FILENO, ">", 1);
 		heredoc_addback(&heredoc, line);
 		line = get_next_line(STDIN_FILENO);
 	}
 	free(lim_nq);
+	if (!heredoc)
+		return ;
 	tab = t_heredoc_to_strtab(heredoc);
 	if (!tab)
 		error_exit(" Error to transform heredoc list into tab", EXIT_FAILURE);
-	expand_if_no_double_quote(lim, tab, head);
-	k = -1;
+	expand_if_no_double_quote(lim, tab, head, &k);
 	while (tab[++k])
 		write(fd, tab[k], ft_strlen(tab[k]));
 	strtab_clear(tab);
@@ -107,7 +109,7 @@ char	*here_doc(t_ms *head, t_token *token)
 	tmp_fd = open(path_doc, O_CREAT | O_TRUNC | O_WRONLY | O_APPEND, 0644);
 	if (tmp_fd == -1)
 		error_exit("Error with fileout", -1);
-	write(STDOUT_FILENO, "> ", 2);
+	write(STDOUT_FILENO, ">", 1);
 	line = get_next_line(0);
 	if (!line)
 	{

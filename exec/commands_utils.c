@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/05/17 11:49:32 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/17 15:20:14 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,11 +77,9 @@ static void	redirect_if_lastcommand(int pid, int *fd, int last_command)
 	if (pid == 0)
 	{
 		if (!last_command)
-		{
 			dup2(fd[1], STDOUT_FILENO);
-			close(fd[0]);
-			close(fd[1]);
-		}
+		close(fd[0]);
+		close(fd[1]);
 	}
 	else
 	{
@@ -108,10 +106,11 @@ int	pipe_and_exec(t_ms *head, t_token *token, char **path_doc, int last_command)
 		return (-1);
 	if (pid == 0)
 	{
+		close(head->original_stdint);
 		redirect_if_heredoc(path_doc);
 		redirect_if_lastcommand(pid, fd, last_command);
 		if (builtin_child(head, token))
-			exit(head->last_status);
+			exit_free_head(head);
 		execute(head, token);
 	}
 	else

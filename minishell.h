@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:10:26 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/17 12:04:02 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/17 15:06:13 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,6 +150,7 @@ void	strtab_clear(char **tab);
 void	tokens_clear(t_token *tokens);
 void	pids_clear(t_pids *pids);
 void	free_env(t_env *env);
+void	exit_free_head(t_ms *head);
 
 //is_token_type (BOOL FUNCTIONS)
 int		is_cmd(t_token *tk);

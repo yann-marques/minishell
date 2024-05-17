@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:16:06 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/14 15:17:40 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/17 14:50:12 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,10 @@ int	ms_exit(t_ms *head, t_token *token)
 		return (exit_with_token(head, token));
 	if (head->tokens)
 		tokens_clear(head->tokens);
+	free_env(head->env);
+	if (head->pids)
+		pids_clear(head->pids);
+	free(head->home);
 	close(head->original_stdint);
 	free(head);
 	exit(0);

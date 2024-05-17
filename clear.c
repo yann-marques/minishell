@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:12:21 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/14 15:15:14 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/17 15:06:33 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,4 +70,17 @@ void	free_env(t_env *env)
 		free(tmp);
 		tmp = env;
 	}
+}
+
+void	exit_free_head(t_ms *head)
+{
+	int		last_status;
+
+	tokens_clear(head->tokens);
+	pids_clear(head->pids);
+	free_env(head->env);
+	free(head->home);
+	last_status = head->last_status;
+	free(head);
+	exit(last_status);
 }
