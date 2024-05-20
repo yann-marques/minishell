@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_exit.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:16:06 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/17 15:57:47 by yanolive         ###   ########.fr       */
+/*   Updated: 2024/05/20 18:48:05 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,6 @@ static int	exit_with_token(t_ms *head, t_token *token);
 
 int	ms_exit(t_ms *head, t_token *token)
 {
-	if (token && token->value[1] && !token->value[2])
-	{
-		free_env(head->env);
-		if (head->pids)
-			pids_clear(head->pids);
-		free(head->home);
-	}
 	printf("exit\n");
 	if (token && token->value[1])
 		return (exit_with_token(head, token));
@@ -48,19 +41,15 @@ static int	exit_with_token(t_ms *head, t_token *token)
 		++i;
 	if (token->value[1][i])
 	{
-		if (head->tokens)
-			tokens_clear(head->tokens);
-		write(2, " numeric argument required", 26);
+		write(2, " numeric argument required\n", 27);
 		close(head->original_stdint);
-		free(head);
+		exit_free_head(head, 0);
 		exit(2);
 	}
-	else if (token->value[2] && write(2, " too many arguments", 19))
+	else if (token->value[2] && write(2, " too many arguments\n", 20))
 		return (EXIT_FAILURE);
 	i = ft_atoi(token->value[1]);
-	if (head->tokens)
-		tokens_clear(head->tokens);
 	close(head->original_stdint);
-	free(head);
+	exit_free_head(head, 0);
 	exit(i);
 }

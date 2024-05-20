@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/05/20 14:53:36 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/20 18:12:16 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@ int	do_pipe_error(t_ms *head, t_token **token)
 	if (is_file_error_in_pipe(tk))
 	{
 		pids_addback(&head->pids, -42);
-		perror_str(" ", -1);
 		if (tk->type == _pipe)
 			tk = tk->next;
 		while (tk && tk->type != _pipe)

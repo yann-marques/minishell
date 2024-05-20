@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/05/17 12:16:49 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/20 18:10:25 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ int	is_file_error_in_pipe(t_token *token)
 			if (tmp->type == _append)
 				outfile = open(tmp->value[1], 0100 | 01 | 02000, 0644);
 			if (outfile == -1)
-				return (1);
+				return (perror_str(tmp->value[1], 1));
 			close(outfile);
 		}
 		if (tmp->type == _pipe)
