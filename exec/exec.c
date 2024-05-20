@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/05/16 13:09:31 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/20 16:16:53 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,8 @@ static void	process_pids(t_ms *head, int pid)
 			error_str(" Broken pipe\n");
 		if (WIFEXITED(status))
 			head->last_status = WEXITSTATUS(status);
+		if (WIFSIGNALED(status))
+			head->last_status = WTERMSIG(status) + 128;
 	}
 	if (pid == -42)
 		head->last_status = EXIT_FAILURE;

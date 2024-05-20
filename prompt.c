@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:15:21 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/17 15:17:39 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/20 17:57:42 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,10 @@ char	*prompt(t_ms *head)
 		return (NULL);
 	}
 	username = get_username(head);
-	line = make_prompt_line(username, &pwd[ft_strlen(absolute)]);
+	if (ft_strlen(pwd) <= ft_strlen(absolute))
+		line = make_prompt_line(username, pwd);
+	else
+		line = make_prompt_line(username, &pwd[ft_strlen(absolute)]);
 	free(pwd);
 	free(absolute);
 	return (line);
