@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   var_to_value.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:13:19 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/17 16:05:57 by yanolive         ###   ########.fr       */
+/*   Updated: 2024/05/20 15:49:43 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ char	**var_to_value(char **tab, t_ms *head)
 		while (tab[k] && tab[k][i])
 		{
 			if (check_if_replace(tab[k], i)
-				&& (k == 0 || !ft_strcmp(tab[k - 1], "<<")))
+				&& tab[k][0] != '<' && tab[k][1] != '<')
 			{
 				if (!replace_var_call(head, tab, k, i) || !tab[k][0])
 				{
