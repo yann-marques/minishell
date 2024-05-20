@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_exit.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:16:06 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/17 14:50:12 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/17 15:57:47 by yanolive         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ static int	exit_with_token(t_ms *head, t_token *token);
 
 int	ms_exit(t_ms *head, t_token *token)
 {
-	if (!token || (token->value[1] && !token->value[2]))
+	if (token && token->value[1] && !token->value[2])
 	{
 		free_env(head->env);
 		if (head->pids)

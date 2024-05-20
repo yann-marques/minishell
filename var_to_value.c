@@ -6,7 +6,7 @@
 /*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:13:19 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/17 14:01:33 by yanolive         ###   ########.fr       */
+/*   Updated: 2024/05/17 16:05:57 by yanolive         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,8 @@ char	**var_to_value(char **tab, t_ms *head)
 		i = 0;
 		while (tab[k] && tab[k][i])
 		{
-			if (check_if_replace(tab[k], i))
+			if (check_if_replace(tab[k], i)
+				&& (k == 0 || !ft_strcmp(tab[k - 1], "<<")))
 			{
 				if (!replace_var_call(head, tab, k, i) || !tab[k][0])
 				{
