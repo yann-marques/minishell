@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/05/16 15:54:53 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/20 15:16:52 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ static const char	*fill_buffer(char *buffer)
 	return (buffer);
 }
 
-char	*get_random_tmp_path(void)
+char	*get_random_tmp_path(t_ms *head)
 {
 	int			fd;
 	char		buffer[16];
@@ -38,31 +38,31 @@ char	*get_random_tmp_path(void)
 
 	fd = open("/dev/random", O_RDONLY);
 	if (fd == -1)
-		perror_exit("Error opening /dev/random", -1);
+		perror_exit(head, "Error opening /dev/random", -1);
 	if (read(fd, buffer, 16) == -1)
 	{
 		close(fd);
-		perror_exit("Error reading from /dev/random", fd);
+		perror_exit(head, "Error reading from /dev/random", fd);
 	}
 	buffer_table = fill_buffer((char *)buffer);
 	close(fd);
 	path_doc = ft_strjoin("/tmp/ms_heredoc_", buffer_table);
 	if (!path_doc)
-		error_exit("Error joining the tmp directory", -1);
+		error_exit(head, "Error joining the tmp directory", -1);
 	return (path_doc);
 }
 
-char	*make_command_path(char	*path, t_token *token)
+char	*make_command_path(t_ms *head, char	*path, t_token *token)
 {
 	char	*path_slash;
 	char	*path_command;
 
 	path_slash = ft_strjoin(path, "/");
 	if (!path_slash)
-		error_exit("", -1);
+		error_exit(head, "", -1);
 	path_command = ft_strjoin(path_slash, token->value[0]);
 	if (!path_command)
-		error_exit("", -1);
+		error_exit(head, "", -1);
 	free(path_slash);
 	return (path_command);
 }
@@ -75,7 +75,7 @@ char	*find_path(t_ms *head, t_token *token)
 	int		i;
 
 	if (access(token->value[0], F_OK) != -1)
-		return (token->value[0]);
+		return (ft_strdup(token->value[0]));
 	path = get_var_value(head, "PATH");
 	if (!path)
 		return (NULL);
@@ -83,7 +83,7 @@ char	*find_path(t_ms *head, t_token *token)
 	i = 0;
 	while (paths[i])
 	{
-		path_command = make_command_path(paths[i++], token);
+		path_command = make_command_path(head, paths[i++], token);
 		if (access(path_command, F_OK) == 0)
 		{
 			strtab_clear(paths);

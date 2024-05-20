@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/05/10 14:44:08 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/20 14:56:28 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,10 +74,10 @@ int	is_handle_error(t_ms *head)
 		return (0);
 	tk_name = ft_strjoin(" syntax error near unexpected token `", tk_name);
 	if (!tk_name)
-		error_exit(" ", -1);
+		error_exit(head, " ", -1);
 	error_line = ft_strjoin(tk_name, "'\n");
 	if (!error_line)
-		error_exit(" ", -1);
+		error_exit(head, " ", -1);
 	write (2, error_line, ft_strlen(error_line));
 	head->last_status = 2;
 	free(error_line);

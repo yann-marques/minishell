@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/05/17 15:36:51 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/20 15:22:56 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,12 +55,12 @@ void	expand_if_no_double_quote(char *lim, char **tab, t_ms *head, int *k)
 	{
 		tab = var_to_value(tab, head);
 		if (!(*tab))
-			error_exit(" Error to expands values in tab", EXIT_FAILURE);
+			error_exit(head, " Error to expands values in tab", EXIT_FAILURE);
 		while (tab[i])
 		{
 			line_without_dq = ft_strdup_noquotes(tab[i]);
 			if (!line_without_dq)
-				error_exit(" Error: removing double quotes on line", 1);
+				error_exit(head, " Error: removing double quotes on line", 1);
 			free(tab[i]);
 			tab[i] = line_without_dq;
 			i++;
@@ -78,7 +78,7 @@ void	fill_heredoc(char *line, char *lim, t_ms *head, int fd)
 	heredoc = NULL;
 	lim_nq = ft_strdup_noquotes(lim);
 	if (!lim_nq)
-		error_exit(" Error: removing double quotes on limiter", EXIT_FAILURE);
+		error_exit(head, " Error: removing double quotes", EXIT_FAILURE);
 	while (line && ft_strncmp(line, lim_nq, ft_strlen(lim_nq) + 1) != 0)
 	{
 		write(STDOUT_FILENO, "> ", 2);
@@ -90,7 +90,7 @@ void	fill_heredoc(char *line, char *lim, t_ms *head, int fd)
 		return ;
 	tab = t_heredoc_to_strtab(heredoc);
 	if (!tab)
-		error_exit(" Error to transform heredoc list into tab", EXIT_FAILURE);
+		error_exit(head, " Error to transform heredoc list", EXIT_FAILURE);
 	expand_if_no_double_quote(lim, tab, head, &k);
 	while (tab[++k])
 		write(fd, tab[k], ft_strlen(tab[k]));
@@ -105,10 +105,10 @@ char	*here_doc(t_ms *head, t_token *token)
 	char	*limiter;
 
 	limiter = ft_strjoin(token->value[1], "\n");
-	path_doc = get_random_tmp_path();
+	path_doc = get_random_tmp_path(head);
 	tmp_fd = open(path_doc, O_CREAT | O_TRUNC | O_WRONLY | O_APPEND, 0644);
 	if (tmp_fd == -1)
-		error_exit("Error with fileout", -1);
+		error_exit(head, "Error with fileout", -1);
 	write(STDOUT_FILENO, "> ", 2);
 	line = get_next_line(0);
 	if (!line)

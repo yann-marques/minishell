@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/05/16 11:46:57 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/20 14:53:36 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	do_pipe_error(t_ms *head, t_token **token)
 			tk = tk->next;
 		if (tk)
 		{
-			rd_null();
+			rd_null(head);
 			tk = get_next_pipe(tk);
 		}
 		*token = tk;

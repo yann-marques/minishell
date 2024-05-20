@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/05/14 09:31:53 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/20 14:54:38 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ int	do_redirection_in(t_ms *head, t_token *tk)
 	while (tmp)
 	{
 		if (tmp->type == _redirection && tmp->value[0][0] == '<')
-			redirection_in(tmp);
+			redirection_in(head, tmp);
 		else
 			break ;
 		tmp = tmp->next;

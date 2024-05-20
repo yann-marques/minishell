@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/05/17 12:04:04 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/20 14:56:07 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ int	check_if_builtins_parent(t_ms *head, t_token *token)
 	else
 		return (0);
 	head->last_status = status;
-	rd_null();
+	rd_null(head);
 	return (1);
 }
 

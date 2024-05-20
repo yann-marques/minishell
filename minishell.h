@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:10:26 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/17 15:33:15 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/20 14:54:51 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,7 +150,7 @@ void	strtab_clear(char **tab);
 void	tokens_clear(t_token *tokens);
 void	pids_clear(t_pids *pids);
 void	free_env(t_env *env);
-void	exit_free_head(t_ms *head);
+void	exit_free_head(t_ms *head, int exit);
 
 //is_token_type (BOOL FUNCTIONS)
 int		is_cmd(t_token *tk);
@@ -168,11 +168,11 @@ int		next_redirect_out(t_token *tk);
 //EXEC: redirect utils
 void	redirection_out(int fd_out);
 int		do_redirection_out(t_ms *head, t_token *tk);
-int		redirection_in(t_token *token);
+int		redirection_in(t_ms *head, t_token *token);
 int		do_redirection_in(t_ms *head, t_token *token);
 char	*here_doc(t_ms *head, t_token *token);
 int		heredoc_addback(t_heredoc **here_doc, char *line);
-void	rd_null(void);
+void	rd_null(t_ms *head);
 int		check_file_out(t_token *token);
 void	move_rdout(t_token **tk);
 
@@ -184,7 +184,7 @@ int		heredoc_size(t_heredoc *here_doc);
 char	**t_heredoc_to_strtab(t_heredoc *tab);
 
 //EXEC: files utils
-char	*get_random_tmp_path(void);
+char	*get_random_tmp_path(t_ms *head);
 int		do_needed_files(t_token *token);
 int		is_file_error_in_pipe(t_token *token);
 int		is_file(char *name);
@@ -216,8 +216,8 @@ t_token	*get_next_pipe(t_token *tk);
 int		have_next_pipe(t_token *token);
 
 //exit
-void	error_exit(char *str, int status);
-void	perror_exit(char *str, int status);
+void	error_exit(t_ms *head, char *str, int status);
+void	perror_exit(t_ms *head, char *str, int status);
 
 //error
 int		error_str(char *str);
