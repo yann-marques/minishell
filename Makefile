@@ -25,12 +25,13 @@ all: $(NAME)
 
 $(NAME): $(OBJ)
 	$(CC) $(FLAGS) $^ -o $@ -lreadline
+	mv $(OBJ) objects
 
 %.o: %.c $(HEADER)
 	$(CC) $(FLAGS) -c $< -o $@
 
 clean:
-	rm -f $(OBJ)
+	rm -f objects/*.o
 	rm -f *.gch
 
 fclean: clean
