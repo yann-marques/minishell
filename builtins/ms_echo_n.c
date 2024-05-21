@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_echo_n.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:16:25 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/17 13:40:05 by yanolive         ###   ########.fr       */
+/*   Updated: 2024/05/21 13:47:38 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	ms_echo_n(t_token *token)
 	int	k;
 
 	k = 1;
-	if (check_flag(token->value[k], 'n'))
+	while (token->value[k] && check_flag(token->value[k], 'n'))
 		++k;
 	while (token->value[k])
 	{
