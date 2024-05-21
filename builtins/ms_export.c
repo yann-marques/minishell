@@ -6,7 +6,7 @@
 /*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:16:58 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/13 17:16:59 by yanolive         ###   ########.fr       */
+/*   Updated: 2024/05/21 16:26:39 by yanolive         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ static int	add_var(t_env *env, t_token *token)
 	}
 	if (token->value[i])
 	{
-		write(2, " not a valid identifier", 23);
+		write(2, " not a valid identifier\n", 23);
 		return (EXIT_FAILURE);
 	}
 	return (EXIT_SUCCESS);
@@ -64,7 +64,7 @@ static int	check_env_var(char *str)
 	i = 0;
 	if (!ft_isalpha(str[i++]) && !quotes_jump(str))
 		return (0);
-	while (str[i] && (ft_isalpha(str[i])
+	while (str[i] && (ft_isalpha(str[i]) || str[i] == '_'
 			|| ft_isdigit(str[i]) || quotes_jump(&str[i])))
 	{
 		while (str[i] && quotes_jump(&str[i]))

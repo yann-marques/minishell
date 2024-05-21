@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   here_doc.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/05/20 15:22:56 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/21 18:24:18 by yanolive         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ void	expand_if_no_double_quote(char *lim, char **tab, t_ms *head, int *k)
 
 	*k = -1;
 	i = 0;
-	if (isin_dblquotes(lim, 1))
+	if (isin_dblquotes(lim, 1, 0))
 	{
 		tab = var_to_value(tab, head);
 		if (!(*tab))

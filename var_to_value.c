@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   var_to_value.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:13:19 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/20 15:49:43 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/21 19:10:06 by yanolive         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,20 +53,18 @@ static int	check_if_replace(char *str, int i_var)
 	i = -1;
 	if (str[i_var] != '$' || (str[i_var] == '$' && (str[i_var + 1] == ' '
 				|| str[i_var + 1] == '\'' || str[i_var + 1] == '"'
-				|| !str[i_var + 1])))
+				|| !str[i_var + 1] || str[i] == '	')))
 		return (0);
-	while (str[++i] && i < i_var)
+	while (str[++i] && i <= i_var)
 	{
 		replace = 1;
-		if (str[i] == '"' && quotes_jump(&str[i]) > i_var)
-			break ;
-		if (str[i] == '\'' && ft_strchr(&str[i + 1], '\'') && ++i)
+		if (str[i] == '\'' || str[i] == '"')
 		{
-			replace = 0;
-			while (str[i] && str[i] != '\'' && i != i_var)
-				++i;
+			if (str[i] == '\'')
+				replace = 0;
+			i += quotes_jump(&str[i]);
 		}
-		if (!str[i])
+		if (i > i_var || !str[i])
 			break ;
 	}
 	return (replace);
