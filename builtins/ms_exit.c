@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:16:06 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/20 18:48:05 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/21 13:05:39 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,11 +30,46 @@ int	ms_exit(t_ms *head, t_token *token)
 	exit(0);
 }
 
-static int	exit_with_token(t_ms *head, t_token *token)
+static int	ft_isspace(char c)
 {
-	int	i;
+	return ((c >= 8 && c <= 13) || c == ' ');
+}
+
+static __int128	safe_atoi(const char *nptr, bool *error)
+{
+	size_t		i;
+	int			sign;
+	__int128	value;
 
 	i = 0;
+	sign = 1;
+	value = 0;
+	*error = false;
+	while (ft_isspace(nptr[i]))
+		i++;
+	if (nptr[i] == '-' || nptr[i] == '+')
+	{
+		if (nptr[i] == '-')
+			sign = -1;
+		i++;
+	}
+	while (ft_isdigit(nptr[i]))
+	{
+		value = (value * 10) + nptr[i] - '0';
+		i++;
+	}
+	if (value > LLONG_MAX || value < LLONG_MIN)
+		*error = true;
+	return (value * sign);
+}
+
+static int	exit_with_token(t_ms *head, t_token *token)
+{
+	int		i;
+	bool	error;
+
+	i = 0;
+	error = false;
 	if (token->value[1][i] == '+' || token->value[1][i] == '-')
 		++i;
 	while (ft_isdigit(token->value[1][i]))
@@ -48,7 +83,9 @@ static int	exit_with_token(t_ms *head, t_token *token)
 	}
 	else if (token->value[2] && write(2, " too many arguments\n", 20))
 		return (EXIT_FAILURE);
-	i = ft_atoi(token->value[1]);
+	i = safe_atoi(token->value[1], &error);
+	if (error)
+		perror_exit(head, " numeric argument required\n", i);
 	close(head->original_stdint);
 	exit_free_head(head, 0);
 	exit(i);
