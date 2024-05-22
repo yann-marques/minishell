@@ -6,7 +6,7 @@
 /*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:16:14 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/13 17:16:15 by yanolive         ###   ########.fr       */
+/*   Updated: 2024/05/21 17:18:33 by yanolive         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,15 +19,12 @@ int	ms_env(t_env *env, char *begin)
 	tmp = env;
 	while (tmp)
 	{
-		if (!begin)
-		{
-			if (tmp->value && tmp->value[0])
+		if (!begin && tmp->value)
 				printf("%s=%s\n", tmp->var, tmp->value);
-		}
-		else if (ft_strcmp(tmp->var, "_") != 0)
+		else if (begin && ft_strcmp(tmp->var, "_") != 0)
 		{
 			printf("%s%s", begin, tmp->var);
-			if (tmp->value && tmp->value[0])
+			if (tmp->value)
 				printf("=\"%s\"", tmp->value);
 			printf("\n");
 		}

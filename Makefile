@@ -24,18 +24,22 @@ HEADER=minishell.h gnl/get_next_line.h
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	$(CC) $(FLAGS) $^ -o $@ -lreadline
-	mv $(OBJ) objects
+	@$(CC) $(FLAGS) $^ -o $@ -lreadline
+	@mv $(OBJ) objects
+	@echo "\n\nMinishell created"
 
 %.o: %.c $(HEADER)
-	$(CC) $(FLAGS) -c $< -o $@
+	@$(CC) $(FLAGS) -c $< -o $@
+	@echo -n .
 
 clean:
-	rm -f objects/*.o
-	rm -f *.gch
+	@rm -f objects/*.o
+	@rm -f *.gch
+	@echo "All objects clean"
 
 fclean: clean
-	rm -f $(NAME)
+	@rm -f $(NAME)
+	@echo "And the executable too"
 
 re: fclean all
 

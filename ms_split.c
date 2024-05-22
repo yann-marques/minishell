@@ -6,7 +6,7 @@
 /*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:12:49 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/13 17:12:50 by yanolive         ###   ########.fr       */
+/*   Updated: 2024/05/21 15:07:13 by yanolive         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ char	**ms_split(char *str, char *sep)
 	k = -1;
 	while (str[i] && (i == 0 || str[i - 1]))
 	{
-		if (str[i] == ' ' && ++i)
+		if ((str[i] == ' ' || str[i] == '	') && ++i)
 			continue ;
 		j = get_next_sep(&str[i], sep);
 		tab[++k] = ft_strndup(&str[i], j);
@@ -80,7 +80,7 @@ static int	get_next_sep(char *str, char *sep)
 			++i;
 		if (str[0] == '<' || str[0] == '>')
 		{
-			while (str[i] == ' ')
+			while (str[i] == ' ' || str[i] == '	')
 				++i;
 			while (str[i] && !ft_strchr(" <|>", str[i]))
 				i += quotes_jump(&str[i]) + 1;

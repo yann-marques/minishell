@@ -6,7 +6,7 @@
 /*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:12:42 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/17 16:05:42 by yanolive         ###   ########.fr       */
+/*   Updated: 2024/05/21 19:25:53 by yanolive         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ static char	*recreate_var(char *var, char *begin, int *free_var)
 
 	if (!begin)
 		return (NULL);
-	if (!isin_dblquotes(begin, ft_strlen(begin))
+	if (!isin_dblquotes(begin, ft_strlen(begin), 0)
 		|| (var && !ft_strchr(var, ' ')))
 	{
 		if (free_var)
@@ -72,7 +72,7 @@ static char	*recreate_var(char *var, char *begin, int *free_var)
 	return (dst);
 }
 
-int	isin_dblquotes(char *str, int i_target)
+int	isin_dblquotes(char *str, int i_target, bool dblquotes)
 {
 	int	i;
 	int	replace;
@@ -82,15 +82,13 @@ int	isin_dblquotes(char *str, int i_target)
 	while (str[i] && i < i_target)
 	{
 		replace = 1;
-		if (str[i] == '"' && quotes_jump(&str[i]) >= i_target)
-			return (0);
-		if (str[i] == '\'' && ft_strchr(&str[i + 1], '\'') && ++i)
+		if (str[i] == '"' || str[i] == '\'')
 		{
-			replace = 0;
-			while (str[i] && str[i] != '\'' && i != i_target)
-				++i;
+			if (str[i] == '\'' || !dblquotes)
+				replace = 0;
+			i += quotes_jump(&str[i]);
 		}
-		if (!str[i])
+		if (i > i_target || !str[i])
 			break ;
 		++i;
 	}

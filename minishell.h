@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:10:26 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/21 13:06:16 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/21 18:24:36 by yanolive         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,7 +123,7 @@ char	*line_error(char *prompt_line, t_ms *head);
 void	set_type(t_token *tokens);
 char	**var_to_value(char **tab, t_ms *head);
 char	*ms_join_three(char *s1, char *s2, char *s3, int free_var);
-int		isin_dblquotes(char *str, int i_target);
+int		isin_dblquotes(char *str, int i_target, bool dblquotes);
 //lexer_utils
 int		del_quotes(t_token *tokens);
 int		tokens_addback(t_token **tokens, t_type type, char **value);

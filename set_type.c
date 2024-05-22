@@ -6,7 +6,7 @@
 /*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:10:17 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/13 17:10:18 by yanolive         ###   ########.fr       */
+/*   Updated: 2024/05/21 15:07:56 by yanolive         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ static int	check_env_var(t_token *begin_tokens, t_token *token, char *str)
 	}
 	if (!str[i] || str[i] != '=')
 		return (0);
-	if (!str[++i] || str[i] == ' ')
+	if (!str[++i] || str[i] == ' ' || str[i] == '	')
 		return (0);
 	return (1);
 }

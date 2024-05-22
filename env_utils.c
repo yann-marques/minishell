@@ -6,7 +6,7 @@
 /*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:10:03 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/17 13:57:16 by yanolive         ###   ########.fr       */
+/*   Updated: 2024/05/21 16:21:19 by yanolive         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,6 +112,9 @@ static void	add_or_replace(t_env *env, t_env *new)
 {
 	t_env	*tmp;
 
+	if (((env->next && ft_strcmp(env->next->var, new->var) == 0)
+		|| ft_strcmp(env->var, new->var) == 0) && !new->value)
+		return ;
 	if (env->next && ft_strcmp(env->next->var, new->var) == 0)
 	{
 		tmp = env->next;

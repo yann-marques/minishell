@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/05/15 13:08:01 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/21 17:21:06 by yanolive         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,14 +57,17 @@ char	**t_env_to_strtab(t_env *env)
 	k = 0;
 	while (tmp_env)
 	{
-		tmp = ft_strjoin(tmp_env->var, "=");
-		envp[k] = ft_strjoin(tmp, tmp_env->value);
-		if (tmp)
-			free(tmp);
-		if (!envp[k++])
+		if (tmp_env->value)
 		{
-			strtab_clear(envp);
-			return (NULL);
+			tmp = ft_strjoin(tmp_env->var, "=");
+			envp[k] = ft_strjoin(tmp, tmp_env->value);
+			if (tmp)
+				free(tmp);
+			if (!envp[k++])
+			{
+				strtab_clear(envp);
+				return (NULL);
+			}
 		}
 		tmp_env = tmp_env->next;
 	}
