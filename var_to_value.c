@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   var_to_value.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:13:19 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/21 19:10:06 by yanolive         ###   ########.fr       */
+/*   Updated: 2024/05/22 14:57:23 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ static int	check_if_replace(char *str, int i_var)
 	i = -1;
 	if (str[i_var] != '$' || (str[i_var] == '$' && (str[i_var + 1] == ' '
 				|| str[i_var + 1] == '\'' || str[i_var + 1] == '"'
-				|| !str[i_var + 1] || str[i] == '	')))
+				|| !str[i_var + 1] || str[i_var + 1] == '	')))
 		return (0);
 	while (str[++i] && i <= i_var)
 	{
