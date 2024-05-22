@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/05/21 17:21:06 by yanolive         ###   ########.fr       */
+/*   Updated: 2024/05/22 13:49:52 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,6 @@ char	**t_env_to_strtab(t_env *env)
 char	**t_heredoc_to_strtab(t_heredoc *tab)
 {
 	char		**heredoc;
-	t_heredoc	*tmp;
 	int			k;
 
 	heredoc = malloc(sizeof(char *) * (heredoc_size(tab) + 1));
@@ -89,9 +88,7 @@ char	**t_heredoc_to_strtab(t_heredoc *tab)
 	{
 		heredoc[k] = tab->line;
 		++k;
-		tmp = tab;
 		tab = tab->next;
-		free(tmp);
 	}
 	heredoc[k] = NULL;
 	return (heredoc);
