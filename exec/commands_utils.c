@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/05/20 15:21:12 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/22 11:26:23 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@ static void	redirect_if_heredoc(t_ms *head, char **path_doc)
 			error_exit(head, "Error with path_doc", -1);
 		dup2(tmp_fd, STDIN_FILENO);
 		unlink(*path_doc);
+		free(*path_doc);
 		*path_doc = NULL;
 		close(tmp_fd);
 	}
@@ -115,5 +116,6 @@ int	pipe_and_exec(t_ms *head, t_token *token, char **path_doc, int last_command)
 	}
 	else
 		redirect_if_lastcommand(pid, fd, last_command);
+	free(*path_doc);
 	return (pid);
 }

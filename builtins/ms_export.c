@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_export.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:16:58 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/21 16:26:39 by yanolive         ###   ########.fr       */
+/*   Updated: 2024/05/22 11:05:40 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ static int	add_var(t_env *env, t_token *token)
 	}
 	if (token->value[i])
 	{
-		write(2, " not a valid identifier\n", 23);
+		write(2, " not a valid identifier\n", 24);
 		return (EXIT_FAILURE);
 	}
 	return (EXIT_SUCCESS);

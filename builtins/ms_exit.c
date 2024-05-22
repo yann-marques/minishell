@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:16:06 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/21 13:05:39 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/22 13:14:52 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int	ms_exit(t_ms *head, t_token *token)
 	free(head->home);
 	close(head->original_stdint);
 	free(head);
-	exit(0);
+	exit(EXIT_SUCCESS);
 }
 
 static int	ft_isspace(char c)
@@ -65,8 +65,8 @@ static __int128	safe_atoi(const char *nptr, bool *error)
 
 static int	exit_with_token(t_ms *head, t_token *token)
 {
-	int		i;
-	bool	error;
+	int			i;
+	bool		error;
 
 	i = 0;
 	error = false;
@@ -85,7 +85,7 @@ static int	exit_with_token(t_ms *head, t_token *token)
 		return (EXIT_FAILURE);
 	i = safe_atoi(token->value[1], &error);
 	if (error)
-		perror_exit(head, " numeric argument required\n", i);
+		error_exit(head, "numeric argument required", 2);
 	close(head->original_stdint);
 	exit_free_head(head, 0);
 	exit(i);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:15:04 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/21 18:29:17 by yanolive         ###   ########.fr       */
+/*   Updated: 2024/05/22 13:03:04 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	check_quotes(char *str)
 
 	i = -1;
 	error = 1;
-	while (str[++i] && error)
+	while (error && str[++i])
 	{
 		if (str[i] == '"' && ++i)
 		{

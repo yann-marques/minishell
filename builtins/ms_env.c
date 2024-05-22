@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_env.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:16:14 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/21 17:18:33 by yanolive         ###   ########.fr       */
+/*   Updated: 2024/05/22 13:03:21 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int	ms_env(t_env *env, char *begin)
 	while (tmp)
 	{
 		if (!begin && tmp->value)
-				printf("%s=%s\n", tmp->var, tmp->value);
+			printf("%s=%s\n", tmp->var, tmp->value);
 		else if (begin && ft_strcmp(tmp->var, "_") != 0)
 		{
 			printf("%s%s", begin, tmp->var);
