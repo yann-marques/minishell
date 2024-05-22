@@ -3,16 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   env_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:10:03 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/22 13:14:09 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/22 16:31:31 by yanolive         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void	add_or_replace(t_env *env, t_env *new);
+static void		add_or_replace(t_env *env, t_env *new);
+static t_env	*create_tmpenv();
 
 t_env	*set_env(char **env)
 {
@@ -22,7 +23,7 @@ t_env	*set_env(char **env)
 
 	s_env = NULL;
 	k = 0;
-	while (env[k])
+	while (env && env[k])
 	{
 		tmp = env_new(env[k]);
 		if (!tmp)
@@ -33,7 +34,38 @@ t_env	*set_env(char **env)
 		put_env_var(&s_env, tmp);
 		++k;
 	}
+	if (k == 0)
+		return (create_tmpenv());
 	return (s_env);
+}
+
+static t_env	*create_tmpenv()
+{
+	t_env	*env;
+	char	**env_tab;
+	char	*tmp;
+	char	*path;
+	char	*pwd;
+
+	path = "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin ";
+	tmp = get_pwd(1);
+	if (!tmp)
+		return (NULL);
+	pwd = ft_strjoin("PWD=", tmp);
+	free(tmp);
+	if (!pwd)
+		return (NULL);
+	path = ft_strjoin(path, pwd);
+	free(pwd);
+	if (!path)
+		return (NULL);
+	env_tab = ft_split(path, ' ');
+	free(path);
+	if (!env_tab)
+		return (NULL);
+	env = set_env(env_tab);
+	strtab_clear(env_tab);
+	return (env);
 }
 
 char	*get_var_value(t_ms *head, char *var)

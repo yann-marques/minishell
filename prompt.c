@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   prompt.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:15:21 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/20 17:57:42 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/22 16:39:16 by yanolive         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,18 +28,14 @@ char	*prompt(t_ms *head)
 	absolute = ft_strdup(get_var_value(head, "HOME"));
 	if (!absolute)
 		absolute = ft_strdup(head->home);
-	if (!absolute)
-	{
-		free(pwd);
-		return (NULL);
-	}
 	username = get_username(head);
-	if (ft_strlen(pwd) <= ft_strlen(absolute))
+	if ((int)ft_strlen(pwd) <= ft_strlen_to(absolute, '\0'))
 		line = make_prompt_line(username, pwd);
 	else
-		line = make_prompt_line(username, &pwd[ft_strlen(absolute)]);
+		line = make_prompt_line(username, &pwd[ft_strlen_to(absolute, '\0')]);
 	free(pwd);
-	free(absolute);
+	if (absolute)
+		free(absolute);
 	return (line);
 }
 

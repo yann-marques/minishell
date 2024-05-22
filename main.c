@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:12:25 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/22 11:03:06 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/22 16:43:55 by yanolive         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ t_ms	*init_head(char **envp)
 		return (NULL);
 	head->env = set_env(envp);
 	head->home = ft_strdup(get_var_value(head, "HOME"));
-	if (!head->env || !head->home)
+	if (!head->env)
 	{
 		if (head->env)
 			free_env(head->env);
