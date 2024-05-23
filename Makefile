@@ -25,15 +25,14 @@ all: $(NAME)
 
 $(NAME): $(OBJ)
 	@$(CC) $(FLAGS) $^ -o $@ -lreadline
-	@mv $(OBJ) objects
 	@echo "\n\nMinishell created"
 
 %.o: %.c $(HEADER)
 	@$(CC) $(FLAGS) -c $< -o $@
-	@echo -n .
+	@echo -n '.'
 
 clean:
-	@rm -f objects/*.o
+	@rm -f $(OBJ)
 	@rm -f *.gch
 	@echo "All objects clean"
 

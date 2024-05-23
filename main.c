@@ -21,17 +21,8 @@ t_ms	*init_head(char **envp)
 	head = malloc(sizeof(t_ms));
 	if (!head)
 		return (NULL);
+	/* envp[0] = NULL; */
 	head->env = set_env(envp);
-	head->home = ft_strdup(get_var_value(head, "HOME"));
-	if (!head->env)
-	{
-		if (head->env)
-			free_env(head->env);
-		if (head->home)
-			free(head->home);
-		free(head);
-		return (NULL);
-	}
 	head->tokens = NULL;
 	head->pids = NULL;
 	head->last_status = 0;

@@ -81,9 +81,7 @@ void	exit_free_head(t_ms *head, int isExit)
 	if (head->pids)
 		pids_clear(head->pids);
 	if (head->env)
-		free_env(head->env);
-	if (head->home)
-		free(head->home);
+		free_env(head->env); 
 	last_status = head->last_status;
 	free(head);
 	if (isExit)
