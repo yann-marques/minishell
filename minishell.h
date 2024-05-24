@@ -86,7 +86,6 @@ typedef struct s_ms
 	t_env	*env;
 	t_pids	*pids;
 	int		last_status;
-	char	*home;
 	int		original_stdint;
 }	t_ms;
 

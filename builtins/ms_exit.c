@@ -24,7 +24,6 @@ int	ms_exit(t_ms *head, t_token *token)
 	free_env(head->env);
 	if (head->pids)
 		pids_clear(head->pids);
-	free(head->home);
 	close(head->original_stdint);
 	free(head);
 	exit(EXIT_SUCCESS);

@@ -6,14 +6,13 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:10:03 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/23 11:55:31 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/24 14:27:22 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 static void		add_or_replace(t_env *env, t_env *new);
-static t_env	*create_tmpenv(void);
 
 t_env	*set_env(char **env)
 {
@@ -34,11 +33,10 @@ t_env	*set_env(char **env)
 		put_env_var(&s_env, tmp);
 		++k;
 	}
-	if (k == 0)
-		return (create_tmpenv());
 	return (s_env);
 }
 
+<<<<<<< HEAD
 static t_env	*create_tmpenv(void)
 {
 	t_env	*env;
@@ -68,6 +66,8 @@ static t_env	*create_tmpenv(void)
 	return (env);
 }
 
+=======
+>>>>>>> a4cc20e407bf0d524f7d06504f43bfd0330e35b9
 char	*get_var_value(t_ms *head, char *var)
 {
 	t_env	*tmp;
