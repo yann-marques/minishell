@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:10:03 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/24 14:27:22 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/24 14:28:31 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,38 +36,6 @@ t_env	*set_env(char **env)
 	return (s_env);
 }
 
-<<<<<<< HEAD
-static t_env	*create_tmpenv(void)
-{
-	t_env	*env;
-	char	**env_tab;
-	char	*tmp;
-	char	*path;
-	char	*pwd;
-
-	path = "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin ";
-	tmp = get_pwd(1);
-	if (!tmp)
-		return (NULL);
-	pwd = ft_strjoin("PWD=", tmp);
-	free(tmp);
-	if (!pwd)
-		return (NULL);
-	path = ft_strjoin(path, pwd);
-	free(pwd);
-	if (!path)
-		return (NULL);
-	env_tab = ft_split(path, ' ');
-	free(path);
-	if (!env_tab)
-		return (NULL);
-	env = set_env(env_tab);
-	strtab_clear(env_tab);
-	return (env);
-}
-
-=======
->>>>>>> a4cc20e407bf0d524f7d06504f43bfd0330e35b9
 char	*get_var_value(t_ms *head, char *var)
 {
 	t_env	*tmp;

@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/05/22 13:49:52 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/24 14:48:02 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,10 +64,7 @@ char	**t_env_to_strtab(t_env *env)
 			if (tmp)
 				free(tmp);
 			if (!envp[k++])
-			{
-				strtab_clear(envp);
-				return (NULL);
-			}
+				return (strtab_clear(envp), NULL);
 		}
 		tmp_env = tmp_env->next;
 	}

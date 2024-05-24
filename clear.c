@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:12:21 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/20 15:14:32 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/24 14:53:54 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ void	exit_free_head(t_ms *head, int isExit)
 	if (head->pids)
 		pids_clear(head->pids);
 	if (head->env)
-		free_env(head->env); 
+		free_env(head->env);
 	last_status = head->last_status;
 	free(head);
 	if (isExit)

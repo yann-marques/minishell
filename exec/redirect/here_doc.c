@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/05/22 13:38:55 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/24 14:43:00 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,8 +85,7 @@ void	fill_heredoc(char *line, char *lim, t_ms *head, int fd)
 		heredoc_addback(&heredoc, line);
 		line = get_next_line(STDIN_FILENO);
 	}
-	free(line);
-	free(lim_nq);
+	free_rest_gnl(-1, line, lim_nq, 0);
 	if (!heredoc)
 		return ;
 	tab = t_heredoc_to_strtab(heredoc);
