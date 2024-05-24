@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   env_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:10:03 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/22 16:31:31 by yanolive         ###   ########.fr       */
+/*   Updated: 2024/05/23 11:55:31 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 static void		add_or_replace(t_env *env, t_env *new);
-static t_env	*create_tmpenv();
+static t_env	*create_tmpenv(void);
 
 t_env	*set_env(char **env)
 {
@@ -39,7 +39,7 @@ t_env	*set_env(char **env)
 	return (s_env);
 }
 
-static t_env	*create_tmpenv()
+static t_env	*create_tmpenv(void)
 {
 	t_env	*env;
 	char	**env_tab;
