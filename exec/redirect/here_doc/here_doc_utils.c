@@ -1,19 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   here_doc.c                                         :+:      :+:    :+:   */
+/*   here_doc_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/05/24 14:43:00 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/26 16:33:11 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../minishell.h"
-#include "../../gnl/get_next_line.h"
+#include "../../../minishell.h"
+#include "../../../gnl/get_next_line.h"
 
-static int	free_rest_gnl(int fd, char *line, char *limiter, int return_code)
+int	free_rest_gnl(int fd, char *line, char *limiter, int return_code)
 {
 	if (line)
 		free(line);
@@ -95,28 +95,4 @@ void	fill_heredoc(char *line, char *lim, t_ms *head, int fd)
 	while (tab[++k])
 		write(fd, tab[k], ft_strlen(tab[k]));
 	strtab_clear(tab);
-}
-
-char	*here_doc(t_ms *head, t_token *token)
-{
-	char	*line;
-	char	*path_doc;
-	int		tmp_fd;
-	char	*limiter;
-
-	limiter = ft_strjoin(token->value[1], "\n");
-	path_doc = get_random_tmp_path(head);
-	tmp_fd = open(path_doc, O_CREAT | O_TRUNC | O_WRONLY | O_APPEND, 0644);
-	if (tmp_fd == -1)
-		error_exit(head, "Error with fileout", -1);
-	write(STDOUT_FILENO, "> ", 2);
-	line = get_next_line(0);
-	if (!line)
-	{
-		free_rest_gnl(tmp_fd, line, limiter, EXIT_FAILURE);
-		return (path_doc);
-	}
-	fill_heredoc(line, limiter, head, tmp_fd);
-	free_rest_gnl(tmp_fd, NULL, limiter, 0);
-	return (path_doc);
 }

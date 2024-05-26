@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:10:26 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/21 18:24:36 by yanolive         ###   ########.fr       */
+/*   Updated: 2024/05/26 16:33:32 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -176,6 +176,8 @@ int		heredoc_addback(t_heredoc **here_doc, char *line);
 void	rd_null(t_ms *head);
 int		check_file_out(t_token *token);
 void	move_rdout(t_token **tk);
+int		free_rest_gnl(int fd, char *line, char *limiter, int return_code);
+void	fill_heredoc(char *line, char *lim, t_ms *head, int fd);
 
 //EXEC: parse utils
 char	**t_env_to_strtab(t_env *env);

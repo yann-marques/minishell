@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/05/22 11:26:23 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/26 17:06:34 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ int	execute(t_ms *head, t_token *token)
 
 static void	redirect_if_heredoc(t_ms *head, char **path_doc)
 {
-	int	tmp_fd;
+	int		tmp_fd;
 
 	if (!path_doc || !(*path_doc))
 		return ;

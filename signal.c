@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:13:06 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/20 17:19:28 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/26 16:34:08 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ static void	handle_fork(int signum)
 
 static void	handler_sigint(int signum)
 {
-	(void)signum;
+	g_sig_received = signum;
 	write(1, "\n", 1);
 	rl_on_new_line();
 	rl_replace_line("", 0);
