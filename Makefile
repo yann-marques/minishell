@@ -1,25 +1,25 @@
 NAME=minishell
 CC=gcc
 FLAGS=-Wall -Werror -Wextra -g
-FT_LIBFT=libft_functions/ft_split.c libft_functions/ft_atoi.c libft_functions/ft_isalpha.c \
-	libft_functions/ft_isascii.c libft_functions/ft_isdigit.c libft_functions/ft_isprint.c \
-	libft_functions/ft_strdup.c libft_functions/ft_strjoin.c libft_functions/ft_strlcat.c \
-	libft_functions/ft_strlcpy.c libft_functions/ft_strlen.c libft_functions/ft_calloc.c \
-	libft_functions/ft_bzero.c libft_functions/ft_strncmp.c libft_functions/ft_itoa.c \
-	libft_functions/ft_strchr.c gnl/get_next_line.c gnl/get_next_line_utils.c
+FT_LIBFT=srcs/libft_functions/ft_split.c srcs/libft_functions/ft_atoi.c srcs/libft_functions/ft_isalpha.c \
+	srcs/libft_functions/ft_isascii.c srcs/libft_functions/ft_isdigit.c srcs/libft_functions/ft_isprint.c \
+	srcs/libft_functions/ft_strdup.c srcs/libft_functions/ft_strjoin.c srcs/libft_functions/ft_strlcat.c \
+	srcs/libft_functions/ft_strlcpy.c srcs/libft_functions/ft_strlen.c srcs/libft_functions/ft_calloc.c \
+	srcs/libft_functions/ft_bzero.c srcs/libft_functions/ft_strncmp.c srcs/libft_functions/ft_itoa.c \
+	srcs/libft_functions/ft_strchr.c srcs/gnl/get_next_line.c srcs/gnl/get_next_line_utils.c
 
-BUILTINS=builtins/ms_cd.c builtins/ms_echo_n.c builtins/ms_env.c builtins/ms_exit.c \
-	builtins/ms_export.c builtins/ms_pwd.c builtins/ms_unset.c
+BUILTINS=srcs/builtins/ms_cd.c srcs/builtins/ms_echo_n.c srcs/builtins/ms_env.c srcs/builtins/ms_exit.c \
+	srcs/builtins/ms_export.c srcs/builtins/ms_pwd.c srcs/builtins/ms_unset.c
 
-EXECS=exec/exec.c exec/do_exec.c exec/pipes_utils.c exec/commands_utils.c exec/files/files_utils.c \
-	exec/files/get_paths.c exec/parse_utils.c exec/redirect/redirect_utils.c exec/redirect/do_redirect.c \
-	exec/redirect/here_doc/here_doc.c exec/redirect/here_doc/here_doc_utils.c exec/redirect/move_rdout.c exec/builtins_utils.c
+EXECS=srcs/exec/exec.c srcs/exec/do_exec.c srcs/exec/pipes_utils.c srcs/exec/commands_utils.c srcs/exec/files/files_utils.c \
+	srcs/exec/files/get_paths.c srcs/exec/parse_utils.c srcs/exec/redirect/redirect_utils.c srcs/exec/redirect/do_redirect.c \
+	srcs/exec/redirect/here_doc/here_doc.c srcs/exec/redirect/here_doc/here_doc_utils.c srcs/exec/redirect/move_rdout.c srcs/exec/builtins_utils.c
 
-SRC=$(FT_LIBFT) $(BUILTINS) $(EXECS) main.c signal.c lexer.c env_utils.c clear.c lexer_utils.c ms_split.c prompt.c \
-	exit.c error.c set_type.c utils.c var_to_value.c is_cmd_type_next.c is_token_type.c ms_join_three.c
+SRC=$(FT_LIBFT) $(BUILTINS) $(EXECS) srcs/main.c srcs/signal.c srcs/lexer.c srcs/env_utils.c srcs/clear.c srcs/lexer_utils.c srcs/ms_split.c srcs/prompt.c \
+	srcs/exit.c srcs/error.c srcs/set_type.c srcs/utils.c srcs/var_to_value.c srcs/is_cmd_type_next.c srcs/is_token_type.c srcs/ms_join_three.c
 
 OBJ=$(SRC:.c=.o)
-HEADER=minishell.h gnl/get_next_line.h
+HEADER=srcs/minishell.h srcs/gnl/get_next_line.h
 
 all: $(NAME)
 
@@ -32,8 +32,8 @@ $(NAME): $(OBJ)
 	@echo -n '.'
 
 clean:
-	@rm -f $(OBJ)
-	@rm -f *.gch
+	@rm -f srcs/$(OBJ)
+	@rm -f srcs/*.gch
 	@echo "All objects clean"
 
 fclean: clean
