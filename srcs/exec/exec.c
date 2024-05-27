@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/05/26 15:22:52 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/27 15:50:21 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,8 +75,6 @@ static void	process_pids(t_ms *head, int pid)
 		waitpid(pid, &status, 0);
 		if (WTERMSIG(status) == SIGQUIT)
 			error_str(" Quit (Core dumped)\n");
-		if (WTERMSIG(status) == SIGPIPE)
-			error_str(" Broken pipe\n");
 		if (WIFEXITED(status))
 			head->last_status = WEXITSTATUS(status);
 		if (WIFSIGNALED(status))
