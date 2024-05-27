@@ -1,5 +1,20 @@
 {
 	"files.associations": {
-		"minishell.h": "c"
-	}
+		"minishell.h": "c",
+		"get_next_line.h": "c",
+		"optional": "c",
+		"ostream": "c",
+		"system_error": "c",
+		"array": "c",
+		"functional": "c",
+		"tuple": "c",
+		"type_traits": "c",
+		"utility": "c",
+		"readline.h": "c",
+		"termios.h": "c",
+		"unistd.h": "c",
+		"*.tcc": "c",
+		"climits": "c"
+	},
+	"C_Cpp.errorSquiggles": "disabled"
 }
