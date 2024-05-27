@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/05/27 14:52:11 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/27 14:58:22 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,7 @@
 
 static void	handle_sigint_heredoc(int signum)
 {
-	(void) signum;
-	g_sig_received = -42;
+	g_sig_received = signum;
 	close(STDIN_FILENO);
 }
 
@@ -53,7 +52,7 @@ char	*here_doc(t_ms *head, t_token *token)
 			exit(EXIT_FAILURE);
 		fill_heredoc(line, limiter, head, tmp_fd);
 		free_rest_gnl(tmp_fd, NULL, limiter, 0);
-		if (g_sig_received == -42)
+		if (g_sig_received == SIGINT)
 			unlink(path_doc);
 		exit(EXIT_SUCCESS);
 	}

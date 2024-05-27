@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/05/26 16:33:11 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/27 15:06:08 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 
 int	free_rest_gnl(int fd, char *line, char *limiter, int return_code)
 {
+	if (!line)
+		write (1, "\n", 1);
 	if (line)
 		free(line);
 	free(limiter);
