@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/05/26 17:40:04 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/27 14:52:11 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 static void	handle_sigint_heredoc(int signum)
 {
 	(void) signum;
+	g_sig_received = -42;
 	close(STDIN_FILENO);
 }
 
@@ -46,14 +47,14 @@ char	*here_doc(t_ms *head, t_token *token)
 	if (tmp_fd == -1)
 		error_exit(head, "Error with fileout", -1);
 	pid = fork();
-	if (pid == -1)
-		return (NULL);
-	if (pid == 0)
+	if (pid != -1 && pid == 0)
 	{
 		if (!get_first_line(&line, &limiter, &tmp_fd))
 			exit(EXIT_FAILURE);
 		fill_heredoc(line, limiter, head, tmp_fd);
 		free_rest_gnl(tmp_fd, NULL, limiter, 0);
+		if (g_sig_received == -42)
+			unlink(path_doc);
 		exit(EXIT_SUCCESS);
 	}
 	else

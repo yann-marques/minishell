@@ -1,5 +1,5 @@
 NAME=minishell
-CC=gcc
+CC=cc
 FLAGS=-Wall -Werror -Wextra -g
 FT_LIBFT=srcs/libft_functions/ft_split.c srcs/libft_functions/ft_atoi.c srcs/libft_functions/ft_isalpha.c \
 	srcs/libft_functions/ft_isascii.c srcs/libft_functions/ft_isdigit.c srcs/libft_functions/ft_isprint.c \

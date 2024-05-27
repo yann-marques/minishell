@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/05/27 12:49:36 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/27 14:48:04 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,12 @@ static void	redirect_if_heredoc(t_ms *head, char **path_doc)
 		free(*path_doc);
 		*path_doc = NULL;
 		close(tmp_fd);
+	}
+	else
+	{
+		free(*path_doc);
+		*path_doc = NULL;
+		exit_free_head(head, 1);
 	}
 }
 
