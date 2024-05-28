@@ -6,7 +6,7 @@
 /*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:10:17 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/21 15:07:56 by yanolive         ###   ########.fr       */
+/*   Updated: 2024/05/28 16:13:13 by yanolive         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,14 +62,13 @@ static int	check_env_var(t_token *begin_tokens, t_token *token, char *str)
 	if (token->value[1] || (token->next && token->next->value[0][0] != '>')
 		|| there_istoken(begin_tokens, '|'))
 		return (0);
-	if (!ft_isalpha(str[i++]) && !quotes_jump(str))
+	if (!ft_isalpha(str[i]) && str[i] != '_' && !quotes_jump(str))
 		return (0);
-	while (str[i] && (ft_isalpha(str[i])
-			|| ft_isdigit(str[i]) || quotes_jump(&str[i])))
+	while (str[i] && str[++i] && (ft_isalpha(str[i]) || ft_isdigit(str[i])
+		|| quotes_jump(&str[i]) || str[i] == '_'))
 	{
 		while (str[i] && quotes_jump(&str[i]))
 			i += quotes_jump(&str[i]);
-		++i;
 	}
 	if (!str[i] || str[i] != '=')
 		return (0);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_export.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:16:58 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/22 11:05:40 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/28 16:14:55 by yanolive         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,16 +62,13 @@ static int	check_env_var(char *str)
 	int	i;
 
 	i = 0;
-	if (!ft_isalpha(str[i++]) && !quotes_jump(str))
+	if (!ft_isalpha(str[i]) && str[i] != '_' && !quotes_jump(str))
 		return (0);
-	while (str[i] && (ft_isalpha(str[i]) || str[i] == '_'
-			|| ft_isdigit(str[i]) || quotes_jump(&str[i])))
+	while (str[i] && str[++i] && (ft_isalpha(str[i]) || ft_isdigit(str[i])
+		|| quotes_jump(&str[i]) || str[i] == '_'))
 	{
 		while (str[i] && quotes_jump(&str[i]))
 			i += quotes_jump(&str[i]);
-		++i;
 	}
-	if (str[i] && str[i] != '=')
-		return (0);
 	return (1);
 }

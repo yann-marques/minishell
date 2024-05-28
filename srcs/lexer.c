@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:10:10 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/14 15:19:17 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/28 17:32:42 by yanolive         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,8 +103,13 @@ int	lexer(t_ms *head)
 
 	prompt_line = prompt(head);
 	line = line_error(prompt_line, head);
-	if (!line || !check_quotes(line))
+	if (!line)
 		return (0);
+	if (!check_quotes(line))
+	{
+		error_str("Expected closing quotes\n");
+		return (0);
+	}
 	head->tokens = set_tokens(line, head);
 	if (!head->tokens)
 		return (0);

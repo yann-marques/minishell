@@ -6,7 +6,7 @@
 /*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:16:19 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/22 16:03:15 by yanolive         ###   ########.fr       */
+/*   Updated: 2024/05/28 17:03:49 by yanolive         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,11 +31,9 @@ char	*get_pwd(int count)
 		return (NULL);
 	if (!getcwd(buffer, BUFFER_SIZE))
 	{
+		free(buffer);
 		if (errno == ERANGE)
-		{
-			free(buffer);
 			return (get_pwd(count + 1));
-		}
 		perror("");
 		return (NULL);
 	}
