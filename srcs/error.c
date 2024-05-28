@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/05/20 14:56:28 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/28 14:18:43 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,7 @@ int	is_handle_error(t_ms *head)
 	error_line = ft_strjoin(tk_name, "'\n");
 	if (!error_line)
 		error_exit(head, " ", -1);
+	free(tk_name);
 	write (2, error_line, ft_strlen(error_line));
 	head->last_status = 2;
 	free(error_line);

@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:10:26 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/26 16:33:32 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/28 17:32:50 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,12 +81,12 @@ typedef struct s_heredoc
 
 typedef struct s_ms
 {
-	t_token	*tokens;
-	int		token_count;
-	t_env	*env;
-	t_pids	*pids;
-	int		last_status;
-	int		original_stdint;
+	t_token			*tokens;
+	int				token_count;
+	t_env			*env;
+	t_pids			*pids;
+	int				last_status;
+	int				original_stdint;
 }	t_ms;
 
 //libft_fonctions

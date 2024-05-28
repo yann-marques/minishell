@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/05/27 15:07:26 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/28 17:33:01 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,12 +70,25 @@ void	expand_if_no_double_quote(char *lim, char **tab, t_ms *head, int *k)
 	}
 }
 
+void	make_tab(t_ms *head, t_heredoc *heredoc, char *lim, int fd)
+{
+	char		**tab;
+	int			k;
+	
+	k = 0;
+	tab = t_heredoc_to_strtab(heredoc);
+	if (!tab)
+		error_exit(head, " Error to transform heredoc list", EXIT_FAILURE);
+	expand_if_no_double_quote(lim, tab, head, &k);
+	while (tab[++k])
+		write(fd, tab[k], ft_strlen(tab[k]));
+	strtab_clear(tab);
+}
+
 void	fill_heredoc(char *line, char *lim, t_ms *head, int fd)
 {
-	t_heredoc	*heredoc;
-	char		**tab;
-	char		*lim_nq;
-	int			k;
+	t_heredoc		*heredoc;
+	char			*lim_nq;
 
 	heredoc = NULL;
 	lim_nq = ft_strdup_noquotes(lim);
@@ -90,11 +103,5 @@ void	fill_heredoc(char *line, char *lim, t_ms *head, int fd)
 	free_rest_gnl(-1, line, lim_nq, 0);
 	if (!heredoc)
 		return ;
-	tab = t_heredoc_to_strtab(heredoc);
-	if (!tab)
-		error_exit(head, " Error to transform heredoc list", EXIT_FAILURE);
-	expand_if_no_double_quote(lim, tab, head, &k);
-	while (tab[++k])
-		write(fd, tab[k], ft_strlen(tab[k]));
-	strtab_clear(tab);
+	make_tab(head, heredoc, lim, fd);
 }

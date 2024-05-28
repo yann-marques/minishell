@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/05/24 14:48:02 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/28 14:41:56 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,23 +72,27 @@ char	**t_env_to_strtab(t_env *env)
 	return (envp);
 }
 
-char	**t_heredoc_to_strtab(t_heredoc *tab)
+char	**t_heredoc_to_strtab(t_heredoc *heredoc)
 {
-	char		**heredoc;
+	t_heredoc	*prev;
+	char		**tab;
 	int			k;
 
-	heredoc = malloc(sizeof(char *) * (heredoc_size(tab) + 1));
-	if (!heredoc)
+	tab = malloc(sizeof(char *) * (heredoc_size(heredoc) + 1));
+	if (!tab)
 		return (NULL);
 	k = 0;
-	while (tab)
+	while (heredoc)
 	{
-		heredoc[k] = tab->line;
+		tab[k] = ft_strdup(heredoc->line);
+		free(heredoc->line);
 		++k;
-		tab = tab->next;
+		prev = heredoc;
+		heredoc = heredoc->next;
+		free(prev);
 	}
-	heredoc[k] = NULL;
-	return (heredoc);
+	tab[k] = NULL;
+	return (tab);
 }
 
 t_token	*get_n_token(t_token *tokens, int count)

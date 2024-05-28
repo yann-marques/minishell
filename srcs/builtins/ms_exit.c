@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:16:06 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/22 13:14:52 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/28 11:54:35 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ static int	exit_with_token(t_ms *head, t_token *token);
 
 int	ms_exit(t_ms *head, t_token *token)
 {
+	int	last_status;
 	printf("exit\n");
 	if (token && token->value[1])
 		return (exit_with_token(head, token));
@@ -25,8 +26,9 @@ int	ms_exit(t_ms *head, t_token *token)
 	if (head->pids)
 		pids_clear(head->pids);
 	close(head->original_stdint);
+	last_status = head->last_status;
 	free(head);
-	exit(EXIT_SUCCESS);
+	exit(last_status);
 }
 
 static int	ft_isspace(char c)
