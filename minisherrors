@@ -1,0 +1,12 @@
+/* 
+export leak si arg de nouveau mis avec ou sans valeur
+limiter'' ne doit pas expand les variables
+regler get_pwd(1)
+####################################################################
+leak fd sur exit avec overflow long
+^\ ne doit print "Quit core dumped" aue si fait sur derniere commande pipeline
+^\ doit faire un seul "Quit core dumped" pour la pipeline
+^\ doit etre ignore dans le heredoc
+outfile supplementaire non close
+^D dans le heredoc non gere
+ */

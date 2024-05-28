@@ -33,7 +33,6 @@ $(NAME): $(OBJ)
 
 clean:
 	@rm -f srcs/$(OBJ)
-	@rm -f srcs/*.gch
 	@echo "All objects clean"
 
 fclean: clean
