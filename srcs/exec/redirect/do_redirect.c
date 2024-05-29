@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/05/20 14:54:38 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/29 13:46:16 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,13 +28,12 @@ int	do_redirection_out(t_ms *head, t_token *tk)
 		{
 			fd_out = check_file_out(tmp);
 			if (fd_out == -1)
-			{
-				error_str(tk->value[0]);
-				return (perror_str(" ", -1));
-			}
+				return (perror_str(tk->value[0], -1));
 		}
 		else
 			break ;
+		if (tmp->next && is_rdout(tmp->next))
+			close(fd_out);
 		tmp = tmp->next;
 	}
 	if (fd_out != -1)

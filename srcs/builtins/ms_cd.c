@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_cd.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:15:59 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/28 17:23:31 by yanolive         ###   ########.fr       */
+/*   Updated: 2024/05/29 13:33:28 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int	ms_cd(t_ms *head, t_token *token)
 	t_env	*oldpwd;
 
 	if (token->value[1] && token->value[2])
-		return (perror_str(" too many arguments\n", EXIT_FAILURE));
+		return (error_str(" too many arguments\n"));
 	if (!token->value[1])
 		token->value[1] = ft_strdup(get_var_value(head, "HOME"));
 	if (!token->value[1])
