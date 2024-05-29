@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/05/28 17:33:01 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/29 13:06:28 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,7 @@ void	fill_heredoc(char *line, char *lim, t_ms *head, int fd)
 {
 	t_heredoc		*heredoc;
 	char			*lim_nq;
+	char			*line_back;
 
 	heredoc = NULL;
 	lim_nq = ft_strdup_noquotes(lim);
@@ -96,9 +97,11 @@ void	fill_heredoc(char *line, char *lim, t_ms *head, int fd)
 		error_exit(head, " Error: removing double quotes", EXIT_FAILURE);
 	while (line && ft_strncmp(line, lim_nq, ft_strlen(lim_nq) + 1) != 0)
 	{
-		write(STDOUT_FILENO, "> ", 2);
-		heredoc_addback(&heredoc, line);
-		line = get_next_line(STDIN_FILENO);
+		line_back = ft_strjoin(line, "\n");
+		if (!line_back)
+			return ;
+		heredoc_addback(&heredoc, line_back);
+		line = readline("> ");
 	}
 	free_rest_gnl(-1, line, lim_nq, 0);
 	if (!heredoc)

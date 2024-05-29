@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/05/27 14:48:04 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/29 13:15:45 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ int	execute(t_ms *head, t_token *token)
 	return (0);
 }
 
-static void	redirect_if_heredoc(t_ms *head, char **path_doc)
+static void	redirect_if_heredoc(t_ms *head, char **path_doc, int *fd)
 {
 	int		tmp_fd;
 
@@ -75,6 +75,8 @@ static void	redirect_if_heredoc(t_ms *head, char **path_doc)
 	{
 		free(*path_doc);
 		*path_doc = NULL;
+		close(fd[0]);
+		close(fd[1]);
 		exit_free_head(head, 1);
 	}
 }
@@ -114,7 +116,7 @@ int	pipe_and_exec(t_ms *head, t_token *token, char **path_doc, int last_command)
 	if (pid == 0)
 	{
 		close(head->original_stdint);
-		redirect_if_heredoc(head, path_doc);
+		redirect_if_heredoc(head, path_doc, fd);
 		redirect_if_lastcommand(pid, fd, last_command);
 		if (builtin_child(head, token))
 			exit_free_head(head, 1);

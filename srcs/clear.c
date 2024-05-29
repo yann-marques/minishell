@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:12:21 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/24 14:53:54 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/29 13:09:54 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,7 @@ void	exit_free_head(t_ms *head, int isExit)
 {
 	int		last_status;
 
+	close(head->original_stdint);
 	if (head->tokens)
 		tokens_clear(head->tokens);
 	if (head->pids)
