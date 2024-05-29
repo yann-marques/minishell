@@ -6,13 +6,12 @@
 /*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:10:03 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/28 16:52:10 by yanolive         ###   ########.fr       */
+/*   Updated: 2024/05/29 15:00:08 by yanolive         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void		add_or_replace(t_env *env, t_env *new);
 
 t_env	*set_env(char **env)
 {
@@ -81,6 +80,8 @@ t_env	*env_new(char *env)
 	return (new);
 }
 
+static void	add_or_replace(t_env *env, t_env *new);
+
 void	put_env_var(t_env **env, t_env *new)
 {
 	t_env	*tmp;
@@ -88,14 +89,10 @@ void	put_env_var(t_env **env, t_env *new)
 
 	i = 0;
 	tmp = *env;
-	if (!*env)
-	{
-		*env = new;
-		return ;
-	}
-	if (ft_strcmp(tmp->var, new->var) > 0)
-	{
+	if (tmp && ft_strcmp(tmp->var, new->var) > 0)
 		new->next = *env;
+	if (!tmp || ft_strcmp(tmp->var, new->var) > 0)
+	{
 		*env = new;
 		return ;
 	}
@@ -107,16 +104,17 @@ void	put_env_var(t_env **env, t_env *new)
 		else
 			tmp = tmp->next;
 	}
-	add_or_replace(tmp, new);
+	if (((tmp->next && ft_strcmp(tmp->next->var, new->var) == 0)
+			|| ft_strcmp(tmp->var, new->var) == 0) && !new->value)
+		free_env(new);
+	else
+		add_or_replace(tmp, new);
 }
 
 static void	add_or_replace(t_env *env, t_env *new)
 {
 	t_env	*tmp;
 
-	if (((env->next && ft_strcmp(env->next->var, new->var) == 0)
-			|| ft_strcmp(env->var, new->var) == 0) && !new->value)
-		return ;
 	if (env->next && ft_strcmp(env->next->var, new->var) == 0)
 	{
 		tmp = env->next;

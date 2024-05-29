@@ -6,7 +6,7 @@
 /*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:16:58 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/28 16:14:55 by yanolive         ###   ########.fr       */
+/*   Updated: 2024/05/29 15:09:06 by yanolive         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,5 +70,7 @@ static int	check_env_var(char *str)
 		while (str[i] && quotes_jump(&str[i]))
 			i += quotes_jump(&str[i]);
 	}
+	if (str[i] && str[i] != '=' && str[i] != ' ' && str[i] != '	')
+		return (0);
 	return (1);
 }

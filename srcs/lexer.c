@@ -6,7 +6,7 @@
 /*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:10:10 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/28 17:32:42 by yanolive         ###   ########.fr       */
+/*   Updated: 2024/05/29 15:09:45 by yanolive         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ t_token	*set_tokens(char *str, t_ms *head)
 	k = -1;
 	while (tab[++k])
 	{
-		tmp = ms_split(tab[k], " ");
+		tmp = ms_split(tab[k], " 	");
 		if (!tmp || tokens_addback(&tokens, _none, tmp) == -1)
 		{
 			strtab_clear(tab);

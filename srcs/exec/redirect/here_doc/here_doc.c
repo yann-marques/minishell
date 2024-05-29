@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   here_doc.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/05/29 13:11:06 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/29 14:19:21 by yanolive         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,8 +56,7 @@ char	*here_doc(t_ms *head, t_token *token)
 		free(path_doc);
 		exit_free_head(head, 1);
 	}
-	else
-		waitpid(pid, NULL, 0);
+	waitpid(pid, NULL, 0);
 	close(tmp_fd);
 	return (path_doc);
 }

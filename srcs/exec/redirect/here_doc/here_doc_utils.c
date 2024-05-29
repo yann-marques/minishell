@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   here_doc_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/05/29 13:06:28 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/29 14:23:46 by yanolive         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ void	expand_if_no_double_quote(char *lim, char **tab, t_ms *head, int *k)
 
 	*k = -1;
 	i = 0;
-	if (isin_dblquotes(lim, 1, 0))
+	if (!ft_strchr(lim, '\'') && !ft_strchr(lim, '"'))
 	{
 		tab = var_to_value(tab, head);
 		if (!(*tab))
@@ -98,12 +98,14 @@ void	fill_heredoc(char *line, char *lim, t_ms *head, int fd)
 	while (line && ft_strncmp(line, lim_nq, ft_strlen(lim_nq) + 1) != 0)
 	{
 		line_back = ft_strjoin(line, "\n");
+		free(line);
 		if (!line_back)
 			return ;
 		heredoc_addback(&heredoc, line_back);
 		line = readline("> ");
 	}
-	free_rest_gnl(-1, line, lim_nq, 0);
+	free(line);
+	free(lim_nq);
 	if (!heredoc)
 		return ;
 	make_tab(head, heredoc, lim, fd);
