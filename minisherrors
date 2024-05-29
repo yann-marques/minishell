@@ -7,5 +7,5 @@ leak fd sur exit avec overflow long
 ^\ doit faire un seul "Quit core dumped" pour la pipeline
 ^\ doit etre ignore dans le heredoc
 outfile supplementaire non close
-^D dans le heredoc non gere
+^D dans le heredoc non gere    <-------- PATCH
  */

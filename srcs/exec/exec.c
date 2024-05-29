@@ -63,7 +63,7 @@ int	multi_commands(t_ms *head)
 	return (0);
 }
 
-static void	process_pids(t_ms *head, int pid)
+static void	process_pids(t_ms *head, int pid, int last_pid)
 {
 	int	status;
 
@@ -73,7 +73,7 @@ static void	process_pids(t_ms *head, int pid)
 		if (g_sig_received)
 			kill(pid, g_sig_received);
 		waitpid(pid, &status, 0);
-		if (WTERMSIG(status) == SIGQUIT)
+		if (WTERMSIG(status) == SIGQUIT && last_pid)
 			error_str(" Quit (Core dumped)\n");
 		if (WIFEXITED(status))
 			head->last_status = WEXITSTATUS(status);
@@ -96,7 +96,10 @@ void	command_manager(t_ms *head)
 	pids = head->pids;
 	while (pids)
 	{
-		process_pids(head, pids->pid);
+		if (!pids->next)
+			process_pids(head, pids->pid, 1);
+		else
+			process_pids(head, pids->pid, 0);
 		pids = pids->next;
 	}
 	pids_clear(head->pids);
