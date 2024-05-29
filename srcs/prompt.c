@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   prompt.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:15:21 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/24 14:49:36 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/29 16:55:14 by yanolive         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,11 @@ char	*line_error(char *prompt_line, t_ms *head)
 	char	*line;
 
 	line = readline(prompt_line);
+	if (g_sig_received == SIGINT)
+	{
+		head->last_status = 130;
+		g_sig_received = 0;
+	}
 	if (!line)
 	{
 		free(prompt_line);
