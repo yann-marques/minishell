@@ -29,7 +29,7 @@ char	*get_pwd(int count)
 	buffer = malloc(((BUFFER_SIZE * count) + 1) * sizeof(char));
 	if (!buffer)
 		return (NULL);
-	if (!getcwd(buffer, BUFFER_SIZE))
+	if (!getcwd(buffer, BUFFER_SIZE * count))
 	{
 		free(buffer);
 		if (errno == ERANGE)

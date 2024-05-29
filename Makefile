@@ -32,7 +32,7 @@ $(NAME): $(OBJ)
 	@echo -n '.'
 
 clean:
-	@rm -f srcs/$(OBJ)
+	@rm -f $(OBJ)
 	@echo "All objects clean"
 
 fclean: clean
