@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/05/26 16:46:35 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/31 18:21:32 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ int	do_cmd_and_rd(t_ms *head, t_token **tk, char **path_doc)
 	{
 		pids_addback(&head->pids, pipe_and_exec(head, *tk, path_doc, 0));
 		do_redirection_out(head, (*tk)->next);
-		if (!set_tk_at_next_cmd(*tk))
+		if (!set_tk_at_next_cmd(tk))
 			*tk = NULL;
 		return (1);
 	}

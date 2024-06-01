@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   env_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:10:03 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/29 15:00:08 by yanolive         ###   ########.fr       */
+/*   Updated: 2024/06/01 15:29:55 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
 
 t_env	*set_env(char **env)
 {

@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:12:21 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/29 13:09:54 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/06/01 15:29:18 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,19 +27,22 @@ void	strtab_clear(char **tab)
 	free(tab);
 }
 
-void	tokens_clear(t_token *tokens)
+void	tokens_clear(t_ms *head)
 {
-	t_token	*tmp;
+	int		i;
 
-	tmp = tokens;
-	while (tmp)
+	i = 0;
+	if (!head->tokens_cpy)
+		return ;
+	while (head->tokens_cpy[i])
 	{
-		tokens = tokens->next;
-		if (tmp->value)
-			strtab_clear(tmp->value);
-		free(tmp);
-		tmp = tokens;
+		if (head->tokens_cpy[i]->value)
+			strtab_clear(head->tokens_cpy[i]->value);
+		free(head->tokens_cpy[i]);
+		i++;
 	}
+	free(head->tokens_cpy[i]);
+	free(head->tokens_cpy);
 }
 
 void	pids_clear(t_pids *pids)
@@ -78,7 +81,7 @@ void	exit_free_head(t_ms *head, int isExit)
 
 	close(head->original_stdint);
 	if (head->tokens)
-		tokens_clear(head->tokens);
+		tokens_clear(head);
 	if (head->pids)
 		pids_clear(head->pids);
 	if (head->env)

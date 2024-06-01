@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:10:26 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/28 17:32:50 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/06/01 15:21:17 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,7 @@ typedef struct s_heredoc
 typedef struct s_ms
 {
 	t_token			*tokens;
+	t_token			**tokens_cpy;
 	int				token_count;
 	t_env			*env;
 	t_pids			*pids;
@@ -148,7 +149,7 @@ int		ft_strlen_to(char *str, char c);
 int		ft_strcmp(char *s1, char *s2);
 //clear
 void	strtab_clear(char **tab);
-void	tokens_clear(t_token *tokens);
+void	tokens_clear(t_ms *head);
 void	pids_clear(t_pids *pids);
 void	free_env(t_env *env);
 void	exit_free_head(t_ms *head, int exit);
@@ -195,7 +196,7 @@ int		is_file(char *name);
 //EXEC: exec.c
 int		multi_commands(t_ms *head);
 void	command_manager(t_ms *head);
-int		set_tk_at_next_cmd(t_token *token);
+int		set_tk_at_next_cmd(t_token **token);
 
 //EXEC: do_exec.c
 int		do_pipe_error(t_ms *head, t_token **token);

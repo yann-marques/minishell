@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   here_doc_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/05/29 14:23:46 by yanolive         ###   ########.fr       */
+/*   Updated: 2024/06/01 15:28:19 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ void	make_tab(t_ms *head, t_heredoc *heredoc, char *lim, int fd)
 {
 	char		**tab;
 	int			k;
-	
+
 	k = 0;
 	tab = t_heredoc_to_strtab(heredoc);
 	if (!tab)

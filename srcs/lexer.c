@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:10:10 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/29 15:09:45 by yanolive         ###   ########.fr       */
+/*   Updated: 2024/06/01 15:24:06 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ t_token	*set_tokens(char *str, t_ms *head)
 		if (!tmp || tokens_addback(&tokens, _none, tmp) == -1)
 		{
 			strtab_clear(tab);
-			tokens_clear(tokens);
+			tokens_clear(head);
 			return (NULL);
 		}
 	}
@@ -115,7 +115,7 @@ int	lexer(t_ms *head)
 		return (0);
 	if (!del_quotes(head->tokens) || !reset_cmd_grp(head->tokens))
 	{
-		tokens_clear(head->tokens);
+		tokens_clear(head);
 		head->tokens = NULL;
 		return (0);
 	}

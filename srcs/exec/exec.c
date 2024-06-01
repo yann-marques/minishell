@@ -6,28 +6,25 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/05/29 12:53:09 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/06/01 15:27:40 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 #include "../gnl/get_next_line.h"
 
-int	set_tk_at_next_cmd(t_token *token)
+int	set_tk_at_next_cmd(t_token **token)
 {
 	t_token	*tmp;
 
-	if (!have_next_pipe(token))
+	if (!have_next_pipe(*token))
 		return (0);
-	if (token->next)
-		tmp = token->next;
-	else
-		return (0);
+	tmp = (*token)->next;
 	while (tmp)
 	{
 		if (tmp->type == _cmd_grp)
 		{
-			*token = *tmp;
+			*token = tmp;
 			return (1);
 		}
 		tmp = tmp->next;
@@ -102,6 +99,8 @@ void	command_manager(t_ms *head)
 			process_pids(head, pids->pid, 0);
 		pids = pids->next;
 	}
+	if (g_sig_received == SIGINT)
+		head->last_status = SIGINT + 128;
 	pids_clear(head->pids);
 	head->pids = NULL;
 	g_sig_received = 0;

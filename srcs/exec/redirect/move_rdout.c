@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/05/16 13:16:51 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/05/31 18:31:00 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,10 +38,7 @@ void	move_rdout(t_token **tk)
 		if ((!(*tk)->next || (*tk)->next->type == _pipe) && out && out != *tk)
 		{
 			out->prev = *tk;
-			if ((*tk)->next)
-				out->next = (*tk)->next;
-			else
-				out->next = NULL;
+			out->next = (*tk)->next;
 			(*tk)->next = out;
 			*tk = out;
 			out = NULL;

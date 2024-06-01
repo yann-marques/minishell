@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:12:25 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/29 16:59:19 by yanolive         ###   ########.fr       */
+/*   Updated: 2024/06/01 15:28:59 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,35 @@ t_ms	*init_head(char **envp)
 	return (head);
 }
 
+void	tokens_cpy(t_ms *head, t_token *tk)
+{
+	t_token	**tk_addr;
+	t_token	*tmp;
+	t_token	*tmp2;
+	int		i;
+
+	tmp = tk;
+	tmp2 = tk;
+	i = 0;
+	while (tmp)
+	{
+		i++;
+		tmp = tmp->next;
+	}
+	tk_addr = malloc(sizeof(t_token *) * (i + 1));
+	if (!tk_addr)
+		exit(EXIT_FAILURE);
+	i = 0;
+	while (tmp2)
+	{
+		tk_addr[i] = tmp2;
+		i++;
+		tmp2 = tmp2->next;
+	}
+	tk_addr[i] = NULL;
+	head->tokens_cpy = tk_addr;
+}
+
 int	main(int ac, char **av, char **envp)
 {
 	t_ms	*head;
@@ -42,9 +71,10 @@ int	main(int ac, char **av, char **envp)
 	{
 		if (!head->tokens && !lexer(head))
 			continue ;
+		tokens_cpy(head, head->tokens);
 		if (!is_handle_error(head))
 			command_manager(head);
-		tokens_clear(head->tokens);
+		tokens_clear(head);
 		head->tokens = NULL;
 	}
 	free_env(head->env);
