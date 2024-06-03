@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   var_to_value.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:13:19 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/22 14:57:23 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/06/03 18:27:17 by yanolive         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ static int	check_if_replace(char *str, int i_var)
 	replace = 1;
 	i = -1;
 	if (str[i_var] != '$' || (str[i_var] == '$' && (str[i_var + 1] == ' '
-				|| str[i_var + 1] == '\'' || str[i_var + 1] == '"'
+				|| ((str[i_var + 1] == '\'' || str[i_var + 1] == '"') && !isin_dblquotes(str, i_var, 0))
 				|| !str[i_var + 1] || str[i_var + 1] == '	')))
 		return (0);
 	while (str[++i] && i <= i_var)
@@ -114,8 +114,8 @@ static char	*find_var(char *str, int i)
 		tmp = ft_strlen_to(&str[i + 1], '\n');
 	if (str[i + 1] == '?')
 		tmp = 1;
+	else if (str[i + 1] == '"' || str[i + 1] == '\'')
+		return (ft_strdup(""));
 	var = ft_strndup(&str[i + 1], tmp);
-	if (!var)
-		return (NULL);
 	return (var);
 }
