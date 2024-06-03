@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/05/20 18:10:25 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/06/03 16:21:58 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,29 @@ int	is_file(char *name)
 	if (errno == ENOTDIR)
 		return (1);
 	return (-1);
+}
+
+int	have_slash(char *path)
+{
+	int	i;
+
+	i = 0;
+	while (path[i])
+	{
+		if (path[i] == '\\' || path[i] == '/')
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
+char	*get_relative_path(char *path)
+{
+	if (!have_slash(path))
+		return (NULL);
+	if (access(path, F_OK) != -1)
+		return (ft_strdup(path));
+	return (NULL);
 }
 
 int	do_needed_files(t_token *tk)

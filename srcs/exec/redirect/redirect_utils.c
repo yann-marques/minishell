@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/05/20 14:53:58 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/06/03 15:57:34 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,15 +55,11 @@ int	redirection_in(t_ms *head, t_token *token)
 {
 	int	infile;
 
+	(void) head;
 	if (!token->value[1])
 		return (-1);
 	infile = open(token->value[1], O_RDONLY, 0644);
 	if (infile == -1)
-	{
-		rd_null(head);
 		return (-1);
-	}
-	dup2(infile, STDIN_FILENO);
-	close(infile);
-	return (1);
+	return (infile);
 }

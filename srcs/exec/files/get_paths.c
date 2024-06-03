@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_paths.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/05/21 16:54:01 by yanolive         ###   ########.fr       */
+/*   Updated: 2024/06/03 16:22:41 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,8 +74,8 @@ char	*find_path(t_ms *head, t_token *token)
 	char	*path_command;
 	int		i;
 
-	if (access(token->value[0], F_OK) != -1)
-		return (ft_strdup(token->value[0]));
+	if (have_slash(token->value[0]))
+		return (get_relative_path(token->value[0]));
 	path = get_var_value(head, "PATH");
 	if (!path)
 		return (NULL);

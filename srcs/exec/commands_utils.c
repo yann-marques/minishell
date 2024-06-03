@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/05/29 13:15:45 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/06/03 16:25:18 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,33 +54,6 @@ int	execute(t_ms *head, t_token *token)
 	return (0);
 }
 
-static void	redirect_if_heredoc(t_ms *head, char **path_doc, int *fd)
-{
-	int		tmp_fd;
-
-	if (!path_doc || !(*path_doc))
-		return ;
-	if (access(*path_doc, F_OK) == 0)
-	{
-		tmp_fd = open(*path_doc, O_RDONLY, 0644);
-		if (tmp_fd == -1)
-			error_exit(head, "Error with path_doc", -1);
-		dup2(tmp_fd, STDIN_FILENO);
-		unlink(*path_doc);
-		free(*path_doc);
-		*path_doc = NULL;
-		close(tmp_fd);
-	}
-	else
-	{
-		free(*path_doc);
-		*path_doc = NULL;
-		close(fd[0]);
-		close(fd[1]);
-		exit_free_head(head, 1);
-	}
-}
-
 static void	redirect_if_lastcommand(int pid, int *fd, int last_command)
 {
 	if (pid == 0)
@@ -101,7 +74,7 @@ static void	redirect_if_lastcommand(int pid, int *fd, int last_command)
 	}
 }
 
-int	pipe_and_exec(t_ms *head, t_token *token, char **path_doc, int last_command)
+int	pipe_and_exec(t_ms *head, t_token *token, int last_command)
 {
 	int		pid;
 	int		fd[2];
@@ -116,7 +89,6 @@ int	pipe_and_exec(t_ms *head, t_token *token, char **path_doc, int last_command)
 	if (pid == 0)
 	{
 		close(head->original_stdint);
-		redirect_if_heredoc(head, path_doc, fd);
 		redirect_if_lastcommand(pid, fd, last_command);
 		if (builtin_child(head, token))
 			exit_free_head(head, 1);
@@ -124,6 +96,5 @@ int	pipe_and_exec(t_ms *head, t_token *token, char **path_doc, int last_command)
 	}
 	else
 		redirect_if_lastcommand(pid, fd, last_command);
-	free(*path_doc);
 	return (pid);
 }

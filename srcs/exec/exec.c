@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/06/01 15:27:40 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/06/03 16:02:42 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,27 +34,23 @@ int	set_tk_at_next_cmd(t_token **token)
 
 int	multi_commands(t_ms *head)
 {
-	char	*path_doc;
 	t_token	*tk;
 
 	tk = head->tokens;
 	do_needed_files(tk);
 	move_rdout(&tk);
-	path_doc = NULL;
 	while (tk)
 	{
 		if (do_pipe_error(head, &tk))
 			continue ;
-		if (do_heredoc(head, &tk, &path_doc))
-			continue ;
-		if (do_cmd_and_rd(head, &tk, &path_doc))
+		if (do_cmd_and_rd(head, &tk))
 			continue ;
 		if (do_rd(head, &tk))
 			continue ;
 		if (is_cmd(tk) && have_next_pipe(tk))
-			pids_addback(&head->pids, pipe_and_exec(head, tk, &path_doc, 0));
+			pids_addback(&head->pids, pipe_and_exec(head, tk, 0));
 		if (is_cmd(tk) && !have_next_pipe(tk) && !next_redirect(tk))
-			pids_addback(&head->pids, pipe_and_exec(head, tk, &path_doc, 1));
+			pids_addback(&head->pids, pipe_and_exec(head, tk, 1));
 		tk = tk->next;
 	}
 	return (0);

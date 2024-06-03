@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/05/31 18:21:32 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/06/03 16:04:07 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,51 +36,23 @@ int	do_pipe_error(t_ms *head, t_token **token)
 	return (0);
 }
 
-int	do_heredoc(t_ms *head, t_token **token, char **path_doc)
-{
-	t_token	*tk;
-
-	tk = *token;
-	if (is_cmd_heredoc(tk))
-	{
-		*path_doc = here_doc(head, tk->next);
-		if (have_next_pipe(tk) || next_redirect_out(tk->next))
-			pids_addback(&head->pids, pipe_and_exec(head, tk, path_doc, 0));
-		else
-			pids_addback(&head->pids, pipe_and_exec(head, tk, path_doc, 1));
-		*path_doc = NULL;
-		if (tk->next)
-			tk = tk->next->next;
-		*token = tk;
-		return (1);
-	}
-	if (is_heredoc(tk))
-	{
-		*path_doc = here_doc(head, tk);
-		tk = tk->next;
-		*token = tk;
-		return (1);
-	}
-	return (0);
-}
-
-int	do_cmd_and_rd(t_ms *head, t_token **tk, char **path_doc)
+int	do_cmd_and_rd(t_ms *head, t_token **tk)
 {
 	if (is_cmd_rdout(*tk))
 	{
-		pids_addback(&head->pids, pipe_and_exec(head, *tk, path_doc, 0));
+		pids_addback(&head->pids, pipe_and_exec(head, *tk, 0));
 		do_redirection_out(head, (*tk)->next);
 		if (!set_tk_at_next_cmd(tk))
 			*tk = NULL;
 		return (1);
 	}
-	if (is_cmd_rdin(*tk))
+	if (is_cmd_rdin(*tk) || is_cmd_heredoc(*tk))
 	{
 		do_redirection_in(head, (*tk)->next);
 		if (have_next_pipe(*tk) || next_redirect_out((*tk)->next))
-			pids_addback(&head->pids, pipe_and_exec(head, *tk, path_doc, 0));
+			pids_addback(&head->pids, pipe_and_exec(head, *tk, 0));
 		else
-			pids_addback(&head->pids, pipe_and_exec(head, *tk, path_doc, 1));
+			pids_addback(&head->pids, pipe_and_exec(head, *tk, 1));
 		if ((*tk)->next->next)
 			*tk = (*tk)->next->next;
 		else

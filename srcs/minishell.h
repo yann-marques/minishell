@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:10:26 by yanolive          #+#    #+#             */
-/*   Updated: 2024/06/01 15:21:17 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/06/03 16:21:14 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,7 +172,7 @@ void	redirection_out(int fd_out);
 int		do_redirection_out(t_ms *head, t_token *tk);
 int		redirection_in(t_ms *head, t_token *token);
 int		do_redirection_in(t_ms *head, t_token *token);
-char	*here_doc(t_ms *head, t_token *token);
+int		here_doc(t_ms *head, t_token *token);
 int		heredoc_addback(t_heredoc **here_doc, char *line);
 void	rd_null(t_ms *head);
 int		check_file_out(t_token *token);
@@ -192,6 +192,8 @@ char	*get_random_tmp_path(t_ms *head);
 int		do_needed_files(t_token *token);
 int		is_file_error_in_pipe(t_token *token);
 int		is_file(char *name);
+int		have_slash(char *path);
+char	*get_relative_path(char *path);
 
 //EXEC: exec.c
 int		multi_commands(t_ms *head);
@@ -200,15 +202,14 @@ int		set_tk_at_next_cmd(t_token **token);
 
 //EXEC: do_exec.c
 int		do_pipe_error(t_ms *head, t_token **token);
-int		do_heredoc(t_ms *head, t_token **token, char **path_doc);
-int		do_cmd_and_rd(t_ms *head, t_token **tk, char **path_doc);
+int		do_heredoc(t_ms *head, t_token **token);
+int		do_cmd_and_rd(t_ms *head, t_token **tk);
 int		do_rd(t_ms *head, t_token **tk);
 
 //EXEC: commands utils
 char	*find_path(t_ms *head, t_token *token);
 int		execute(t_ms *head, t_token *token);
-int		pipe_and_exec(t_ms *head, t_token *token,
-			char **path_doc, int last_command);
+int		pipe_and_exec(t_ms *head, t_token *token, int last_command);
 
 //EXEC: builtins utils
 int		check_echo_builtin(char **value);

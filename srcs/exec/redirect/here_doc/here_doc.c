@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   here_doc.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/05/29 14:19:21 by yanolive         ###   ########.fr       */
+/*   Updated: 2024/06/03 15:49:14 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ static int	get_first_line(char **path_doc, char **line, int *tmp_fd)
 	return (1);
 }
 
-char	*here_doc(t_ms *head, t_token *token)
+int	here_doc(t_ms *head, t_token *token)
 {
 	char	*line;
 	char	*path_doc;
@@ -51,12 +51,17 @@ char	*here_doc(t_ms *head, t_token *token)
 			exit_free_head(head, 1);
 		fill_heredoc(line, token->value[1], head, tmp_fd);
 		close(tmp_fd);
-		if (g_sig_received == SIGINT)
-			unlink(path_doc);
 		free(path_doc);
 		exit_free_head(head, 1);
 	}
+	if (g_sig_received == SIGINT)
+		rd_null(head);
 	waitpid(pid, NULL, 0);
 	close(tmp_fd);
-	return (path_doc);
+	tmp_fd = open(path_doc, O_RDONLY, 0644);
+	if (tmp_fd == -1)
+		error_exit(head, "Error with fileout", -1);
+	unlink(path_doc);
+	free(path_doc);
+	return (tmp_fd);
 }

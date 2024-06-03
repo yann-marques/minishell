@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/05/29 13:46:16 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/06/03 16:24:23 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,16 +44,28 @@ int	do_redirection_out(t_ms *head, t_token *tk)
 int	do_redirection_in(t_ms *head, t_token *tk)
 {
 	t_token	*tmp;
+	int		fd;
 
-	(void) head;
 	tmp = tk;
+	fd = -1;
 	while (tmp)
 	{
 		if (tmp->type == _redirection && tmp->value[0][0] == '<')
-			redirection_in(head, tmp);
+			fd = redirection_in(head, tmp);
+		else if (is_heredoc(tmp))
+			fd = here_doc(head, tmp);
 		else
 			break ;
 		tmp = tmp->next;
+		if (tmp && fd != -1 && ((tmp->type == _redirection
+					&& tmp->value[0][0] == '<') || is_heredoc(tmp)))
+			close(fd);
 	}
+	if (fd != -1)
+		dup2(fd, STDIN_FILENO);
+	else
+		rd_null(head);
+	if (fd != -1)
+		close(fd);
 	return (1);
 }
