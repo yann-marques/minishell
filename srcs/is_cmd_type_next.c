@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/05/08 16:07:04 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/06/03 17:44:38 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,10 +44,19 @@ int	next_redirect(t_token *tk)
 
 int	next_redirect_out(t_token *tk)
 {
+	t_token *tmp;
+
 	if (!tk->next)
 		return (0);
-	if ((tk->next->type == _redirection && tk->next->value[0][0] == '>')
-		|| tk->next->type == _append)
-		return (1);
+	tmp = tk->next;
+	while (tmp)
+	{
+		if ((tmp->type == _redirection && tmp->value[0][0] == '>')
+			|| tmp->type == _append)
+			return (1);
+		if (tmp->type == _pipe)
+			return (0);
+		tmp = tmp->next;
+	}
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/06/03 16:02:42 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/06/03 17:28:39 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,25 @@ int	set_tk_at_next_cmd(t_token **token)
 		}
 		tmp = tmp->next;
 	}
+	return (0);
+}
+
+int	set_tk_at_after_stdin(t_token **token)
+{
+	t_token	*tmp;
+
+	tmp = (*token)->next;
+	while (tmp)
+	{
+		if (!is_rdin(tmp) && !is_heredoc(tmp))
+		{
+			*token = tmp;
+			return (1);
+		}
+		tmp = tmp->next;
+	}
+	if (!tmp)
+		*token = NULL;
 	return (0);
 }
 

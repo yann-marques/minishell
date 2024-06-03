@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:10:26 by yanolive          #+#    #+#             */
-/*   Updated: 2024/06/03 16:21:14 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/06/03 17:22:05 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -199,6 +199,7 @@ char	*get_relative_path(char *path);
 int		multi_commands(t_ms *head);
 void	command_manager(t_ms *head);
 int		set_tk_at_next_cmd(t_token **token);
+int		set_tk_at_after_stdin(t_token **token);
 
 //EXEC: do_exec.c
 int		do_pipe_error(t_ms *head, t_token **token);

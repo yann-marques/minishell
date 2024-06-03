@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/06/03 16:04:07 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/06/03 17:57:17 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,10 +53,7 @@ int	do_cmd_and_rd(t_ms *head, t_token **tk)
 			pids_addback(&head->pids, pipe_and_exec(head, *tk, 0));
 		else
 			pids_addback(&head->pids, pipe_and_exec(head, *tk, 1));
-		if ((*tk)->next->next)
-			*tk = (*tk)->next->next;
-		else
-			*tk = NULL;
+		set_tk_at_after_stdin(tk);
 		return (1);
 	}
 	return (0);
@@ -64,20 +61,15 @@ int	do_cmd_and_rd(t_ms *head, t_token **tk)
 
 int	do_rd(t_ms *head, t_token **tk)
 {
-	if (is_rdin(*tk))
+	if (is_rdin(*tk) || is_heredoc(*tk))
 	{
 		do_redirection_in(head, *tk);
-		if ((*tk)->next)
-		{
-			*tk = (*tk)->next;
-			return (1);
-		}
+		set_tk_at_after_stdin(tk);
+		return (1);
 	}
 	if (is_rdout(*tk))
 	{
-		if ((*tk)->prev && ((*tk)->prev->type == _cmd_grp
-				|| is_cmd_rdin((*tk)->prev->prev)
-				|| is_cmd_heredoc((*tk)->prev->prev)))
+		if ((*tk)->prev)
 		{
 			do_redirection_out(head, *tk);
 			if ((*tk)->next)
