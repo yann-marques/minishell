@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   do_redirect.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/06/04 15:08:56 by yanolive         ###   ########.fr       */
+/*   Updated: 2024/06/04 15:49:34 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,8 @@ int	do_redirection_in(t_ms *head, t_token *tk)
 	int		fd;
 
 	tmp = tk;
-	fd = -1;
-	while (tmp)
+	fd = 0;
+	while (tmp && fd != -1)
 	{
 		if (tmp->type == _redirection && tmp->value[0][0] == '<')
 			fd = redirection_in(head, tmp);
@@ -56,18 +56,16 @@ int	do_redirection_in(t_ms *head, t_token *tk)
 			fd = here_doc(head, tmp);
 		else
 			break ;
-		if (fd == -1)
-			break ;
 		tmp = tmp->next;
 		if (tmp && ((tmp->type == _redirection && tmp->value[0][0] == '<')
 			|| is_heredoc(tmp)))
 			close(fd);
 	}
-	if (fd != -1)
+	if (fd != -1 || fd == 0)
 		dup2(fd, STDIN_FILENO);
 	else
 		rd_null(head);
-	if (fd != -1)
+	if (fd != -1 || fd == 0)
 		close(fd);
 	return (1);
 }
