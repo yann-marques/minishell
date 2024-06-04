@@ -6,7 +6,7 @@
 /*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:13:19 by yanolive          #+#    #+#             */
-/*   Updated: 2024/06/04 14:44:50 by yanolive         ###   ########.fr       */
+/*   Updated: 2024/06/04 17:51:03 by yanolive         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,7 +113,7 @@ static char	*find_var(char *str, int i)
 		tmp = ft_strlen_to(&str[i + 1], '\'');
 	if (tmp > ft_strlen_to(&str[i + 1], '\n'))
 		tmp = ft_strlen_to(&str[i + 1], '\n');
-	if (str[i + 1] == '?')
+	if (str[i + 1] == '?' || ft_isdigit(str[i + 1]))
 		tmp = 1;
 	else if (str[i + 1] == '"' || str[i + 1] == '\'')
 		return (ft_strdup(""));
