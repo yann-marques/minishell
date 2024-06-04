@@ -6,7 +6,7 @@
 /*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/02 12:03:17 by ymarques          #+#    #+#             */
-/*   Updated: 2024/04/09 15:51:43 by yanolive         ###   ########.fr       */
+/*   Updated: 2024/06/04 15:03:07 by yanolive         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	if (!s1 || !s2)
 		return (NULL);
 	new_s = (char *) malloc((ft_strlen(s1) + ft_strlen(s2) + 1) * sizeof(char));
-	if (!new_s || new_s == 0)
+	if (!new_s)
 		return (NULL);
 	i = 0;
 	while (s1[i] != '\0')

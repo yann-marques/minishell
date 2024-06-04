@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   is_cmd_type_next.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/06/03 17:44:38 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/06/04 14:44:20 by yanolive         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ int	next_redirect(t_token *tk)
 
 int	next_redirect_out(t_token *tk)
 {
-	t_token *tmp;
+	t_token	*tmp;
 
 	if (!tk->next)
 		return (0);

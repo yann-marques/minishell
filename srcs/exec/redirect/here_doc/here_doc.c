@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   here_doc.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/06/04 13:32:28 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/06/04 14:56:33 by yanolive         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,24 @@ static int	get_first_line(char **path_doc, char **line, int *tmp_fd)
 	return (1);
 }
 
+static int	here_doc_parent(t_ms *head, int pid, int tmp_fd, char *path_doc)
+{
+	waitpid(pid, NULL, 0);
+	sig_control(0);
+	close(tmp_fd);
+	tmp_fd = open(path_doc, O_RDONLY, 0644);
+	if (tmp_fd == -1)
+		error_exit(head, "Error with fileout", -1);
+	if (g_sig_received == SIGINT)
+	{
+		close(tmp_fd);
+		tmp_fd = -1;
+	}
+	unlink(path_doc);
+	free(path_doc);
+	return (tmp_fd);
+}
+
 int	here_doc(t_ms *head, t_token *token)
 {
 	char	*line;
@@ -54,18 +72,6 @@ int	here_doc(t_ms *head, t_token *token)
 		free(path_doc);
 		exit_free_head(head, 1);
 	}
-	waitpid(pid, NULL, 0);
-	sig_control(0);
-	close(tmp_fd);
-	tmp_fd = open(path_doc, O_RDONLY, 0644);
-	if (tmp_fd == -1)
-		error_exit(head, "Error with fileout", -1);
-	if (g_sig_received == SIGINT)
-	{
-		close(tmp_fd);
-		tmp_fd = -1;
-	}
-	unlink(path_doc);
-	free(path_doc);
+	tmp_fd = here_doc_parent(head, pid, tmp_fd, path_doc);
 	return (tmp_fd);
 }

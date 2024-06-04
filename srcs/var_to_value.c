@@ -6,7 +6,7 @@
 /*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:13:19 by yanolive          #+#    #+#             */
-/*   Updated: 2024/06/03 18:27:17 by yanolive         ###   ########.fr       */
+/*   Updated: 2024/06/04 14:44:50 by yanolive         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,8 @@ static int	check_if_replace(char *str, int i_var)
 	replace = 1;
 	i = -1;
 	if (str[i_var] != '$' || (str[i_var] == '$' && (str[i_var + 1] == ' '
-				|| ((str[i_var + 1] == '\'' || str[i_var + 1] == '"') && !isin_dblquotes(str, i_var, 0))
+				|| ((str[i_var + 1] == '\'' || str[i_var + 1] == '"')
+					&& !isin_dblquotes(str, i_var, 0))
 				|| !str[i_var + 1] || str[i_var + 1] == '	')))
 		return (0);
 	while (str[++i] && i <= i_var)

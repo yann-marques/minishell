@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_itoa.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/02 20:38:16 by ymarques          #+#    #+#             */
-/*   Updated: 2024/04/11 15:56:48 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/06/04 15:00:52 by yanolive         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,9 +43,9 @@ char	*ft_itoa(int n)
 	temp = n;
 	len = calc_len(n);
 	str = (char *) ft_calloc(sizeof(char), len + 1);
-	len--;
-	if (str == NULL)
+	if (!str)
 		return (NULL);
+	len--;
 	if (n < 0)
 	{
 		str[0] = '-';

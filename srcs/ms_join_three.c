@@ -6,7 +6,7 @@
 /*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:12:42 by yanolive          #+#    #+#             */
-/*   Updated: 2024/06/03 18:20:12 by yanolive         ###   ########.fr       */
+/*   Updated: 2024/06/04 14:42:59 by yanolive         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ char	*ms_join_three(char *s1, char *s2, char *s3, int free_var)
 	ft_strlcpy(dst, s1, ft_strlen(s1) + 1);
 	free(s1);
 	ft_strlcpy(&dst[ft_strlen(dst)], s2, ft_strlen(s2) + 1);
-	if (free_var)
+	if (s2 && free_var)
 		free(s2);
 	ft_strlcpy(&dst[ft_strlen(dst)], s3, ft_strlen(s3) + 1);
 	free(s3);

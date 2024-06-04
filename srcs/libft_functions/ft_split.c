@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/02 13:06:20 by ymarques          #+#    #+#             */
-/*   Updated: 2024/04/01 18:28:31 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/06/04 15:01:43 by yanolive         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ char	**ft_split(char const *s, char c)
 	if (!s)
 		return (NULL);
 	new_s = (char **) ft_calloc(sizeof(char *), count_words(s, c) + 1);
-	if (!new_s || new_s == NULL)
+	if (!new_s)
 		return (NULL);
 	fill_var(&i, &j, &k, &l);
 	while (++i < count_words(s, c))
