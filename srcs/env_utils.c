@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:10:03 by yanolive          #+#    #+#             */
-/*   Updated: 2024/06/01 15:29:55 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/06/04 17:57:26 by yanolive         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,8 @@ char	*get_var_value(t_ms *head, char *var)
 	tmp = head->env;
 	if (ft_strncmp(var, "?", 2) == 0)
 		return (ft_itoa(head->last_status));
+	else if (ft_strncmp(var, "0", 2) == 0)
+		return (ft_strdup("minishell"));
 	while (tmp)
 	{
 		if (ft_strcmp(tmp->var, var) == 0)

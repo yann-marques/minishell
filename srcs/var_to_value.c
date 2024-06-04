@@ -6,7 +6,7 @@
 /*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:13:19 by yanolive          #+#    #+#             */
-/*   Updated: 2024/06/04 17:51:03 by yanolive         ###   ########.fr       */
+/*   Updated: 2024/06/04 18:04:02 by yanolive         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ static int	replace_var_call(t_ms *head, char **str, int k, int i)
 	if (!begin)
 		return (0);
 	free_var = 0;
-	if (begin[0] == '?')
+	if (begin[0] == '?' || begin[0] == '0')
 		free_var = 1;
 	var = get_var_value(head, begin);
 	end = ft_strndup(&str[k][i + ft_strlen_to(begin, '\0') + 1], 0);
