@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   do_redirect.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/06/04 15:49:34 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/06/04 16:09:56 by yanolive         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,8 +57,8 @@ int	do_redirection_in(t_ms *head, t_token *tk)
 		else
 			break ;
 		tmp = tmp->next;
-		if (tmp && ((tmp->type == _redirection && tmp->value[0][0] == '<')
-			|| is_heredoc(tmp)))
+		if (tmp && fd != -1 && ((tmp->type == _redirection
+					&& tmp->value[0][0] == '<') || is_heredoc(tmp)))
 			close(fd);
 	}
 	if (fd != -1 || fd == 0)
