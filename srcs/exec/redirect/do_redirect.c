@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/06/03 16:52:32 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/06/04 13:34:57 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,8 @@ int	do_redirection_in(t_ms *head, t_token *tk)
 		else if (is_heredoc(tmp))
 			fd = here_doc(head, tmp);
 		else
+			break ;
+		if (fd == -1)
 			break ;
 		tmp = tmp->next;
 		if (tmp && fd != -1 && ((tmp->type == _redirection

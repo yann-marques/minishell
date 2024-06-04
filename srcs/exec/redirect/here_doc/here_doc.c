@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/06/03 15:49:14 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/06/04 13:32:28 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,13 +54,17 @@ int	here_doc(t_ms *head, t_token *token)
 		free(path_doc);
 		exit_free_head(head, 1);
 	}
-	if (g_sig_received == SIGINT)
-		rd_null(head);
 	waitpid(pid, NULL, 0);
+	sig_control(0);
 	close(tmp_fd);
 	tmp_fd = open(path_doc, O_RDONLY, 0644);
 	if (tmp_fd == -1)
 		error_exit(head, "Error with fileout", -1);
+	if (g_sig_received == SIGINT)
+	{
+		close(tmp_fd);
+		tmp_fd = -1;
+	}
 	unlink(path_doc);
 	free(path_doc);
 	return (tmp_fd);

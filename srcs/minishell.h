@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:10:26 by yanolive          #+#    #+#             */
-/*   Updated: 2024/06/03 17:22:05 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/06/04 13:28:42 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@
 # include <curses.h>
 # include <stdint.h>
 # include <limits.h>
+# include <sys/ioctl.h>
 
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 10

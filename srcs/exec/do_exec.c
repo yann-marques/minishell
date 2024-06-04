@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/06/03 17:57:17 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/06/04 11:32:47 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,25 @@ int	do_cmd_and_rd(t_ms *head, t_token **tk)
 	return (0);
 }
 
+int	set_tk_at_after_stdout(t_token **token)
+{
+	t_token	*tmp;
+
+	tmp = (*token)->next;
+	while (tmp)
+	{
+		if (!is_rdout(tmp))
+		{
+			*token = tmp;
+			return (1);
+		}
+		tmp = tmp->next;
+	}
+	if (!tmp)
+		*token = NULL;
+	return (0);
+}
+
 int	do_rd(t_ms *head, t_token **tk)
 {
 	if (is_rdin(*tk) || is_heredoc(*tk))
@@ -72,11 +91,8 @@ int	do_rd(t_ms *head, t_token **tk)
 		if ((*tk)->prev)
 		{
 			do_redirection_out(head, *tk);
-			if ((*tk)->next)
-			{
-				*tk = (*tk)->next;
-				return (1);
-			}
+			set_tk_at_after_stdout(tk);
+			return (1);
 		}
 	}
 	return (0);
