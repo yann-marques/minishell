@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:12:25 by yanolive          #+#    #+#             */
-/*   Updated: 2024/06/04 16:14:06 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/06/05 13:56:14 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ t_ms	*init_head(char **envp)
 	head->pids = NULL;
 	head->last_status = 0;
 	head->original_stdint = 0;
+	head->heredoc_stdint = 0;
 	return (head);
 }
 

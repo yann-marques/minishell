@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:12:21 by yanolive          #+#    #+#             */
-/*   Updated: 2024/06/01 15:29:18 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/06/05 13:56:22 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,7 @@ void	exit_free_head(t_ms *head, int isExit)
 	int		last_status;
 
 	close(head->original_stdint);
+	close(head->heredoc_stdint);
 	if (head->tokens)
 		tokens_clear(head);
 	if (head->pids)

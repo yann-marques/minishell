@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/06/05 13:46:35 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/06/05 13:54:59 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,13 +98,10 @@ static void	process_pids(t_ms *head, int pid, int last_pid)
 
 void	command_manager(t_ms *head)
 {
-	int		original_stdint;
 	t_pids	*pids;
 
-	original_stdint = dup(STDIN_FILENO);
-	head->original_stdint = original_stdint;
-	original_stdint = dup(STDIN_FILENO);
-	head->heredoc_stdint = original_stdint;
+	head->original_stdint = dup(STDIN_FILENO);
+	head->heredoc_stdint = dup(STDIN_FILENO);
 	sig_control(0);
 	multi_commands(head);
 	pids = head->pids;
@@ -122,7 +119,7 @@ void	command_manager(t_ms *head)
 	head->pids = NULL;
 	g_sig_received = 0;
 	sig_control(1);
-	dup2(original_stdint, STDIN_FILENO);
-	close(original_stdint);
+	dup2(head->original_stdint, STDIN_FILENO);
+	close(head->original_stdint);
 	close(head->heredoc_stdint);
 }
