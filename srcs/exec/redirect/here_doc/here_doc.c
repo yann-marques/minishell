@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   here_doc.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/06/04 14:56:33 by yanolive         ###   ########.fr       */
+/*   Updated: 2024/06/05 13:45:36 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,7 @@ int	here_doc(t_ms *head, t_token *token)
 		error_exit(head, "Error with fileout", -1);
 	pid = fork();
 	signal(SIGQUIT, SIG_IGN);
+	dup2(head->heredoc_stdint, STDIN_FILENO);
 	if (pid != -1 && pid == 0)
 	{
 		if (!get_first_line(&path_doc, &line, &tmp_fd))

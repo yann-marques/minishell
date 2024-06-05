@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:10:26 by yanolive          #+#    #+#             */
-/*   Updated: 2024/06/04 13:28:42 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/06/05 13:44:05 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,7 @@ typedef struct s_ms
 	t_pids			*pids;
 	int				last_status;
 	int				original_stdint;
+	int				heredoc_stdint;
 }	t_ms;
 
 //libft_fonctions

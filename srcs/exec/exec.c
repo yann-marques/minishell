@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/06/04 11:14:55 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/06/05 13:46:35 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,6 +103,8 @@ void	command_manager(t_ms *head)
 
 	original_stdint = dup(STDIN_FILENO);
 	head->original_stdint = original_stdint;
+	original_stdint = dup(STDIN_FILENO);
+	head->heredoc_stdint = original_stdint;
 	sig_control(0);
 	multi_commands(head);
 	pids = head->pids;
@@ -122,4 +124,5 @@ void	command_manager(t_ms *head)
 	sig_control(1);
 	dup2(original_stdint, STDIN_FILENO);
 	close(original_stdint);
+	close(head->heredoc_stdint);
 }
