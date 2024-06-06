@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/06/03 16:25:18 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/06/06 16:25:58 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,7 @@ int	pipe_and_exec(t_ms *head, t_token *token, int last_command)
 	if (pid == 0)
 	{
 		close(head->original_stdint);
+		close(head->heredoc_stdint);
 		redirect_if_lastcommand(pid, fd, last_command);
 		if (builtin_child(head, token))
 			exit_free_head(head, 1);
