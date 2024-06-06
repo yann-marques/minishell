@@ -6,7 +6,7 @@
 /*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:39:31 by ymarques          #+#    #+#             */
-/*   Updated: 2024/06/04 11:32:47 by ymarques         ###   ########.fr       */
+/*   Updated: 2024/06/06 15:00:58 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,29 +36,6 @@ int	do_pipe_error(t_ms *head, t_token **token)
 	return (0);
 }
 
-int	do_cmd_and_rd(t_ms *head, t_token **tk)
-{
-	if (is_cmd_rdout(*tk))
-	{
-		pids_addback(&head->pids, pipe_and_exec(head, *tk, 0));
-		do_redirection_out(head, (*tk)->next);
-		if (!set_tk_at_next_cmd(tk))
-			*tk = NULL;
-		return (1);
-	}
-	if (is_cmd_rdin(*tk) || is_cmd_heredoc(*tk))
-	{
-		do_redirection_in(head, (*tk)->next);
-		if (have_next_pipe(*tk) || next_redirect_out((*tk)->next))
-			pids_addback(&head->pids, pipe_and_exec(head, *tk, 0));
-		else
-			pids_addback(&head->pids, pipe_and_exec(head, *tk, 1));
-		set_tk_at_after_stdin(tk);
-		return (1);
-	}
-	return (0);
-}
-
 int	set_tk_at_after_stdout(t_token **token)
 {
 	t_token	*tmp;
@@ -75,6 +52,28 @@ int	set_tk_at_after_stdout(t_token **token)
 	}
 	if (!tmp)
 		*token = NULL;
+	return (0);
+}
+
+int	do_cmd_and_rd(t_ms *head, t_token **tk)
+{
+	if (is_cmd_rdout(*tk))
+	{
+		pids_addback(&head->pids, pipe_and_exec(head, *tk, 0));
+		do_redirection_out(head, (*tk)->next);
+		set_tk_at_after_stdout(tk);
+		return (1);
+	}
+	if (is_cmd_rdin(*tk) || is_cmd_heredoc(*tk))
+	{
+		do_redirection_in(head, (*tk)->next);
+		if (have_next_pipe(*tk) || next_redirect_out((*tk)->next))
+			pids_addback(&head->pids, pipe_and_exec(head, *tk, 0));
+		else
+			pids_addback(&head->pids, pipe_and_exec(head, *tk, 1));
+		set_tk_at_after_stdin(tk);
+		return (1);
+	}
 	return (0);
 }
 
