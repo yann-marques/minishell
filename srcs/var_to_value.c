@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   var_to_value.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ymarques <ymarques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:13:19 by yanolive          #+#    #+#             */
-/*   Updated: 2024/06/06 16:04:48 by yanolive         ###   ########.fr       */
+/*   Updated: 2024/06/06 16:40:24 by ymarques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,7 @@ static char	*find_var(char *str, int i)
 		if (!ft_isalpha(str[i + tmp + 1])
 			&& !ft_isdigit(str[i + tmp + 1])
 			&& str[i + tmp + 1] != '_')
-			break;
+			break ;
 		++tmp;
 	}
 	if (str[i + 1] == '?' || ft_isdigit(str[i + 1]))
