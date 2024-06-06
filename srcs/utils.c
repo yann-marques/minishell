@@ -6,7 +6,7 @@
 /*   By: yanolive <yanolive@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:12:59 by yanolive          #+#    #+#             */
-/*   Updated: 2024/05/13 17:13:00 by yanolive         ###   ########.fr       */
+/*   Updated: 2024/06/06 15:37:22 by yanolive         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ int	quotes_jump(char *str)
 	int		i;
 	char	c;
 
-	if (str[0] != '\'' && str[0] != '"')
+	if ((str[0] != '\'' && str[0] != '"') || !ft_strchr(&str[1], str[0]))
 		return (0);
 	c = str[0];
 	i = 1;
